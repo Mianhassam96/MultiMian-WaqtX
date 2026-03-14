@@ -1,36 +1,211 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Age Calculator</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgeWise - Age Calculator</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div class="wrapper">
-        <div class="content">
-            <div class="container">
-                <h1>Age Calculator</h1>
-                <div class="form">
-                    <label for="birthday">Enter your date of birth</label>
-                    <input type="date" id="birthday" name="birthday">
-                    <button id="btn">Calculate Age</button>
-                    <p id="result">Your age is 21 years old</p>
-                </div>
-            </div>
+  <!-- Floating orbs background -->
+  <div class="orbs" aria-hidden="true">
+    <span class="orb orb1"></span>
+    <span class="orb orb2"></span>
+    <span class="orb orb3"></span>
+  </div>
+
+  <div class="wrapper">
+
+    <!-- ── NAV HEADER ── -->
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="header-logo">
+          <span class="logo-icon">⏳</span>
+          <span class="logo-text">AgeWise</span>
         </div>
-        <footer class="footer">
-            <div class="footer-content">
-                <p>&copy; 2024 MultiMian | All rights reserved.</p>
-                <ul class="footer-links">
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Terms of Service</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
+        <nav class="header-nav">
+          <a href="#calculator" class="nav-link">Calculator</a>
+          <a href="#contact" class="nav-link">Contact</a>
+        </nav>
+      </div>
+      <div class="header-hero">
+        <h1 class="hero-title">
+          <span class="word w1">Know</span>
+          <span class="word w2">Your</span>
+          <span class="word w3">Age</span>
+        </h1>
+        <p class="hero-sub">Precise calculation from years down to seconds — instantly.</p>
+        <div class="hero-badges">
+          <span class="badge">⚡ Real-time</span>
+          <span class="badge">📅 Born Day</span>
+          <span class="badge">🎂 Birthday Countdown</span>
+          <span class="badge">👥 Age Comparison</span>
+        </div>
+      </div>
+      <div class="header-wave" aria-hidden="true">
+        <svg viewBox="0 0 1440 60" preserveAspectRatio="none"><path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="rgba(15,12,41,0.6)"/></svg>
+      </div>
+    </header>
+
+    <main id="calculator">
+      <div class="tabs">
+        <button class="tab active" data-tab="single">Single Age Check</button>
+        <button class="tab" data-tab="compare">Age Comparison</button>
+      </div>
+
+      <!-- ── Single ── -->
+      <section id="single" class="tab-content active">
+        <div class="card">
+          <h2>Single Age Check</h2>
+          <div class="form-group">
+            <label for="s-name">Name</label>
+            <input type="text" id="s-name" placeholder="e.g. Hassam" autocomplete="off" />
+          </div>
+          <div class="form-group">
+            <label for="s-dob">Date of Birth</label>
+            <input type="date" id="s-dob" />
+          </div>
+          <div class="error hidden" id="s-error"></div>
+          <button class="btn-primary" id="calc-single">Calculate Age</button>
+        </div>
+
+        <div class="card result-card hidden" id="single-result">
+          <h2 id="sr-title"></h2>
+          <div class="age-banner" id="sr-banner"></div>
+          <div class="stats-grid" id="sr-stats"></div>
+          <div class="pills" id="sr-pills"></div>
+        </div>
+      </section>
+
+      <!-- ── Compare ── -->
+      <section id="compare" class="tab-content">
+        <div class="card">
+          <h2>Age Comparison</h2>
+          <div class="two-col">
+            <div>
+              <div class="form-group">
+                <label for="p1-name">Person 1 Name</label>
+                <input type="text" id="p1-name" placeholder="e.g. Hassam" autocomplete="off" />
+              </div>
+              <div class="form-group">
+                <label for="p1-dob">Person 1 Date of Birth</label>
+                <input type="date" id="p1-dob" />
+              </div>
             </div>
-        </footer>
-    </div>
-    <script src="index.js"></script>
+            <div>
+              <div class="form-group">
+                <label for="p2-name">Person 2 Name</label>
+                <input type="text" id="p2-name" placeholder="e.g. Ali" autocomplete="off" />
+              </div>
+              <div class="form-group">
+                <label for="p2-dob">Person 2 Date of Birth</label>
+                <input type="date" id="p2-dob" />
+              </div>
+            </div>
+          </div>
+          <div class="error hidden" id="c-error"></div>
+          <button class="btn-primary" id="calc-compare">Compare Ages</button>
+        </div>
+
+        <div class="card result-card hidden" id="compare-result">
+          <h2>Comparison Result</h2>
+          <div class="winner-box" id="cr-winner"></div>
+          <div class="age-banner" id="cr-diff"></div>
+          <div class="stats-grid" id="cr-stats"></div>
+          <div class="two-col" id="cr-cards"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ── CONTACT ── -->
+    <section id="contact" class="contact-section">
+      <div class="contact-inner">
+        <div class="contact-glow" aria-hidden="true"></div>
+        <h2 class="contact-title">Get in Touch</h2>
+        <p class="contact-sub">Have feedback, a feature idea, or just want to say hi? Drop a message.</p>
+        <form class="contact-form" id="contact-form" novalidate>
+          <div class="cf-row">
+            <div class="cf-group">
+              <label for="cf-name">Your Name</label>
+              <input type="text" id="cf-name" placeholder="e.g. Hassam" autocomplete="off" />
+            </div>
+            <div class="cf-group">
+              <label for="cf-email">Email Address</label>
+              <input type="email" id="cf-email" placeholder="you@example.com" autocomplete="off" />
+            </div>
+          </div>
+          <div class="cf-group">
+            <label for="cf-msg">Message</label>
+            <textarea id="cf-msg" rows="4" placeholder="Your message here..."></textarea>
+          </div>
+          <div class="error hidden" id="cf-error"></div>
+          <button type="submit" class="btn-primary btn-send">
+            <span class="btn-text">Send Message</span>
+            <span class="btn-icon">🚀</span>
+          </button>
+          <div class="cf-success hidden" id="cf-success">✅ Message sent! We'll get back to you soon.</div>
+        </form>
+        <div class="contact-links">
+          <a href="mailto:contact@multimian.com" class="c-link">📧 contact@multimian.com</a>
+          <a href="#" class="c-link">🐦 @MultiMian</a>
+          <a href="#" class="c-link">💼 LinkedIn</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FOOTER ── -->
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <span class="footer-logo">⏳ AgeWise</span>
+          <p>Precise age calculation, beautifully simple.</p>
+        </div>
+        <div class="footer-links-col">
+          <span class="footer-col-title">Tool</span>
+          <a href="#calculator">Single Age Check</a>
+          <a href="#calculator">Age Comparison</a>
+        </div>
+        <div class="footer-links-col">
+          <span class="footer-col-title">Connect</span>
+          <a href="#contact">Contact Us</a>
+          <a href="#">Privacy Policy</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 AgeWise &nbsp;·&nbsp; by <span class="footer-author">MultiMian</span></p>
+      </div>
+    </footer>
+
+  </div>
+  <script src="index.js"></script>
+  <script>
+    // smooth scroll nav
+    document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+      a.addEventListener('click', function(e) {
+        var target = document.querySelector(a.getAttribute('href'));
+        if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+      });
+    });
+    // contact form
+    document.getElementById('contact-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var name  = document.getElementById('cf-name').value.trim();
+      var email = document.getElementById('cf-email').value.trim();
+      var msg   = document.getElementById('cf-msg').value.trim();
+      var errEl = document.getElementById('cf-error');
+      var okEl  = document.getElementById('cf-success');
+      errEl.classList.add('hidden'); okEl.classList.add('hidden');
+      if (!name || !email || !msg) {
+        errEl.textContent = 'Please fill in all fields.';
+        errEl.classList.remove('hidden'); return;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        errEl.textContent = 'Please enter a valid email address.';
+        errEl.classList.remove('hidden'); return;
+      }
+      okEl.classList.remove('hidden');
+      document.getElementById('contact-form').reset();
+    });
+  </script>
 </body>
 </html>

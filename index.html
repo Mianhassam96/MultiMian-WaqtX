@@ -4,9 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AgeWise - Age Calculator</title>
+  <meta name="description" content="See your life in numbers. Discover how many days, heartbeats, and moments you've lived — instantly." />
+  <meta name="theme-color" content="#0f0c29" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="icon" type="image/svg+xml" sizes="32x32" href="favicon-32.svg" />
   <link rel="apple-touch-icon" href="favicon.svg" />
+  <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -28,6 +31,7 @@
         </div>
         <nav class="header-nav">
           <a href="#calculator" class="nav-link">Calculator</a>
+          <a href="#life-calendar" class="nav-link">Life Calendar</a>
           <a href="#contact" class="nav-link">Contact</a>
         </nav>
         <button class="hamburger" id="hamburger" aria-label="Toggle navigation" aria-expanded="false">
@@ -36,20 +40,40 @@
       </div>
       <nav class="mobile-nav" id="mobile-nav">
         <a href="#calculator" class="nav-link">Calculator</a>
+        <a href="#life-calendar" class="nav-link">Life Calendar</a>
         <a href="#contact" class="nav-link">Contact</a>
       </nav>
       <div class="header-hero">
+        <div class="hero-eyebrow">⏳ Your life, measured precisely</div>
         <h1 class="hero-title">
-          <span class="word w1">Know</span>
+          <span class="word w1">See</span>
           <span class="word w2">Your</span>
-          <span class="word w3">Age</span>
+          <span class="word w3">Life</span>
+          <span class="word w4">in</span>
+          <span class="word w5">Numbers</span>
         </h1>
-        <p class="hero-sub">Precise calculation from years down to seconds — instantly.</p>
+        <p class="hero-sub">Discover how many days, heartbeats, and moments you've lived — updated every second.</p>
+
+        <!-- Live demo counter -->
+        <div class="hero-demo" aria-label="Live counter preview">
+          <div class="hd-item"><span class="hd-val" id="hd-days">9,846</span><span class="hd-lbl">Days</span></div>
+          <div class="hd-sep">·</div>
+          <div class="hd-item"><span class="hd-val" id="hd-hb">689M</span><span class="hd-lbl">Heartbeats</span></div>
+          <div class="hd-sep">·</div>
+          <div class="hd-item"><span class="hd-val" id="hd-sec">850,694,400</span><span class="hd-lbl">Seconds</span></div>
+        </div>
+
+        <div class="hero-cta-row">
+          <a href="#calculator" class="btn-hero-cta">Calculate My Age →</a>
+        </div>
+
         <div class="hero-badges">
           <span class="badge">⚡ Real-time</span>
           <span class="badge">📅 Born Day</span>
           <span class="badge">🎂 Birthday Countdown</span>
           <span class="badge">👥 Age Comparison</span>
+          <span class="badge">🗓️ Life Calendar</span>
+          <span class="badge">✨ Smart Insights</span>
         </div>
       </div>
       <div class="header-wave" aria-hidden="true">
@@ -184,6 +208,28 @@
       </section>
     </main>
 
+    <!-- ── LIFE CALENDAR ── -->
+    <section id="life-calendar" class="calendar-section hidden">
+      <div class="cal-inner">
+        <div class="cal-header">
+          <div>
+            <h2 class="cal-title">🗓️ Your Life Calendar</h2>
+            <p class="cal-sub">Every square is one week of your life. <span class="cal-lived-label">Lived</span> · <span class="cal-future-label">Future</span></p>
+          </div>
+          <div class="cal-legend">
+            <span class="cal-leg-item"><span class="cal-dot cal-dot-lived"></span> Lived</span>
+            <span class="cal-leg-item"><span class="cal-dot cal-dot-future"></span> Future</span>
+            <span class="cal-leg-item"><span class="cal-dot cal-dot-now"></span> Now</span>
+          </div>
+        </div>
+        <div class="cal-stats-row" id="cal-stats-row"></div>
+        <div class="cal-grid-wrap">
+          <div class="cal-grid" id="cal-grid" role="grid" aria-label="Life calendar grid"></div>
+        </div>
+        <div class="cal-tooltip hidden" id="cal-tooltip"></div>
+      </div>
+    </section>
+
     <!-- ── CONTACT ── -->
     <section id="contact" class="contact-section">
       <div class="contact-inner">
@@ -289,10 +335,33 @@
       </div>
     </div>
 
+    <!-- ── PWA INSTALL BANNER ── -->
+    <div class="pwa-banner hidden" id="pwa-banner">
+      <div class="pwa-inner">
+        <span class="pwa-icon">⏳</span>
+        <div class="pwa-text">
+          <strong>Install AgeWise</strong>
+          <span>Add to home screen for daily access</span>
+        </div>
+        <button class="pwa-install-btn" id="pwa-install">Install</button>
+        <button class="pwa-dismiss" id="pwa-dismiss" aria-label="Dismiss">✕</button>
+      </div>
+    </div>
+
+    <!-- ── RETURN TRIGGER ── -->
+    <div class="return-trigger hidden" id="return-trigger">
+      <span id="rt-text"></span>
+      <button class="rt-close" id="rt-close" aria-label="Close">✕</button>
+    </div>
+
   </div><!-- end .wrapper -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="index.js"></script>
   <script>
+    // PWA service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(function() {});
+    }
     // smooth scroll nav
     document.querySelectorAll('a[href^="#"]').forEach(function(a) {
       a.addEventListener('click', function(e) {

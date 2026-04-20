@@ -520,3 +520,207 @@ document.getElementById('btn-download').addEventListener('click', function() {
     link.click();
   });
 });
+
+// ─── Hero live demo counter (fake ticking) ────────────────────
+(function() {
+  var baseDays = 9846;
+  var baseSec  = baseDays * 86400;
+  var tick = 0;
+  function updateDemo() {
+    tick++;
+    var days = baseDays + Math.floor(tick / 86400);
+    var sec  = baseSec  + tick;
+    var hb   = Math.floor(days * 24 * 60 * 70 / 1e6);
+    var dEl = document.getElementById('hd-days');
+    var hEl = document.getElementById('hd-hb');
+    var sEl = document.getElementById('hd-sec');
+    if (dEl) dEl.textContent = days.toLocaleString();
+    if (hEl) hEl.textContent = hb.toLocaleString() + 'M';
+    if (sEl) sEl.textContent = sec.toLocaleString();
+  }
+  setInterval(updateDemo, 1000);
+  updateDemo();
+})();
+
+// ─── Life Calendar ────────────────────────────────────────────
+function buildLifeCalendar(birth, name) {
+  var section = document.getElementById('life-calendar');
+  var grid    = document.getElementById('cal-grid');
+  var statsRow = document.getElementById('cal-stats-row');
+  var tooltip  = document.getElementById('cal-tooltip');
+
+  var now         = new Date();
+  var totalWeeks  = AVG_LIFESPAN_YEARS * 52;
+  var msPerWeek   = 7 * 24 * 3600 * 1000;
+  var weeksLived  = Math.floor((now - birth) / msPerWeek);
+  var pct         = Math.round((weeksLived / totalWeeks) * 100);
+  var weeksLeft   = totalWeeks - weeksLived;
+
+  statsRow.innerHTML =
+    '<div class="cal-stat"><span class="cal-stat-val">' + weeksLived.toLocaleString() + '</span><span class="cal-stat-lbl">Weeks Lived</span></div>' +
+    '<div class="cal-stat"><span class="cal-stat-val">' + weeksLeft.toLocaleString() + '</span><span class="cal-stat-lbl">Weeks Ahead</span></div>' +
+    '<div class="cal-stat"><span class="cal-stat-val">' + pct + '%</span><span class="cal-stat-lbl">Life Used</span></div>' +
+    '<div class="cal-stat"><span class="cal-stat-val">' + AVG_LIFESPAN_YEARS + '</span><span class="cal-stat-lbl">Avg Lifespan</span></div>';
+
+  // build grid in chunks to avoid blocking
+  grid.innerHTML = '';
+  var fragment = document.createDocumentFragment();
+
+  for (var w = 0; w < totalWeeks; w++) {
+    var cell = document.createElement('div');
+    cell.className = 'cal-cell';
+    var weekDate = new Date(birth.getTime() + w * msPerWeek);
+    var ageAtWeek = Math.floor(w / 52);
+
+    if (w < weeksLived) {
+      cell.classList.add('cal-lived');
+    } else if (w === weeksLived) {
+      cell.classList.add('cal-now');
+    } else {
+      cell.classList.add('cal-future');
+    }
+
+    // tooltip data
+    cell.setAttribute('data-week', w + 1);
+    cell.setAttribute('data-age', ageAtWeek);
+    cell.setAttribute('data-date', weekDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }));
+
+    cell.addEventListener('mouseenter', function(e) {
+      var el = e.currentTarget;
+      tooltip.textContent = 'Week ' + el.getAttribute('data-week') +
+        ' · Age ' + el.getAttribute('data-age') +
+        ' · ' + el.getAttribute('data-date');
+      tooltip.classList.remove('hidden');
+      var rect = el.getBoundingClientRect();
+      var wrap = document.querySelector('.cal-grid-wrap').getBoundingClientRect();
+      tooltip.style.left = Math.min(rect.left - wrap.left, wrap.width - 200) + 'px';
+      tooltip.style.top  = (rect.top - wrap.top - 36) + 'px';
+    });
+    cell.addEventListener('mouseleave', function() { tooltip.classList.add('hidden'); });
+
+    fragment.appendChild(cell);
+  }
+
+  grid.appendChild(fragment);
+  section.classList.remove('hidden');
+  section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ─── Story-style insights upgrade ────────────────────────────
+function getInsights(b, t) {
+  var age = b.yy;
+  var insights = [];
+  var pct = Math.round(Math.min(100, ((age + b.mo / 12) / AVG_LIFESPAN_YEARS) * 100));
+
+  if (age < 13)
+    insights.push({ icon: '🌱', title: 'Childhood', text: 'Every single day is a new discovery. The world is still being unwrapped — keep exploring.' });
+  else if (age < 20)
+    insights.push({ icon: '⚡', title: 'Teen Years', text: 'These years shape everything that follows. The habits, friendships, and ideas forming now will echo for decades.' });
+  else if (age < 25)
+    insights.push({ icon: '🚀', title: 'Growth Phase', text: 'You\'re in the most elastic phase of your life. Risks taken now cost the least and pay the most. Go bold.' });
+  else if (age < 35)
+    insights.push({ icon: '💼', title: 'Peak Productivity', text: 'Energy meets experience. The decisions you make in these years compound harder than any investment. Make them count.' });
+  else if (age < 50)
+    insights.push({ icon: '🧠', title: 'Wisdom Phase', text: 'You\'ve earned the clarity to know what truly matters. This is when purpose-driven people do their best work.' });
+  else if (age < 65)
+    insights.push({ icon: '🌟', title: 'Legacy Phase', text: 'The impact you create now outlasts you. Every mentor, project, and relationship is a thread in your legacy.' });
+  else
+    insights.push({ icon: '👑', title: 'Golden Years', text: 'A life richly and fully lived. Your perspective is irreplaceable — the world needs your story.' });
+
+  insights.push({ icon: '⏳', title: 'Time Perspective',
+    text: 'You\'ve already used ' + pct + '% of an average lifetime. Not to create fear — but to create focus. The most valuable years are happening right now.' });
+
+  var sleepYears = Math.round(t.day * 8 / 365);
+  insights.push({ icon: '😴', title: 'The Sleep Chapter',
+    text: 'Roughly ' + sleepYears + ' of your years have been spent sleeping. That\'s not wasted time — it\'s the engine that powers everything else.' });
+
+  if (t.day >= 10000)
+    insights.push({ icon: '🏆', title: '10,000 Days Club',
+      text: 'You\'ve crossed 10,000 days alive. Fewer than half of all people ever reach this milestone. That\'s worth celebrating.' });
+  else if (10000 - t.day < 500)
+    insights.push({ icon: '⏳', title: '10,000 Days Approaching',
+      text: 'Only ' + (10000 - t.day) + ' days until your 10,000-day milestone. Mark the date — it\'s rarer than most birthdays.' });
+
+  if (t.sec >= 1e9)
+    insights.push({ icon: '🎯', title: '1 Billion Seconds',
+      text: 'You\'ve lived over one billion seconds. This milestone is so rare that most people never even know it exists. You\'re in elite company.' });
+
+  insights.push({ icon: '🎉', title: 'Weekends Lived',
+    text: 'You\'ve had ~' + Math.floor(t.wk).toLocaleString() + ' weekends so far. Each one was a small gift. How many do you actually remember?' });
+
+  return insights;
+}
+
+// ─── Add Life Calendar button to result card ──────────────────
+// (injected after render, only once)
+var _calBtnAdded = false;
+function addCalendarButton(birth) {
+  if (_calBtnAdded) return;
+  _calBtnAdded = true;
+  var shareBtn = document.getElementById('btn-share-single');
+  var calBtn   = document.createElement('button');
+  calBtn.className = 'btn-calendar';
+  calBtn.id = 'btn-calendar';
+  calBtn.textContent = '🗓️ View My Life Calendar';
+  shareBtn.parentNode.insertBefore(calBtn, shareBtn);
+  calBtn.addEventListener('click', function() {
+    buildLifeCalendar(birth, window._shareData ? window._shareData.name : '');
+  });
+}
+
+// patch into single calc render — wrap original
+var _origCalcClick = document.getElementById('calc-single').onclick;
+document.getElementById('calc-single').addEventListener('click', function() {
+  _calBtnAdded = false; // reset so button re-adds on new calc
+});
+
+// ─── PWA Install Banner ───────────────────────────────────────
+var _deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', function(e) {
+  e.preventDefault();
+  _deferredPrompt = e;
+  var banner = document.getElementById('pwa-banner');
+  if (banner && !localStorage.getItem('aw_pwa_dismissed')) {
+    setTimeout(function() { banner.classList.remove('hidden'); }, 3000);
+  }
+});
+
+document.getElementById('pwa-install').addEventListener('click', function() {
+  if (!_deferredPrompt) return;
+  _deferredPrompt.prompt();
+  _deferredPrompt.userChoice.then(function() {
+    _deferredPrompt = null;
+    document.getElementById('pwa-banner').classList.add('hidden');
+  });
+});
+
+document.getElementById('pwa-dismiss').addEventListener('click', function() {
+  document.getElementById('pwa-banner').classList.add('hidden');
+  localStorage.setItem('aw_pwa_dismissed', '1');
+});
+
+// ─── Return Trigger ───────────────────────────────────────────
+function showReturnTrigger(birth) {
+  var t    = getTotals(birth);
+  var rt   = document.getElementById('return-trigger');
+  var rtTx = document.getElementById('rt-text');
+  var milestones = [1000,2000,3000,4000,5000,6000,7000,8000,9000,10000,11000,12000,15000,20000,25000,30000];
+  var next = milestones.find(function(m) { return m > t.day; });
+  if (!next) return;
+  var daysLeft = next - t.day;
+  rtTx.textContent = '🎯 Come back in ' + daysLeft + ' day' + (daysLeft === 1 ? '' : 's') +
+    ' — you\'ll hit ' + next.toLocaleString() + ' days alive!';
+  setTimeout(function() { rt.classList.remove('hidden'); }, 1500);
+}
+
+document.getElementById('rt-close').addEventListener('click', function() {
+  document.getElementById('return-trigger').classList.add('hidden');
+});
+
+// patch showReturnTrigger into daily hook init
+var _origInitDailyHook = initDailyHook;
+initDailyHook = function(name, birth) {
+  _origInitDailyHook(name, birth);
+  showReturnTrigger(birth);
+  addCalendarButton(birth);
+};

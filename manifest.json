@@ -1,0 +1,14 @@
+{
+  "name": "AgeWise — Age Calculator",
+  "short_name": "AgeWise",
+  "description": "See your life in numbers. Days, heartbeats, moments — updated every second.",
+  "start_url": "/AgeWise/",
+  "scope": "/AgeWise/",
+  "display": "standalone",
+  "background_color": "#0a0818",
+  "theme_color": "#0f0c29",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

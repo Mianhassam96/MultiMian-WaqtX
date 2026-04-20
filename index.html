@@ -27,7 +27,14 @@
           <a href="#calculator" class="nav-link">Calculator</a>
           <a href="#contact" class="nav-link">Contact</a>
         </nav>
+        <button class="hamburger" id="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
       </div>
+      <nav class="mobile-nav" id="mobile-nav">
+        <a href="#calculator" class="nav-link">Calculator</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </nav>
       <div class="header-hero">
         <h1 class="hero-title">
           <span class="word w1">Know</span>
@@ -184,7 +191,19 @@
       a.addEventListener('click', function(e) {
         var target = document.querySelector(a.getAttribute('href'));
         if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+        // close mobile nav on link click
+        document.getElementById('mobile-nav').classList.remove('open');
+        document.getElementById('hamburger').classList.remove('open');
+        document.getElementById('hamburger').setAttribute('aria-expanded', 'false');
       });
+    });
+    // hamburger toggle
+    document.getElementById('hamburger').addEventListener('click', function() {
+      var nav = document.getElementById('mobile-nav');
+      var btn = document.getElementById('hamburger');
+      var isOpen = nav.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
     });
     // contact form
     document.getElementById('contact-form').addEventListener('submit', function(e) {

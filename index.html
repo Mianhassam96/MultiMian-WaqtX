@@ -6,6 +6,17 @@
   <title>AgeWise - Age Calculator</title>
   <meta name="description" content="See your life in numbers. Discover how many days, heartbeats, and moments you've lived — instantly." />
   <meta name="theme-color" content="#0f0c29" />
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+    function track(action, label) {
+      if (typeof gtag !== 'undefined') gtag('event', action, { event_category: 'AgeWise', event_label: label });
+    }
+  </script>
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="icon" type="image/svg+xml" sizes="32x32" href="favicon-32.svg" />
   <link rel="apple-touch-icon" href="favicon.svg" />
@@ -100,6 +111,16 @@
     </div>
 
     <main id="calculator">
+      <!-- ── PROFILE WELCOME ── -->
+      <div class="profile-welcome hidden" id="profile-welcome">
+        <span class="pw-avatar" id="pw-avatar">👤</span>
+        <div class="pw-text">
+          <span class="pw-greeting" id="pw-greeting">Welcome back!</span>
+          <span class="pw-sub" id="pw-sub"></span>
+        </div>
+        <button class="pw-clear" id="pw-clear" title="Clear profile">✕</button>
+      </div>
+
       <div class="tabs">
         <button class="tab active" data-tab="single">Single Age Check</button>
         <button class="tab" data-tab="compare">Age Comparison</button>
@@ -107,6 +128,17 @@
 
       <!-- ── Single ── -->
       <section id="single" class="tab-content active">
+
+        <!-- Empty state demo -->
+        <div class="empty-state" id="empty-state">
+          <div class="es-demo">
+            <div class="es-demo-name">Someone born in 2000 has lived</div>
+            <div class="es-demo-number" id="es-days">9,215</div>
+            <div class="es-demo-label">days · <span id="es-hb">646M</span> heartbeats · <span id="es-sec">796,176,000</span> seconds</div>
+          </div>
+          <p class="es-cta">Enter your details below to see your own numbers ↓</p>
+        </div>
+
         <div class="card">
           <h2>Single Age Check</h2>
           <div class="form-group">
@@ -165,6 +197,25 @@
 
           <!-- Share Card Button -->
           <button class="btn-share" id="btn-share-single">📸 Generate Share Card</button>
+
+          <!-- Viral loop -->
+          <div class="viral-loop">
+            <div class="vl-proof">📸 <strong id="vl-count">12,482</strong> people shared their life stats today</div>
+            <div class="vl-actions">
+              <button class="btn-challenge" id="btn-challenge">🏆 Challenge a Friend</button>
+              <button class="btn-copy-link" id="btn-copy-link">🔗 Copy My Link</button>
+            </div>
+          </div>
+
+          <!-- Challenge link output -->
+          <div class="challenge-out hidden" id="challenge-out">
+            <div class="co-label">Share this link — they'll see your stats when they compare:</div>
+            <div class="co-link-row">
+              <input type="text" class="co-link-input" id="co-link-input" readonly />
+              <button class="co-copy-btn" id="co-copy-btn">Copy</button>
+            </div>
+            <div class="co-tag">Tag us <strong>@MultiMian</strong> when you share 🚀</div>
+          </div>
         </div>
       </section>
 

@@ -1583,3 +1583,226 @@ main {
   .hd-val { font-size: 1.1rem; }
   .return-trigger { top: auto; bottom: 90px; right: 12px; left: 12px; max-width: 100%; }
 }
+
+/* ══════════════════════════════════════
+   PROFILE WELCOME
+══════════════════════════════════════ */
+.profile-welcome {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, rgba(124,58,237,0.12), rgba(37,99,235,0.12));
+  border: 1px solid rgba(167,139,250,0.25);
+  border-radius: 14px;
+  padding: 14px 18px;
+  margin-bottom: 16px;
+  animation: fade-up 0.4s ease;
+}
+
+.pw-avatar { font-size: 1.8rem; flex-shrink: 0; }
+
+.pw-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.pw-greeting {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.pw-sub {
+  font-size: 0.78rem;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pw-clear {
+  background: none;
+  border: none;
+  color: #334155;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: color 0.2s, background 0.2s;
+  flex-shrink: 0;
+}
+
+.pw-clear:hover { color: #fca5a5; background: rgba(239,68,68,0.1); }
+
+/* ══════════════════════════════════════
+   EMPTY STATE DEMO
+══════════════════════════════════════ */
+.empty-state {
+  background: rgba(255,255,255,0.03);
+  border: 1px dashed rgba(167,139,250,0.2);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 16px;
+  text-align: center;
+  animation: fade-up 0.5s ease;
+}
+
+.es-demo-name {
+  font-size: 0.82rem;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.es-demo-number {
+  font-size: 3rem;
+  font-weight: 900;
+  color: #a78bfa;
+  line-height: 1;
+  margin-bottom: 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.es-demo-label {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-bottom: 16px;
+}
+
+.es-cta {
+  font-size: 0.88rem;
+  color: #7c3aed;
+  font-weight: 600;
+}
+
+/* ══════════════════════════════════════
+   VIRAL LOOP
+══════════════════════════════════════ */
+.viral-loop {
+  margin-top: 16px;
+  padding: 16px;
+  background: rgba(124,58,237,0.08);
+  border: 1px solid rgba(124,58,237,0.2);
+  border-radius: 14px;
+}
+
+.vl-proof {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.vl-proof strong { color: #a78bfa; }
+
+.vl-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.btn-challenge {
+  padding: 11px;
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.btn-challenge:hover { opacity: 0.9; transform: translateY(-2px); }
+
+.btn-copy-link {
+  padding: 11px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #c4b5fd;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.btn-copy-link:hover { background: rgba(167,139,250,0.12); transform: translateY(-2px); }
+
+/* challenge link output */
+.challenge-out {
+  margin-top: 12px;
+  padding: 14px;
+  background: rgba(52,211,153,0.06);
+  border: 1px solid rgba(52,211,153,0.2);
+  border-radius: 12px;
+  animation: fade-up 0.3s ease;
+}
+
+.co-label {
+  font-size: 0.78rem;
+  color: #64748b;
+  margin-bottom: 8px;
+}
+
+.co-link-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.co-link-input {
+  flex: 1;
+  padding: 9px 12px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  color: #94a3b8;
+  font-size: 0.78rem;
+  outline: none;
+  min-width: 0;
+}
+
+.co-copy-btn {
+  padding: 9px 16px;
+  background: linear-gradient(135deg, #34d399, #0ea5e9);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  flex-shrink: 0;
+}
+
+.co-copy-btn:hover { opacity: 0.85; }
+
+.co-tag {
+  font-size: 0.75rem;
+  color: #475569;
+  text-align: center;
+}
+
+/* challenge accept banner */
+.challenge-banner {
+  background: linear-gradient(135deg, rgba(124,58,237,0.18), rgba(37,99,235,0.18));
+  border: 1px solid rgba(167,139,250,0.35);
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-size: 0.9rem;
+  color: #c4b5fd;
+  margin-bottom: 16px;
+  animation: fade-up 0.4s ease;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .vl-actions { grid-template-columns: 1fr; }
+  .es-demo-number { font-size: 2.2rem; }
+  .pw-sub { display: none; }
+}

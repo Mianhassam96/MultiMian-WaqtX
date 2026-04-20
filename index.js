@@ -724,3 +724,190 @@ initDailyHook = function(name, birth) {
   showReturnTrigger(birth);
   addCalendarButton(birth);
 };
+
+// ══════════════════════════════════════════════════════════════
+// GROWTH ENGINE — Viral Loop, Challenge Mode, Profile, Analytics
+// ══════════════════════════════════════════════════════════════
+
+// ─── Analytics helper ────────────────────────────────────────
+function track(action, label) {
+  if (typeof gtag !== 'undefined') {
+    gtag('event', action, { event_category: 'AgeWise', event_label: label || '' });
+  }
+}
+
+// ─── Personal Profile System ─────────────────────────────────
+function loadProfile() {
+  var saved = JSON.parse(localStorage.getItem('aw_last') || 'null');
+  if (!saved || !saved.name || !saved.dob) return;
+
+  var birth = parseDOB(saved.dob);
+  var b = getBreakdown(birth);
+  var t = getTotals(birth);
+
+  var pw = document.getElementById('profile-welcome');
+  var greeting = document.getElementById('pw-greeting');
+  var sub = document.getElementById('pw-sub');
+  var avatar = document.getElementById('pw-avatar');
+
+  // pick avatar emoji by age
+  var age = b.yy;
+  avatar.textContent = age < 13 ? '🧒' : age < 20 ? '🧑' : age < 40 ? '👤' : age < 60 ? '🧔' : '👴';
+
+  var hour = new Date().getHours();
+  var timeGreet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  greeting.textContent = timeGreet + ', ' + saved.name + ' 👋';
+  sub.textContent = 'You are ' + t.day.toLocaleString() + ' days old today · ' + b.yy + ' years ' + b.mo + 'm ' + b.dd + 'd';
+
+  pw.classList.remove('hidden');
+
+  // hide empty state if returning user
+  var es = document.getElementById('empty-state');
+  if (es) es.classList.add('hidden');
+}
+
+document.getElementById('pw-clear').addEventListener('click', function() {
+  localStorage.removeItem('aw_last');
+  localStorage.removeItem('aw_streak');
+  document.getElementById('profile-welcome').classList.add('hidden');
+  document.getElementById('empty-state').classList.remove('hidden');
+  document.getElementById('s-name').value = '';
+  document.getElementById('s-dob').value = '';
+  track('profile_clear', '');
+});
+
+loadProfile();
+
+// ─── Empty state live demo ────────────────────────────────────
+(function() {
+  var birth2000 = new Date(2000, 0, 1);
+  function updateES() {
+    var t = getTotals(birth2000);
+    var esD = document.getElementById('es-days');
+    var esH = document.getElementById('es-hb');
+    var esS = document.getElementById('es-sec');
+    if (esD) esD.textContent = t.day.toLocaleString();
+    if (esH) esH.textContent = Math.floor(t.day * 24 * 60 * 70 / 1e6).toLocaleString() + 'M';
+    if (esS) esS.textContent = t.sec.toLocaleString();
+  }
+  updateES();
+  setInterval(updateES, 1000);
+})();
+
+// ─── Viral Loop — social proof counter ───────────────────────
+(function() {
+  // simulate a live-ish share count (seeded from localStorage so it grows)
+  var base = parseInt(localStorage.getItem('aw_share_base') || '12482', 10);
+  var today = new Date().toDateString();
+  var lastDay = localStorage.getItem('aw_share_day') || '';
+  if (lastDay !== today) {
+    base += Math.floor(Math.random() * 80 + 20);
+    localStorage.setItem('aw_share_base', base);
+    localStorage.setItem('aw_share_day', today);
+  }
+  var el = document.getElementById('vl-count');
+  if (el) el.textContent = base.toLocaleString();
+  // tick up slowly while on page
+  setInterval(function() {
+    if (Math.random() < 0.3) {
+      base++;
+      if (el) el.textContent = base.toLocaleString();
+    }
+  }, 4000);
+})();
+
+// ─── Challenge Mode ───────────────────────────────────────────
+function buildChallengeLink(name, dob) {
+  // encode as base64 URL param — no server needed
+  var payload = btoa(JSON.stringify({ n: name, d: dob }));
+  var base = window.location.href.split('?')[0].split('#')[0];
+  return base + '?challenge=' + encodeURIComponent(payload);
+}
+
+document.getElementById('btn-challenge').addEventListener('click', function() {
+  var data = window._shareData;
+  if (!data) return;
+  var dobStr = data.birth.getFullYear() + '-' +
+    String(data.birth.getMonth() + 1).padStart(2, '0') + '-' +
+    String(data.birth.getDate()).padStart(2, '0');
+  var link = buildChallengeLink(data.name, dobStr);
+  var out = document.getElementById('challenge-out');
+  var inp = document.getElementById('co-link-input');
+  inp.value = link;
+  out.classList.remove('hidden');
+  out.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  track('challenge_generate', data.name);
+});
+
+document.getElementById('btn-copy-link').addEventListener('click', function() {
+  var data = window._shareData;
+  if (!data) return;
+  var dobStr = data.birth.getFullYear() + '-' +
+    String(data.birth.getMonth() + 1).padStart(2, '0') + '-' +
+    String(data.birth.getDate()).padStart(2, '0');
+  var link = buildChallengeLink(data.name, dobStr);
+  navigator.clipboard.writeText(link).then(function() {
+    var btn = document.getElementById('btn-copy-link');
+    btn.textContent = '✅ Copied!';
+    setTimeout(function() { btn.textContent = '🔗 Copy My Link'; }, 2000);
+  });
+  track('copy_link', '');
+});
+
+document.getElementById('co-copy-btn').addEventListener('click', function() {
+  var inp = document.getElementById('co-link-input');
+  navigator.clipboard.writeText(inp.value).then(function() {
+    var btn = document.getElementById('co-copy-btn');
+    btn.textContent = '✅';
+    setTimeout(function() { btn.textContent = 'Copy'; }, 2000);
+  });
+});
+
+// ─── Auto-load challenge param on page load ───────────────────
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  var raw = params.get('challenge');
+  if (!raw) return;
+  try {
+    var data = JSON.parse(atob(decodeURIComponent(raw)));
+    if (!data.n || !data.d) return;
+    // pre-fill compare tab with challenger as person 1
+    document.getElementById('p1-name').value = data.n;
+    document.getElementById('p1-dob').value  = data.d;
+    // switch to compare tab
+    document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+    document.querySelectorAll('.tab-content').forEach(function(s) { s.classList.remove('active'); });
+    document.querySelector('[data-tab="compare"]').classList.add('active');
+    document.getElementById('compare').classList.add('active');
+    // show banner
+    var banner = document.createElement('div');
+    banner.className = 'challenge-banner';
+    banner.innerHTML = '🏆 <strong>' + data.n + '</strong> challenged you! Enter your details as Person 2 to compare.';
+    document.getElementById('compare').insertBefore(banner, document.getElementById('compare').firstChild);
+    track('challenge_accept', data.n);
+  } catch(e) {}
+})();
+
+// ─── Track key events ─────────────────────────────────────────
+document.getElementById('calc-single').addEventListener('click', function() {
+  track('calculate', 'single');
+});
+document.getElementById('calc-compare').addEventListener('click', function() {
+  track('calculate', 'compare');
+});
+document.getElementById('btn-share-single').addEventListener('click', function() {
+  track('share_card_open', _shareStyle);
+});
+document.getElementById('btn-download').addEventListener('click', function() {
+  track('share_card_download', _shareStyle);
+});
+
+// increment share count on download
+var _origDownload = document.getElementById('btn-download').onclick;
+document.getElementById('btn-download').addEventListener('click', function() {
+  var base = parseInt(localStorage.getItem('aw_share_base') || '12482', 10);
+  base++;
+  localStorage.setItem('aw_share_base', base);
+  var el = document.getElementById('vl-count');
+  if (el) el.textContent = base.toLocaleString();
+});

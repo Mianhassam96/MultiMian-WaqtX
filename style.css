@@ -2539,3 +2539,43 @@ main {
 @media (max-width: 640px) {
   .ci-quote { font-size: 1.1rem; }
 }
+
+/* ══════════════════════════════════════
+   MICRO-SHOCK PRE-RESULT
+══════════════════════════════════════ */
+.micro-shock {
+  padding: 60px 24px;
+  text-align: center;
+  animation: fade-up 0.5s ease;
+}
+
+.ms-text {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #f87171;
+  line-height: 1.5;
+  letter-spacing: -0.3px;
+}
+
+.micro-shock.fade-out {
+  animation: fade-down 0.4s ease forwards;
+}
+
+@keyframes fade-down {
+  to { opacity: 0; transform: translateY(-12px); }
+}
+
+/* ══════════════════════════════════════
+   MOBILE PACING OPTIMIZATION
+══════════════════════════════════════ */
+@media (max-width: 640px) {
+  /* faster reveals on mobile */
+  .reveal-first, .reveal-second, .reveal-third, .reveal-fourth {
+    transition: opacity 0.35s ease, transform 0.35s ease !important;
+  }
+  
+  /* tighter spacing */
+  .result-step { margin-bottom: 18px; }
+  .age-twin, .next-milestone { margin-bottom: 10px; }
+  .closing-insight { margin: 20px 0 16px; padding: 24px 18px; }
+}

@@ -535,55 +535,112 @@ document.getElementById('calc-single').addEventListener('click', function() {
   render();
   card.classList.remove('hidden');
 
-  // progressive reveal — step-based emotional sequence
-  var stepLifeSpend = card.querySelector('.reveal-first');
-  var stepInsights  = card.querySelector('.reveal-fourth');
-  var stepTwins     = card.querySelectorAll('.reveal-third');
-  var stepClosing   = card.querySelector('.reveal-fifth');
-
-  // Life Spend visible immediately
-  if (stepLifeSpend) stepLifeSpend.style.opacity = '1';
-
-  // Insights fade in after 1.2s
-  if (stepInsights) {
-    stepInsights.style.opacity = '0';
-    stepInsights.style.transform = 'translateY(16px)';
+  // micro-shock before hero stat
+  var microShock = document.getElementById('micro-shock');
+  var stepHero   = card.querySelector('.step-hero');
+  
+  if (microShock && stepHero) {
+    stepHero.style.opacity = '0';
+    microShock.classList.remove('hidden');
+    
     setTimeout(function() {
-      stepInsights.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-      stepInsights.style.opacity = '1';
-      stepInsights.style.transform = 'translateY(0)';
+      microShock.classList.add('fade-out');
+      setTimeout(function() {
+        microShock.classList.add('hidden');
+        stepHero.style.transition = 'opacity 0.6s ease';
+        stepHero.style.opacity = '1';
+        
+        // trigger next step when hero finishes
+        stepHero.addEventListener('transitionend', function onHeroEnd() {
+          stepHero.removeEventListener('transitionend', onHeroEnd);
+          revealLifeSpend();
+        }, { once: true });
+      }, 400);
     }, 1200);
+  } else {
+    revealLifeSpend();
   }
 
-  // Age Twin + Milestone fade in after 1.5s
-  stepTwins.forEach(function(el) {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(16px)';
-    setTimeout(function() {
-      el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-      el.style.opacity = '1';
-      el.style.transform = 'translateY(0)';
-    }, 1500);
-  });
+  // progressive reveal — event-driven, not fixed timing
+  function revealLifeSpend() {
+    var stepLifeSpend = card.querySelector('.reveal-first');
+    if (stepLifeSpend) {
+      stepLifeSpend.style.opacity = '0';
+      stepLifeSpend.style.transform = 'translateY(16px)';
+      setTimeout(function() {
+        stepLifeSpend.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        stepLifeSpend.style.opacity = '1';
+        stepLifeSpend.style.transform = 'translateY(0)';
+        
+        stepLifeSpend.addEventListener('transitionend', function onSpendEnd() {
+          stepLifeSpend.removeEventListener('transitionend', onSpendEnd);
+          revealTwins();
+        }, { once: true });
+      }, 50);
+    } else {
+      revealTwins();
+    }
+  }
 
-  // Closing insight after 2.5s
-  if (stepClosing) {
-    setTimeout(function() {
+  function revealTwins() {
+    var stepTwins = card.querySelectorAll('.reveal-third');
+    if (stepTwins.length) {
+      var completed = 0;
+      stepTwins.forEach(function(el) {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(16px)';
+        setTimeout(function() {
+          el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+          el.style.opacity = '1';
+          el.style.transform = 'translateY(0)';
+          
+          el.addEventListener('transitionend', function onTwinEnd() {
+            el.removeEventListener('transitionend', onTwinEnd);
+            completed++;
+            if (completed === stepTwins.length) revealInsights();
+          }, { once: true });
+        }, 50);
+      });
+    } else {
+      revealInsights();
+    }
+  }
+
+  function revealInsights() {
+    var stepInsights = card.querySelector('.reveal-fourth');
+    if (stepInsights) {
+      stepInsights.style.opacity = '0';
+      stepInsights.style.transform = 'translateY(16px)';
+      setTimeout(function() {
+        stepInsights.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        stepInsights.style.opacity = '1';
+        stepInsights.style.transform = 'translateY(0)';
+        
+        stepInsights.addEventListener('transitionend', function onInsEnd() {
+          stepInsights.removeEventListener('transitionend', onInsEnd);
+          revealClosing();
+        }, { once: true });
+      }, 50);
+    } else {
+      revealClosing();
+    }
+  }
+
+  function revealClosing() {
+    var stepClosing = card.querySelector('.reveal-fifth');
+    if (stepClosing) {
       var b = getBreakdown(birth);
-      var t = getTotals(birth);
       var pct = Math.round(Math.min(100, ((b.yy + b.mo / 12) / AVG_LIFESPAN_YEARS) * 100));
-      var age = b.yy;
-      var quote = '';
-
-      if (pct < 20) quote = 'You are not behind. You are living.';
-      else if (pct < 35) quote = 'Time is not visible until now.';
-      else if (pct < 50) quote = 'The hours behind you are gone. The ones ahead are yours.';
-      else if (pct < 70) quote = 'Every hour from here carries more weight than any before it.';
-      else quote = 'This is your life, simplified.';
-
+      var quotes = [
+        'You are not early or late. You are in motion.',
+        'The numbers matter less than the awareness.',
+        'Time is not visible until now.',
+        'This is your life, simplified.'
+      ];
+      var quote = pct < 30 ? quotes[0] : pct < 50 ? quotes[1] : pct < 70 ? quotes[2] : quotes[3];
       document.getElementById('ci-quote').textContent = quote;
       stepClosing.classList.remove('hidden');
-    }, 2500);
+    }
   }
 
   // 7-day return hook

@@ -211,21 +211,12 @@
             </div>
           </div>
 
-          <!-- ── STEP 3: Key insights (top 3 only) ── -->
-          <div class="result-step step-insights">
-            <h3 class="section-sub-title">✨ Smart Insights</h3>
-            <div class="insights-grid" id="insights-grid"></div>
-            <button class="btn-expand" id="btn-expand-more" aria-expanded="false">
-              Show more insights ↓
-            </button>
-          </div>
-
-          <!-- ── LIFE BUDGET ── -->
-          <div class="result-step step-budget">
+          <!-- ── STEP 3: Life Spend (loads first for impact) ── -->
+          <div class="result-step step-budget reveal-first">
             <div class="budget-header">
               <span class="budget-icon">⏳</span>
               <div>
-                <h3 class="budget-title">Life Budget</h3>
+                <h3 class="budget-title">Life Spend</h3>
                 <p class="budget-sub">Your time, measured in hours.</p>
               </div>
             </div>
@@ -236,25 +227,35 @@
               </div>
               <div class="budget-num bn-used">
                 <span class="bn-val" id="budget-used">—</span>
-                <span class="bn-lbl">hours used</span>
+                <span class="bn-lbl">hours spent</span>
               </div>
               <div class="budget-num bn-left">
                 <span class="bn-val" id="budget-left">—</span>
                 <span class="bn-lbl">hours remaining</span>
               </div>
             </div>
-            <div class="budget-bar-wrap" aria-label="Life budget bar">
+            <div class="budget-bar-wrap" aria-label="Life spend bar">
               <div class="budget-bar">
                 <div class="budget-bar-fill" id="budget-bar-fill"></div>
               </div>
               <div class="budget-bar-labels">
-                <span id="budget-pct-lbl">0% used</span>
+                <span id="budget-pct-lbl">0% spent</span>
                 <span id="budget-left-lbl">— remaining</span>
               </div>
             </div>
+            <div class="budget-pace" id="budget-pace"></div>
             <div class="budget-burn" id="budget-burn">
               You are spending your life at <strong>1 hour every 3,600 seconds.</strong>
             </div>
+          </div>
+
+          <!-- ── STEP 4: Key insights ── -->
+          <div class="result-step step-insights reveal-second">
+            <h3 class="section-sub-title">✨ Smart Insights</h3>
+            <div class="insights-grid" id="insights-grid"></div>
+            <button class="btn-expand" id="btn-expand-more" aria-expanded="false">
+              Show more insights ↓
+            </button>
           </div>
 
           <!-- ── STEP 4: Expand — full details ── -->
@@ -287,9 +288,10 @@
             <button class="btn-copy-link" id="btn-copy-link">🔗 Copy Link</button>
           </div>
 
-          <!-- Viral loop -->
-          <div class="viral-loop">
-            <div class="vl-proof">📸 <strong id="vl-count">12,482</strong> people shared their life stats — <span id="vl-recent"></span></div>
+          <!-- 7-day return hook -->
+          <div class="return-hook hidden" id="return-hook">
+            <span class="rh-icon">📅</span>
+            <span id="rh-text"></span>
           </div>
 
           <!-- Challenge link output -->

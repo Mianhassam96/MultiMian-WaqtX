@@ -286,9 +286,10 @@ function restoreInputs() {
 
 restoreInputs();
 
-// ─── Life Budget ─────────────────────────────────────────────
+// ─── Life Budget / Life Spend ─────────────────────────────────
 function updateBudget(birth) {
   var t = getTotals(birth);
+  var b = getBreakdown(birth);
   var totalHours = Math.round(AVG_LIFESPAN_YEARS * 365.25 * 24);
   var usedHours  = Math.floor(t.hr);
   var leftHours  = Math.max(0, totalHours - usedHours);
@@ -300,14 +301,28 @@ function updateBudget(birth) {
   var fillEl  = document.getElementById('budget-bar-fill');
   var pctLbl  = document.getElementById('budget-pct-lbl');
   var leftLbl = document.getElementById('budget-left-lbl');
+  var paceEl  = document.getElementById('budget-pace');
 
   if (!totalEl) return;
   totalEl.textContent = totalHours.toLocaleString();
   usedEl.textContent  = usedHours.toLocaleString();
   leftEl.textContent  = leftHours.toLocaleString();
   if (fillEl) fillEl.style.width = pct.toFixed(2) + '%';
-  if (pctLbl) pctLbl.textContent = pct.toFixed(1) + '% used';
+  if (pctLbl) pctLbl.textContent = pct.toFixed(1) + '% spent';
   if (leftLbl) leftLbl.textContent = leftHours.toLocaleString() + ' remaining';
+
+  // emotional pace line
+  if (paceEl) {
+    var age = b.yy;
+    var pace = age < 25
+      ? 'You\'re early. But the clock has always been running.'
+      : age < 40
+      ? 'You\'re not early anymore. You\'re in the phase that defines everything.'
+      : age < 60
+      ? 'At your current pace, you are spending your life steadily — not slowly, not fast.'
+      : 'Every hour from here carries more weight than any before it.';
+    paceEl.textContent = pace;
+  }
 }
 
 
@@ -397,9 +412,9 @@ document.getElementById('calc-single').addEventListener('click', function() {
     if (weeksLeftEl) weeksLeftEl.textContent = weeksLeft.toLocaleString();
     renderPhaseBar(b.yy + b.mo / 12);
 
-    // Step 3 — top 3 insights only
+    // Step 3 — top 2 insights only (keep it focused)
     var allInsights = getInsights(b, t);
-    document.getElementById('insights-grid').innerHTML = insightsHTML(allInsights.slice(0, 3));
+    document.getElementById('insights-grid').innerHTML = insightsHTML(allInsights.slice(0, 2));
 
     // Life Budget
     updateBudget(birth);
@@ -420,6 +435,30 @@ document.getElementById('calc-single').addEventListener('click', function() {
 
   render();
   card.classList.remove('hidden');
+
+  // progressive reveal — Life Spend visible immediately, insights fade in after
+  var stepInsights = card.querySelector('.reveal-second');
+  if (stepInsights) {
+    stepInsights.style.opacity = '0';
+    stepInsights.style.transform = 'translateY(16px)';
+    setTimeout(function() {
+      stepInsights.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+      stepInsights.style.opacity = '1';
+      stepInsights.style.transform = 'translateY(0)';
+    }, 600);
+  }
+
+  // 7-day return hook
+  setTimeout(function() {
+    var hookEl = document.getElementById('return-hook');
+    var hookTx = document.getElementById('rh-text');
+    if (hookEl && hookTx) {
+      var t7 = getTotals(birth);
+      var hoursIn7 = Math.round(7 * 24);
+      hookTx.textContent = 'Come back in 7 days — your Life Spend will have grown by ' + hoursIn7.toLocaleString() + ' more hours.';
+      hookEl.classList.remove('hidden');
+    }
+  }, 1800);
 
   // share nudge — show after 3s
   clearTimeout(window._nudgeTimer);

@@ -43,7 +43,6 @@
         <nav class="header-nav">
           <a href="#calculator" class="nav-link">Calculator</a>
           <a href="#life-calendar" class="nav-link">Life Calendar</a>
-          <a href="#contact" class="nav-link">Contact</a>
         </nav>
         <button class="hamburger" id="hamburger" aria-label="Toggle navigation" aria-expanded="false">
           <span></span><span></span><span></span>
@@ -52,7 +51,6 @@
       <nav class="mobile-nav" id="mobile-nav">
         <a href="#calculator" class="nav-link">Calculator</a>
         <a href="#life-calendar" class="nav-link">Life Calendar</a>
-        <a href="#contact" class="nav-link">Contact</a>
       </nav>
       <div class="header-hero">
         <div class="hero-eyebrow">⏳ Your life, measured precisely</div>
@@ -441,9 +439,9 @@
           <div class="cf-success hidden" id="cf-success">✅ Message sent! We'll get back to you soon.</div>
         </form>
         <div class="contact-links">
-          <a href="mailto:contact@multimian.com" class="c-link">📧 contact@multimian.com</a>
-          <a href="#" class="c-link">🐦 @MultiMian</a>
-          <a href="#" class="c-link">💼 LinkedIn</a>
+          <a href="mailto:mianhassan96@gmail.com" class="c-link" target="_blank" rel="noopener noreferrer">📧 mianhassan96@gmail.com</a>
+          <a href="https://twitter.com/MultiMian" class="c-link" target="_blank" rel="noopener noreferrer">🐦 @MultiMian</a>
+          <a href="https://www.linkedin.com/in/multimian" class="c-link" target="_blank" rel="noopener noreferrer">💼 LinkedIn</a>
         </div>
       </div>
     </section>
@@ -462,8 +460,8 @@
         </div>
         <div class="footer-links-col">
           <span class="footer-col-title">Connect</span>
-          <a href="#contact">Contact Us</a>
-          <a href="#">Privacy Policy</a>
+          <a href="mailto:mianhassan96@gmail.com" target="_blank" rel="noopener noreferrer">Contact Us</a>
+          <a href="https://multimian.com/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
           <a href="https://multimian.com/" target="_blank" rel="noopener noreferrer">🌐 MultiMian</a>
         </div>
       </div>
@@ -561,8 +559,21 @@
     // smooth scroll nav
     document.querySelectorAll('a[href^="#"]').forEach(function(a) {
       a.addEventListener('click', function(e) {
-        var target = document.querySelector(a.getAttribute('href'));
-        if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+        var href = a.getAttribute('href');
+        if (href === '#life-calendar') {
+          // if life calendar not visible yet, trigger it from last calculated birth
+          var section = document.getElementById('life-calendar');
+          if (section && section.classList.contains('hidden') && window._shareData) {
+            e.preventDefault();
+            buildLifeCalendar(window._shareData.birth, window._shareData.name);
+            return;
+          }
+        }
+        var target = document.querySelector(href);
+        if (target) { 
+          e.preventDefault(); 
+          target.scrollIntoView({ behavior: 'smooth' }); 
+        }
         // close mobile nav on link click
         document.getElementById('mobile-nav').classList.remove('open');
         document.getElementById('hamburger').classList.remove('open');

@@ -220,6 +220,43 @@
             </button>
           </div>
 
+          <!-- ── LIFE BUDGET ── -->
+          <div class="result-step step-budget">
+            <div class="budget-header">
+              <span class="budget-icon">⏳</span>
+              <div>
+                <h3 class="budget-title">Life Budget</h3>
+                <p class="budget-sub">Your time, measured in hours.</p>
+              </div>
+            </div>
+            <div class="budget-numbers">
+              <div class="budget-num">
+                <span class="bn-val" id="budget-total">—</span>
+                <span class="bn-lbl">total hours</span>
+              </div>
+              <div class="budget-num bn-used">
+                <span class="bn-val" id="budget-used">—</span>
+                <span class="bn-lbl">hours used</span>
+              </div>
+              <div class="budget-num bn-left">
+                <span class="bn-val" id="budget-left">—</span>
+                <span class="bn-lbl">hours remaining</span>
+              </div>
+            </div>
+            <div class="budget-bar-wrap" aria-label="Life budget bar">
+              <div class="budget-bar">
+                <div class="budget-bar-fill" id="budget-bar-fill"></div>
+              </div>
+              <div class="budget-bar-labels">
+                <span id="budget-pct-lbl">0% used</span>
+                <span id="budget-left-lbl">— remaining</span>
+              </div>
+            </div>
+            <div class="budget-burn" id="budget-burn">
+              You are spending your life at <strong>1 hour every 3,600 seconds.</strong>
+            </div>
+          </div>
+
           <!-- ── STEP 4: Expand — full details ── -->
           <div class="result-expand hidden" id="result-expand">
 

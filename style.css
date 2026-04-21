@@ -2200,3 +2200,114 @@ main {
   .sn-share { order: 3; }
   .sn-close { order: 4; }
 }
+
+/* ══════════════════════════════════════
+   LIFE BUDGET
+══════════════════════════════════════ */
+.step-budget {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(167,139,250,0.15);
+  border-radius: 18px;
+  padding: 24px;
+}
+
+.budget-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.budget-icon { font-size: 1.8rem; }
+
+.budget-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #c4b5fd;
+  margin-bottom: 2px;
+}
+
+.budget-sub {
+  font-size: 0.78rem;
+  color: #475569;
+}
+
+.budget-numbers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.budget-num {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 14px 8px;
+  text-align: center;
+}
+
+.bn-val {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #e2e8f0;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.bn-lbl {
+  font-size: 0.65rem;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.bn-used .bn-val { color: #a78bfa; }
+.bn-left .bn-val  { color: #34d399; }
+
+/* bar */
+.budget-bar-wrap { margin-bottom: 16px; }
+
+.budget-bar {
+  height: 10px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.budget-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #7c3aed, #a78bfa);
+  border-radius: 999px;
+  width: 0%;
+  transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+}
+
+.budget-bar-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: #475569;
+}
+
+/* burn line */
+.budget-burn {
+  font-size: 0.85rem;
+  color: #64748b;
+  text-align: center;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding-top: 14px;
+  line-height: 1.6;
+}
+
+.budget-burn strong { color: #f87171; }
+
+@media (max-width: 640px) {
+  .budget-numbers { grid-template-columns: 1fr 1fr; }
+  .budget-numbers .budget-num:first-child { grid-column: 1 / -1; }
+}

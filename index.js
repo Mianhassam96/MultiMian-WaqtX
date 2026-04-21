@@ -286,7 +286,31 @@ function restoreInputs() {
 
 restoreInputs();
 
-// ─── Life Phase Bar ───────────────────────────────────────────
+// ─── Life Budget ─────────────────────────────────────────────
+function updateBudget(birth) {
+  var t = getTotals(birth);
+  var totalHours = Math.round(AVG_LIFESPAN_YEARS * 365.25 * 24);
+  var usedHours  = Math.floor(t.hr);
+  var leftHours  = Math.max(0, totalHours - usedHours);
+  var pct        = Math.min(100, (usedHours / totalHours) * 100);
+
+  var totalEl = document.getElementById('budget-total');
+  var usedEl  = document.getElementById('budget-used');
+  var leftEl  = document.getElementById('budget-left');
+  var fillEl  = document.getElementById('budget-bar-fill');
+  var pctLbl  = document.getElementById('budget-pct-lbl');
+  var leftLbl = document.getElementById('budget-left-lbl');
+
+  if (!totalEl) return;
+  totalEl.textContent = totalHours.toLocaleString();
+  usedEl.textContent  = usedHours.toLocaleString();
+  leftEl.textContent  = leftHours.toLocaleString();
+  if (fillEl) fillEl.style.width = pct.toFixed(2) + '%';
+  if (pctLbl) pctLbl.textContent = pct.toFixed(1) + '% used';
+  if (leftLbl) leftLbl.textContent = leftHours.toLocaleString() + ' remaining';
+}
+
+
 function renderPhaseBar(ageYears) {
   var phases = [
     { label: 'Childhood', end: 13,  color: '#34d399' },
@@ -377,6 +401,9 @@ document.getElementById('calc-single').addEventListener('click', function() {
     var allInsights = getInsights(b, t);
     document.getElementById('insights-grid').innerHTML = insightsHTML(allInsights.slice(0, 3));
 
+    // Life Budget
+    updateBudget(birth);
+
     // Step 4 (expand) — full stats, bars, pills, calendar preview
     document.getElementById('sr-stats').innerHTML = statsHTML([
       [t.mon, 'Total Months'], [t.wk,  'Total Weeks'],
@@ -450,6 +477,7 @@ document.getElementById('calc-single').addEventListener('click', function() {
     updateRing(b.yy + b.mo / 12);
     var bdayEl = document.getElementById('s-bday');
     if (bdayEl) bdayEl.textContent = nextBirthday(birth);
+    updateBudget(birth);
   }, 1000);
 });
 

@@ -369,7 +369,8 @@ document.getElementById('calc-single').addEventListener('click', function() {
 
     // Step 2 — ring + phase + weeks left
     updateRing(b.yy + b.mo / 12);
-    document.getElementById('wl-number').textContent = weeksLeft.toLocaleString();
+    var weeksLeftEl = document.getElementById('wl-number');
+    if (weeksLeftEl) weeksLeftEl.textContent = weeksLeft.toLocaleString();
     renderPhaseBar(b.yy + b.mo / 12);
 
     // Step 3 — top 3 insights only
@@ -392,6 +393,13 @@ document.getElementById('calc-single').addEventListener('click', function() {
 
   render();
   card.classList.remove('hidden');
+
+  // share nudge — show after 3s
+  clearTimeout(window._nudgeTimer);
+  window._nudgeTimer = setTimeout(function() {
+    var nudge = document.getElementById('share-nudge');
+    if (nudge && window._shareData) nudge.classList.remove('hidden');
+  }, 3000);
 
   // count-up hero days
   setTimeout(function() {
@@ -465,9 +473,14 @@ document.getElementById('calc-compare').addEventListener('click', function() {
     var olderName   = birth1 < birth2 ? n1.trim() : birth2 < birth1 ? n2.trim() : null;
     var youngerName = olderName === n1.trim() ? n2.trim() : n1.trim();
 
-    document.getElementById('cr-winner').textContent = olderName
-      ? olderName + ' is older than ' + youngerName
-      : n1.trim() + ' and ' + n2.trim() + ' are the same age!';
+    var winnerEl = document.getElementById('cr-winner');
+    if (olderName) {
+      var diffDaysFull = Math.floor(Math.abs(birth1 - birth2) / 86400000);
+      winnerEl.innerHTML = olderName + ' is older than ' + youngerName +
+        '<span class="winner-sub">You\'ve lived ' + diffDaysFull.toLocaleString() + ' more days 😏</span>';
+    } else {
+      winnerEl.textContent = n1.trim() + ' and ' + n2.trim() + ' are the same age!';
+    }
 
     var earlier = birth1 <= birth2 ? birth1 : birth2;
     var later   = birth1 <= birth2 ? birth2 : birth1;
@@ -667,6 +680,8 @@ function buildLifeCalendar(birth, name) {
       cell.classList.add('cal-lived');
     } else if (w === weeksLived) {
       cell.classList.add('cal-now');
+      cell.setAttribute('aria-label', 'You are here');
+      cell.title = 'You are here';
     } else {
       cell.classList.add('cal-future');
     }
@@ -932,6 +947,9 @@ document.getElementById('btn-challenge').addEventListener('click', function() {
   var out = document.getElementById('challenge-out');
   var inp = document.getElementById('co-link-input');
   inp.value = link;
+  // emotional label
+  var label = out.querySelector('.co-label');
+  if (label) label.textContent = data.name + ' challenged you 👀 — share this link and see who\'s lived more:';
   out.classList.remove('hidden');
   out.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   track('challenge_generate', data.name);
@@ -985,6 +1003,15 @@ document.getElementById('co-copy-btn').addEventListener('click', function() {
     track('challenge_accept', data.n);
   } catch(e) {}
 })();
+
+// ─── Share nudge popup ────────────────────────────────────────
+document.getElementById('sn-close').addEventListener('click', function() {
+  document.getElementById('share-nudge').classList.add('hidden');
+});
+document.getElementById('sn-share-btn').addEventListener('click', function() {
+  document.getElementById('share-nudge').classList.add('hidden');
+  document.getElementById('btn-share-single').click();
+});
 
 // ─── Track key events ─────────────────────────────────────────
 document.getElementById('calc-single').addEventListener('click', function() {

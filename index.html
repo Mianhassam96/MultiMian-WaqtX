@@ -74,6 +74,12 @@
           <div class="hd-item"><span class="hd-val" id="hd-sec">850,694,400</span><span class="hd-lbl">Seconds</span></div>
         </div>
 
+        <!-- Stop-scroll curiosity hook -->
+        <div class="hero-curiosity">
+          <span class="hc-dot"></span>
+          Most people don't realize this… by age 25, you've already used <strong>~30% of your life.</strong>
+        </div>
+
         <div class="hero-cta-row">
           <a href="#calculator" class="btn-hero-cta">Calculate My Age →</a>
         </div>
@@ -192,7 +198,7 @@
             <!-- Weeks left big number -->
             <div class="weeks-left-box">
               <div class="wl-number" id="wl-number">—</div>
-              <div class="wl-label">weeks ahead of you</div>
+              <div class="wl-label">weeks left. Use them well.</div>
             </div>
 
             <!-- Life Phase Bar -->
@@ -307,6 +313,7 @@
       <div class="cal-inner">
         <div class="cal-header">
           <div>
+            <div class="cal-existential">This is your life in weeks.</div>
             <h2 class="cal-title">🗓️ Your Life Calendar</h2>
             <p class="cal-sub">Every square is one week of your life. <span class="cal-lived-label">Lived</span> · <span class="cal-future-label">Future</span></p>
           </div>
@@ -383,6 +390,19 @@
         <p>© 2026 AgeWise &nbsp;·&nbsp; by <a href="https://github.com/Mianhassam96/" target="_blank" rel="noopener noreferrer" class="footer-author">MultiMian</a></p>
       </div>
     </footer>
+
+    <!-- ── SHARE NUDGE POPUP ── -->
+    <div class="share-nudge hidden" id="share-nudge" role="status">
+      <div class="sn-inner">
+        <span class="sn-emoji">😳</span>
+        <div class="sn-text">
+          <strong>This number surprises most people…</strong>
+          <span>Take a screenshot or share your stats.</span>
+        </div>
+        <button class="sn-share" id="sn-share-btn">📸 Share</button>
+        <button class="sn-close" id="sn-close" aria-label="Dismiss">✕</button>
+      </div>
+    </div>
 
     <!-- ── SHARE CARD MODAL ── -->
     <div class="share-modal hidden" id="share-modal" role="dialog" aria-modal="true" aria-label="Share Card">

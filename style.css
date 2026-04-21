@@ -824,7 +824,7 @@ main {
 
 .life-bars { display: flex; flex-direction: column; gap: 14px; }
 
-.life-bar-item {}
+.life-bar-item { margin-bottom: 2px; }
 
 .lb-header {
   display: flex;
@@ -2061,4 +2061,142 @@ main {
   .phase-seg-lbl { display: none; }
   .hero-stat-days { font-size: 2.8rem; }
   .step-ring { gap: 14px; }
+}
+
+/* ══════════════════════════════════════
+   STOP-SCROLL CURIOSITY HOOK
+══════════════════════════════════════ */
+.hero-curiosity {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(248,113,113,0.08);
+  border: 1px solid rgba(248,113,113,0.25);
+  border-radius: 999px;
+  padding: 10px 22px;
+  font-size: 0.92rem;
+  color: #fca5a5;
+  margin: 0 auto 20px;
+  max-width: 520px;
+  opacity: 0;
+  animation: fade-up 0.6s 1.0s forwards;
+}
+
+.hero-curiosity strong { color: #f87171; }
+
+.hc-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #f87171;
+  flex-shrink: 0;
+  animation: hc-blink 1.4s ease-in-out infinite;
+}
+
+@keyframes hc-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+/* ══════════════════════════════════════
+   CALENDAR EXISTENTIAL HEADLINE
+══════════════════════════════════════ */
+.cal-existential {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #f1f5f9;
+  letter-spacing: -0.3px;
+  margin-bottom: 6px;
+  opacity: 0;
+  animation: fade-up 0.5s 0.1s forwards;
+}
+
+/* ══════════════════════════════════════
+   SHARE NUDGE POPUP
+══════════════════════════════════════ */
+.share-nudge {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 600;
+  width: calc(100% - 32px);
+  max-width: 460px;
+  animation: fade-up 0.4s ease;
+}
+
+.share-nudge.hidden { display: none !important; }
+
+.sn-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(15,12,41,0.97);
+  border: 1px solid rgba(248,113,113,0.4);
+  border-radius: 16px;
+  padding: 14px 18px;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+
+.sn-emoji { font-size: 1.5rem; flex-shrink: 0; }
+
+.sn-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.sn-text strong { font-size: 0.88rem; color: #f1f5f9; }
+.sn-text span   { font-size: 0.75rem; color: #64748b; }
+
+.sn-share {
+  background: linear-gradient(135deg, #f87171, #7c3aed);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.sn-share:hover { opacity: 0.9; transform: translateY(-1px); }
+
+.sn-close {
+  background: none;
+  border: none;
+  color: #475569;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.2s;
+  flex-shrink: 0;
+}
+
+.sn-close:hover { color: #fca5a5; }
+
+/* ══════════════════════════════════════
+   CHALLENGE WINNER SUB-LINE
+══════════════════════════════════════ */
+.winner-sub {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fbbf24;
+  margin-top: 6px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .hero-curiosity { font-size: 0.82rem; padding: 9px 16px; }
+  .sn-inner { flex-wrap: wrap; }
+  .sn-text { min-width: 100%; order: 2; }
+  .sn-emoji { order: 1; }
+  .sn-share { order: 3; }
+  .sn-close { order: 4; }
 }

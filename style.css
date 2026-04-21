@@ -2349,3 +2349,151 @@ main {
 ══════════════════════════════════════ */
 .reveal-first  { animation: fade-up 0.4s ease; }
 .reveal-second { transition: opacity 0.5s ease, transform 0.5s ease; }
+
+/* ══════════════════════════════════════
+   AGE TWIN
+══════════════════════════════════════ */
+.age-twin {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(167,139,250,0.18);
+  border-radius: 16px;
+  padding: 18px 20px;
+  margin-bottom: 12px;
+  animation: fade-up 0.4s ease;
+}
+
+.at-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.at-icon { font-size: 2rem; flex-shrink: 0; }
+
+.at-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 2px;
+}
+
+.at-name {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #c4b5fd;
+}
+
+.at-badge {
+  margin-left: auto;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #a78bfa;
+  background: rgba(167,139,250,0.1);
+  border: 1px solid rgba(167,139,250,0.2);
+  border-radius: 999px;
+  padding: 4px 12px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.at-fact {
+  font-size: 0.85rem;
+  color: #64748b;
+  line-height: 1.6;
+  font-style: italic;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+/* ══════════════════════════════════════
+   NEXT MILESTONE
+══════════════════════════════════════ */
+.next-milestone {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(251,191,36,0.06);
+  border: 1px solid rgba(251,191,36,0.2);
+  border-radius: 14px;
+  padding: 14px 18px;
+  margin-bottom: 12px;
+  animation: fade-up 0.4s ease;
+}
+
+.nm-icon { font-size: 1.4rem; flex-shrink: 0; }
+
+.nm-title {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #fbbf24;
+  margin-bottom: 3px;
+}
+
+.nm-sub {
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+/* ══════════════════════════════════════
+   PERCEPTION TOGGLE
+══════════════════════════════════════ */
+.perception-toggle {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.pt-btn {
+  flex: 1;
+  padding: 8px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: #475569;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pt-btn.active {
+  background: rgba(167,139,250,0.12);
+  border-color: rgba(167,139,250,0.35);
+  color: #c4b5fd;
+}
+
+.pt-btn:hover:not(.active) {
+  background: rgba(255,255,255,0.07);
+  color: #94a3b8;
+}
+
+.perception-msg {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  text-align: center;
+  padding: 10px 14px;
+  border-radius: 10px;
+  min-height: 1.4em;
+}
+
+.perception-msg.realistic {
+  color: #94a3b8;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.perception-msg.optimistic {
+  color: #6ee7b7;
+  background: rgba(52,211,153,0.06);
+  border: 1px solid rgba(52,211,153,0.15);
+}
+
+@media (max-width: 640px) {
+  .at-badge { display: none; }
+}

@@ -247,6 +247,11 @@
             <div class="budget-burn" id="budget-burn">
               You are spending your life at <strong>1 hour every 3,600 seconds.</strong>
             </div>
+            <div class="perception-toggle">
+              <button class="pt-btn active" id="pt-realistic" data-mode="realistic">Realistic</button>
+              <button class="pt-btn" id="pt-optimistic" data-mode="optimistic">Optimistic</button>
+            </div>
+            <div class="perception-msg" id="perception-msg"></div>
           </div>
 
           <!-- ── STEP 4: Key insights ── -->
@@ -263,22 +268,39 @@
 
             <div class="stats-grid" id="sr-stats"></div>
 
-            <div class="life-numbers">
-              <h3 class="section-sub-title">Your Life in Numbers</h3>
-              <div class="life-bars" id="life-bars"></div>
-            </div>
-
             <div class="pills" id="sr-pills"></div>
 
             <!-- Life Calendar preview (auto-shown) -->
             <div class="cal-preview-wrap">
-              <h3 class="section-sub-title">�️ Your Life Calendar
+              <h3 class="section-sub-title">🗓️ Your Life Calendar
                 <span class="cal-preview-hint">Each square = 1 week of your life</span>
               </h3>
               <div class="cal-preview-grid" id="cal-preview-grid"></div>
               <button class="btn-cal-full" id="btn-cal-full">View Full Calendar →</button>
             </div>
 
+          </div>
+
+          <!-- ── AGE TWIN ── -->
+          <div class="age-twin hidden" id="age-twin">
+            <div class="at-header">
+              <span class="at-icon" id="at-icon">👤</span>
+              <div>
+                <div class="at-label">Age Twin</div>
+                <div class="at-name" id="at-name"></div>
+              </div>
+              <div class="at-badge" id="at-badge"></div>
+            </div>
+            <div class="at-fact" id="at-fact"></div>
+          </div>
+
+          <!-- ── NEXT MILESTONE ── -->
+          <div class="next-milestone hidden" id="next-milestone">
+            <span class="nm-icon">🎯</span>
+            <div class="nm-body">
+              <div class="nm-title" id="nm-title"></div>
+              <div class="nm-sub" id="nm-sub"></div>
+            </div>
           </div>
 
           <!-- ── ACTIONS ── -->

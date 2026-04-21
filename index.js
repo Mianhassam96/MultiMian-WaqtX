@@ -325,6 +325,101 @@ function updateBudget(birth) {
   }
 }
 
+// ─── Age Twin data ────────────────────────────────────────────
+var AGE_TWINS = [
+  { year: 1452, name: 'Leonardo da Vinci', icon: '🎨', fact: 'Painter, scientist, inventor — he never stopped being curious.' },
+  { year: 1564, name: 'William Shakespeare', icon: '✍️', fact: 'He wrote 37 plays and 154 sonnets. Most before 50.' },
+  { year: 1643, name: 'Isaac Newton', icon: '🍎', fact: 'Invented calculus and laws of motion — largely before age 26.' },
+  { year: 1756, name: 'Wolfgang Mozart', icon: '🎵', fact: 'Composed over 800 works. Died at 35. Every year counted.' },
+  { year: 1769, name: 'Napoleon Bonaparte', icon: '⚔️', fact: 'Conquered most of Europe before turning 40.' },
+  { year: 1809, name: 'Abraham Lincoln', icon: '🎩', fact: 'Taught himself law. Became president at 52.' },
+  { year: 1867, name: 'Marie Curie', icon: '⚗️', fact: 'First person to win two Nobel Prizes. In different sciences.' },
+  { year: 1879, name: 'Albert Einstein', icon: '🧠', fact: 'Published the theory of relativity at 26. His best work came later.' },
+  { year: 1955, name: 'Steve Jobs', icon: '💻', fact: 'Built Apple, got fired, came back and changed everything.' },
+  { year: 1955, name: 'Bill Gates', icon: '💾', fact: 'Dropped out of Harvard. Built the world\'s largest software company.' },
+  { year: 1969, name: 'Elon Musk', icon: '🚀', fact: 'Building rockets and electric cars simultaneously. Still going.' },
+  { year: 1984, name: 'Lionel Messi', icon: '⚽', fact: 'Considered the greatest footballer of all time. Still playing.' },
+  { year: 1994, name: 'Justin Bieber', icon: '🎤', fact: 'Discovered on YouTube at 13. Became a global icon.' },
+  { year: 1997, name: 'Billie Eilish', icon: '🎧', fact: 'Won 5 Grammys before turning 20. Wrote her first hit at 13.' },
+  { year: 2003, name: 'Olivia Rodrigo', icon: '🎶', fact: 'Debut album went #1 in 30+ countries. She was 17.' }
+];
+
+function getAgeTwin(birthYear) {
+  return AGE_TWINS.slice().sort(function(a, b) {
+    return Math.abs(a.year - birthYear) - Math.abs(b.year - birthYear);
+  })[0];
+}
+
+function renderAgeTwin(birth) {
+  var twin = getAgeTwin(birth.getFullYear());
+  if (!twin) return;
+  var el = document.getElementById('age-twin');
+  if (!el) return;
+  document.getElementById('at-icon').textContent = twin.icon;
+  document.getElementById('at-name').textContent = twin.name;
+  var diff = Math.abs(birth.getFullYear() - twin.year);
+  document.getElementById('at-badge').textContent = diff === 0 ? 'Same birth year' : diff + ' year' + (diff > 1 ? 's' : '') + ' apart';
+  document.getElementById('at-fact').textContent = twin.fact;
+  el.classList.remove('hidden');
+}
+
+// ─── Next Milestone ───────────────────────────────────────────
+function renderNextMilestone(t) {
+  var el = document.getElementById('next-milestone');
+  var titleEl = document.getElementById('nm-title');
+  var subEl   = document.getElementById('nm-sub');
+  if (!el) return;
+  var title = '', sub = '';
+
+  if (t.sec < 1e9) {
+    var dLeft = Math.ceil((1e9 - t.sec) / 86400);
+    title = '🎯 Next: 1 Billion Seconds';
+    sub   = dLeft.toLocaleString() + ' days away — ~' + Math.ceil(dLeft / 365) + ' years from now';
+  } else if (t.day < 10000) {
+    var d1 = 10000 - t.day;
+    title = '🎯 Next: 10,000 Days Alive';
+    sub   = d1.toLocaleString() + ' days to go';
+  } else if (t.day < 15000) {
+    var d2 = 15000 - t.day;
+    title = '🎯 Next: 15,000 Days Alive';
+    sub   = d2.toLocaleString() + ' days to go';
+  } else if (t.day < 20000) {
+    var d3 = 20000 - t.day;
+    title = '🎯 Next: 20,000 Days Alive';
+    sub   = d3.toLocaleString() + ' days to go';
+  }
+
+  if (title) {
+    titleEl.textContent = title;
+    subEl.textContent   = sub;
+    el.classList.remove('hidden');
+  }
+}
+
+// ─── Perception toggle ────────────────────────────────────────
+var _perceptionMode = 'realistic';
+
+function renderPerceptionMsg(birth) {
+  var b = getBreakdown(birth);
+  var t = getTotals(birth);
+  var leftHours = Math.max(0, Math.round(AVG_LIFESPAN_YEARS * 365.25 * 24) - Math.floor(t.hr));
+  var msgEl = document.getElementById('perception-msg');
+  if (!msgEl) return;
+  if (_perceptionMode === 'optimistic') {
+    msgEl.textContent = 'You still have ' + leftHours.toLocaleString() + ' hours of potential ahead. That\'s enough to build something extraordinary.';
+    msgEl.className = 'perception-msg optimistic';
+  } else {
+    var age = b.yy;
+    var msg = age < 30
+      ? 'Time feels infinite right now. It isn\'t. But you still have more than most.'
+      : age < 50
+      ? 'The hours behind you are gone. The ones ahead are yours to direct.'
+      : 'Every hour from here is more valuable than any you\'ve already spent.';
+    msgEl.textContent = msg;
+    msgEl.className = 'perception-msg realistic';
+  }
+}
+
 
 function renderPhaseBar(ageYears) {
   var phases = [
@@ -416,16 +511,20 @@ document.getElementById('calc-single').addEventListener('click', function() {
     var allInsights = getInsights(b, t);
     document.getElementById('insights-grid').innerHTML = insightsHTML(allInsights.slice(0, 2));
 
-    // Life Budget
+    // Life Spend
     updateBudget(birth);
+    renderPerceptionMsg(birth);
 
-    // Step 4 (expand) — full stats, bars, pills, calendar preview
+    // Age Twin + Next Milestone
+    renderAgeTwin(birth);
+    renderNextMilestone(t);
+
+    // Step 4 (expand) — full stats, pills, calendar preview
     document.getElementById('sr-stats').innerHTML = statsHTML([
       [t.mon, 'Total Months'], [t.wk,  'Total Weeks'],
       [t.day, 'Total Days'],   [t.hr,  'Total Hours'],
       [t.min, 'Total Minutes'],[t.sec, 'Total Seconds']
     ]);
-    document.getElementById('life-bars').innerHTML = lifeNumbersHTML(t.day);
     document.getElementById('sr-pills').innerHTML =
       '<div class="pill">📅 Born on ' + bornDay(birth) + '</div>' +
       '<div class="pill" id="s-bday">' + nextBirthday(birth) + '</div>';
@@ -517,6 +616,7 @@ document.getElementById('calc-single').addEventListener('click', function() {
     var bdayEl = document.getElementById('s-bday');
     if (bdayEl) bdayEl.textContent = nextBirthday(birth);
     updateBudget(birth);
+    if (window._shareData) renderPerceptionMsg(window._shareData.birth);
   }, 1000);
 });
 
@@ -1070,6 +1170,16 @@ document.getElementById('co-copy-btn').addEventListener('click', function() {
     track('challenge_accept', data.n);
   } catch(e) {}
 })();
+
+// ─── Perception toggle ────────────────────────────────────────
+document.querySelectorAll('.pt-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.pt-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    _perceptionMode = btn.getAttribute('data-mode');
+    if (window._shareData) renderPerceptionMsg(window._shareData.birth);
+  });
+});
 
 // ─── Share nudge popup ────────────────────────────────────────
 document.getElementById('sn-close').addEventListener('click', function() {

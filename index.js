@@ -1218,27 +1218,50 @@ document.getElementById('calc-single').addEventListener('click', function() {
 
 // ─── PWA Install Banner ───────────────────────────────────────
 var _deferredPrompt = null;
+
 window.addEventListener('beforeinstallprompt', function(e) {
   e.preventDefault();
   _deferredPrompt = e;
   var banner = document.getElementById('pwa-banner');
-  if (banner && !localStorage.getItem('aw_pwa_dismissed')) {
-    setTimeout(function() { banner.classList.remove('hidden'); }, 3000);
+  // only show if not dismissed this session
+  if (banner && !sessionStorage.getItem('aw_pwa_dismissed')) {
+    setTimeout(function() { banner.classList.remove('hidden'); }, 4000);
   }
 });
+
+// iOS detection — show manual install hint
+(function() {
+  var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  var isStandalone = window.navigator.standalone === true;
+  if (isIOS && !isStandalone && !sessionStorage.getItem('aw_pwa_dismissed')) {
+    var banner = document.getElementById('pwa-banner');
+    var installBtn = document.getElementById('pwa-install');
+    if (banner && installBtn) {
+      installBtn.textContent = 'How to Install';
+      installBtn.addEventListener('click', function() {
+        alert('To install AgeWise:\n\n1. Tap the Share button (□↑) in Safari\n2. Scroll down and tap "Add to Home Screen"\n3. Tap "Add"');
+      }, { once: true });
+      setTimeout(function() { banner.classList.remove('hidden'); }, 4000);
+    }
+  }
+})();
 
 document.getElementById('pwa-install').addEventListener('click', function() {
   if (!_deferredPrompt) return;
   _deferredPrompt.prompt();
-  _deferredPrompt.userChoice.then(function() {
+  _deferredPrompt.userChoice.then(function(result) {
     _deferredPrompt = null;
     document.getElementById('pwa-banner').classList.add('hidden');
+    if (result.outcome === 'accepted') {
+      sessionStorage.setItem('aw_pwa_dismissed', '1');
+    }
   });
 });
 
 document.getElementById('pwa-dismiss').addEventListener('click', function() {
   document.getElementById('pwa-banner').classList.add('hidden');
-  localStorage.setItem('aw_pwa_dismissed', '1');
+  // session-only dismiss — banner can show again next visit
+  sessionStorage.setItem('aw_pwa_dismissed', '1');
 });
 
 // ─── Return Trigger ───────────────────────────────────────────
@@ -1555,7 +1578,15 @@ document.getElementById('sn-close').addEventListener('click', function() {
 });
 document.getElementById('sn-share-btn').addEventListener('click', function() {
   document.getElementById('share-nudge').classList.add('hidden');
-  document.getElementById('btn-share-single').click();
+  // open share modal directly
+  if (!window._shareData) return;
+  _shareStyle = 'classic';
+  document.querySelectorAll('.sc-style-btn').forEach(function(b) { b.classList.remove('active'); });
+  var classicBtn = document.querySelector('[data-style="classic"]');
+  if (classicBtn) classicBtn.classList.add('active');
+  renderShareCard();
+  document.getElementById('share-modal').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
 });
 
 // ─── Birthday Message Generator ──────────────────────────────

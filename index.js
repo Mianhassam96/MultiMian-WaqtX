@@ -1484,30 +1484,65 @@ document.getElementById('btn-gen-msg').addEventListener('click', function() {
   var days = t.day.toLocaleString();
   var pct  = Math.round(Math.min(100, ((b.yy + b.mo / 12) / AVG_LIFESPAN_YEARS) * 100));
 
-  var messages = {
-    friend: 'You\'ve lived ' + days + ' days. That\'s ' + days + ' chances to become who you are. I\'m glad I get to be part of your story.',
-    parent: 'You\'ve spent a lifetime giving your time to others. ' + days + ' days of showing up. Today is just a small moment to remind you how much that matters.',
-    partner: 'Time feels different with you in it. ' + days + ' days — and I\'m grateful for every single one we\'ve shared.'
+  // message lines — name-personalized, unexpected opening line, breathing space
+  var lines = {
+    friend: [
+      'Out of all the days that have ever existed… ' + name + ' got these ones.',
+      name + ' has lived ' + days + ' days. Every single one led to who they are right now.',
+      'I\'m glad our paths crossed in the same moment in time.'
+    ],
+    parent: [
+      'Most of your time was never yours. You gave it away.',
+      name + ' — ' + days + ' days of showing up, sacrificing, and making space for others.',
+      'Today is just a small moment to say: that time mattered more than you know.'
+    ],
+    partner: [
+      'Time didn\'t just pass. It changed when you entered it.',
+      name + ' — ' + days + ' days lived. And the best ones have been shared.',
+      'I\'m grateful for every second we\'ve spent in the same moment.'
+    ]
   };
 
-  var msg = messages[_bdayRel];
+  var msgLines = lines[_bdayRel];
+  var msgPlain = msgLines.join('\n\n');
 
+  // render card with line breaks
   document.getElementById('bc-name').textContent = name;
   document.getElementById('bc-days').textContent = days + ' days lived · ' + pct + '% of an average life';
-  document.getElementById('bc-msg').textContent  = msg;
+  var msgEl = document.getElementById('bc-msg');
+  msgEl.innerHTML = '';
+  msgLines.forEach(function(line, i) {
+    var p = document.createElement('p');
+    p.textContent = line;
+    if (i > 0) p.style.marginTop = '14px';
+    msgEl.appendChild(p);
+  });
 
-  document.getElementById('bday-output').classList.remove('hidden');
-  document.getElementById('bday-output').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  var output = document.getElementById('bday-output');
+  output.classList.remove('hidden');
+  output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  // delivery nudge
+  var nudge = document.getElementById('bday-nudge');
+  if (nudge) nudge.classList.remove('hidden');
 
   // copy button
   document.getElementById('btn-copy-bday').onclick = function() {
-    var text = name + '\n\n' + msg + '\n\n— Made with AgeWise';
+    var text = name + '\n\n' + msgPlain + '\n\n— Made with AgeWise\n' + window.location.href.split('?')[0];
     navigator.clipboard.writeText(text).then(function() {
       var el = document.getElementById('bday-copied');
+      el.textContent = '✅ Copied. Don\'t just save this — send it.';
       el.classList.remove('hidden');
-      setTimeout(function() { el.classList.add('hidden'); }, 3000);
+      setTimeout(function() { el.classList.add('hidden'); }, 3500);
     });
     track('bday_copy', _bdayRel);
+  };
+
+  // whatsapp share
+  document.getElementById('btn-wa-bday').onclick = function() {
+    var text = name + '\n\n' + msgPlain + '\n\n— Made with AgeWise\n' + window.location.href.split('?')[0];
+    window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+    track('bday_whatsapp', _bdayRel);
   };
 
   // download card
@@ -1521,6 +1556,15 @@ document.getElementById('btn-gen-msg').addEventListener('click', function() {
       link.click();
     });
     track('bday_download', _bdayRel);
+  };
+
+  // make another
+  document.getElementById('btn-bday-again').onclick = function() {
+    document.getElementById('bf-name').value = '';
+    document.getElementById('bf-dob').value = '';
+    output.classList.add('hidden');
+    if (nudge) nudge.classList.add('hidden');
+    document.getElementById('bf-name').focus();
   };
 
   track('bday_generate', _bdayRel);

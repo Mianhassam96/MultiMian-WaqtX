@@ -2935,3 +2935,57 @@ main {
   .bc-name { font-size: 1.4rem; }
   .bc-msg { font-size: 0.92rem; }
 }
+
+/* ══════════════════════════════════════
+   BIRTHDAY CARD — BREATHING SPACE
+══════════════════════════════════════ */
+.bc-msg p { margin: 0; line-height: 1.8; }
+
+/* delivery nudge */
+.bday-nudge {
+  text-align: center;
+  font-size: 0.82rem;
+  color: #a78bfa;
+  font-style: italic;
+  margin: 10px 0 4px;
+  animation: fade-up 0.4s ease;
+}
+
+/* make another */
+.btn-bday-again {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px;
+  background: none;
+  border: 1px dashed rgba(167,139,250,0.25);
+  border-radius: 10px;
+  color: #475569;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.btn-bday-again:hover {
+  color: #a78bfa;
+  border-color: rgba(167,139,250,0.45);
+  background: rgba(124,58,237,0.05);
+}
+
+/* whatsapp button */
+.ss-btn.ss-wa, #btn-wa-bday {
+  background: rgba(37,211,102,0.12);
+  border: 1px solid rgba(37,211,102,0.3);
+  color: #4ade80;
+}
+
+#btn-wa-bday:hover {
+  background: rgba(37,211,102,0.2);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 640px) {
+  .bday-actions { flex-direction: column; }
+}

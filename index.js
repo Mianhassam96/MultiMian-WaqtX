@@ -325,41 +325,95 @@ function updateBudget(birth) {
   }
 }
 
-// ─── Age Twin data ────────────────────────────────────────────
-var AGE_TWINS = [
-  { year: 1452, name: 'Leonardo da Vinci', icon: '🎨', fact: 'Painter, scientist, inventor — he never stopped being curious.' },
-  { year: 1564, name: 'William Shakespeare', icon: '✍️', fact: 'He wrote 37 plays and 154 sonnets. Most before 50.' },
-  { year: 1643, name: 'Isaac Newton', icon: '🍎', fact: 'Invented calculus and laws of motion — largely before age 26.' },
-  { year: 1756, name: 'Wolfgang Mozart', icon: '🎵', fact: 'Composed over 800 works. Died at 35. Every year counted.' },
-  { year: 1769, name: 'Napoleon Bonaparte', icon: '⚔️', fact: 'Conquered most of Europe before turning 40.' },
-  { year: 1809, name: 'Abraham Lincoln', icon: '🎩', fact: 'Taught himself law. Became president at 52.' },
-  { year: 1867, name: 'Marie Curie', icon: '⚗️', fact: 'First person to win two Nobel Prizes. In different sciences.' },
-  { year: 1879, name: 'Albert Einstein', icon: '🧠', fact: 'Published the theory of relativity at 26. His best work came later.' },
-  { year: 1955, name: 'Steve Jobs', icon: '💻', fact: 'Built Apple, got fired, came back and changed everything.' },
-  { year: 1955, name: 'Bill Gates', icon: '💾', fact: 'Dropped out of Harvard. Built the world\'s largest software company.' },
-  { year: 1969, name: 'Elon Musk', icon: '🚀', fact: 'Building rockets and electric cars simultaneously. Still going.' },
-  { year: 1984, name: 'Lionel Messi', icon: '⚽', fact: 'Considered the greatest footballer of all time. Still playing.' },
-  { year: 1994, name: 'Justin Bieber', icon: '🎤', fact: 'Discovered on YouTube at 13. Became a global icon.' },
-  { year: 1997, name: 'Billie Eilish', icon: '🎧', fact: 'Won 5 Grammys before turning 20. Wrote her first hit at 13.' },
-  { year: 2003, name: 'Olivia Rodrigo', icon: '🎶', fact: 'Debut album went #1 in 30+ countries. She was 17.' }
+// ─── Time Twin data (same DOB match) ─────────────────────────
+var TIME_TWINS = [
+  // Jan
+  { month: 1,  day: 3,  name: 'J.R.R. Tolkien',    icon: '📖', era: 'Author of The Lord of the Rings' },
+  { month: 1,  day: 8,  name: 'Stephen Hawking',    icon: '🌌', era: 'Physicist who redefined our understanding of time' },
+  { month: 1,  day: 14, name: 'LL Cool J',           icon: '🎤', era: 'Pioneer of hip-hop culture' },
+  { month: 1,  day: 17, name: 'Muhammad Ali',        icon: '🥊', era: 'The greatest boxer who ever lived' },
+  { month: 1,  day: 25, name: 'Virginia Woolf',      icon: '✍️', era: 'One of the most influential writers of the 20th century' },
+  // Feb
+  { month: 2,  day: 6,  name: 'Bob Marley',          icon: '🎵', era: 'Voice of a generation, still heard everywhere' },
+  { month: 2,  day: 11, name: 'Thomas Edison',       icon: '💡', era: 'Inventor who lit up the world' },
+  { month: 2,  day: 14, name: 'Frederick Douglass',  icon: '✊', era: 'Abolitionist who changed the course of history' },
+  { month: 2,  day: 18, name: 'Yoko Ono',            icon: '🕊️', era: 'Artist and peace activist' },
+  // Mar
+  { month: 3,  day: 6,  name: 'Michelangelo',        icon: '🎨', era: 'Painted the Sistine Chapel ceiling' },
+  { month: 3,  day: 14, name: 'Albert Einstein',     icon: '🧠', era: 'Redefined how humanity understands the universe' },
+  { month: 3,  day: 21, name: 'Johann Sebastian Bach', icon: '🎼', era: 'Composer whose music outlived centuries' },
+  { month: 3,  day: 26, name: 'Diana Ross',          icon: '🌟', era: 'Icon of soul and Motown' },
+  // Apr
+  { month: 4,  day: 2,  name: 'Hans Christian Andersen', icon: '📚', era: 'Storyteller whose tales shaped childhoods worldwide' },
+  { month: 4,  day: 15, name: 'Leonardo da Vinci',   icon: '🖼️', era: 'The original Renaissance man' },
+  { month: 4,  day: 23, name: 'William Shakespeare', icon: '🎭', era: 'The greatest writer in the English language' },
+  // May
+  { month: 5,  day: 5,  name: 'Karl Marx',           icon: '📜', era: 'Philosopher whose ideas reshaped the world' },
+  { month: 5,  day: 14, name: 'George Lucas',        icon: '🎬', era: 'Creator of Star Wars' },
+  { month: 5,  day: 25, name: 'Ralph Waldo Emerson', icon: '🌿', era: 'Philosopher of self-reliance and nature' },
+  // Jun
+  { month: 6,  day: 1,  name: 'Marilyn Monroe',      icon: '💫', era: 'Cultural icon of the 20th century' },
+  { month: 6,  day: 12, name: 'Anne Frank',          icon: '📓', era: 'Her diary became one of the most read books in history' },
+  { month: 6,  day: 18, name: 'Paul McCartney',      icon: '🎸', era: 'One half of the greatest songwriting duo ever' },
+  // Jul
+  { month: 7,  day: 4,  name: 'Nathaniel Hawthorne', icon: '🖊️', era: 'Author who explored the depths of human conscience' },
+  { month: 7,  day: 18, name: 'Nelson Mandela',      icon: '✊', era: '27 years in prison. Then changed a nation.' },
+  { month: 7,  day: 26, name: 'Mick Jagger',         icon: '🎤', era: 'Still performing decades after most would stop' },
+  // Aug
+  { month: 8,  day: 4,  name: 'Barack Obama',        icon: '🌍', era: '44th President of the United States' },
+  { month: 8,  day: 9,  name: 'Whitney Houston',     icon: '🎶', era: 'One of the greatest voices in music history' },
+  { month: 8,  day: 26, name: 'Mother Teresa',       icon: '🕊️', era: 'Spent her life in service to others' },
+  // Sep
+  { month: 9,  day: 5,  name: 'Freddie Mercury',     icon: '🎤', era: 'Frontman of Queen. Performer unlike any other.' },
+  { month: 9,  day: 15, name: 'Agatha Christie',     icon: '🔍', era: 'Best-selling fiction writer of all time' },
+  { month: 9,  day: 26, name: 'T.S. Eliot',          icon: '📖', era: 'Poet who defined modernist literature' },
+  // Oct
+  { month: 10, day: 2,  name: 'Mahatma Gandhi',      icon: '🕊️', era: 'Led a nation to freedom through nonviolence' },
+  { month: 10, day: 9,  name: 'John Lennon',         icon: '🎵', era: 'Imagined a world at peace. Still does.' },
+  { month: 10, day: 28, name: 'Bill Gates',          icon: '💾', era: 'Built the software that runs the modern world' },
+  // Nov
+  { month: 11, day: 9,  name: 'Carl Sagan',          icon: '🌌', era: 'Made the cosmos feel personal' },
+  { month: 11, day: 19, name: 'Indira Gandhi',       icon: '🌸', era: 'First female Prime Minister of India' },
+  { month: 11, day: 30, name: 'Mark Twain',          icon: '✍️', era: 'America\'s greatest storyteller' },
+  // Dec
+  { month: 12, day: 5,  name: 'Walt Disney',         icon: '✨', era: 'Built a world of imagination from nothing' },
+  { month: 12, day: 16, name: 'Ludwig van Beethoven',icon: '🎹', era: 'Composed masterpieces after losing his hearing' },
+  { month: 12, day: 25, name: 'Isaac Newton',        icon: '🍎', era: 'Discovered gravity. On Christmas Day.' }
 ];
 
-function getAgeTwin(birthYear) {
-  return AGE_TWINS.slice().sort(function(a, b) {
-    return Math.abs(a.year - birthYear) - Math.abs(b.year - birthYear);
+function getTimeTwin(birth) {
+  var m = birth.getMonth() + 1;
+  var d = birth.getDate();
+  // exact day match first
+  var exact = TIME_TWINS.filter(function(t) { return t.month === m && t.day === d; });
+  if (exact.length) return exact[Math.floor(Math.random() * exact.length)];
+  // closest day in same month
+  var sameMonth = TIME_TWINS.filter(function(t) { return t.month === m; });
+  if (sameMonth.length) return sameMonth.sort(function(a, b) { return Math.abs(a.day - d) - Math.abs(b.day - d); })[0];
+  // fallback: closest overall
+  return TIME_TWINS.sort(function(a, b) {
+    return Math.abs((a.month * 31 + a.day) - (m * 31 + d)) - Math.abs((b.month * 31 + b.day) - (m * 31 + d));
   })[0];
 }
 
 function renderAgeTwin(birth) {
-  var twin = getAgeTwin(birth.getFullYear());
+  var twin = getTimeTwin(birth);
   if (!twin) return;
   var el = document.getElementById('age-twin');
   if (!el) return;
   document.getElementById('at-icon').textContent = twin.icon;
   document.getElementById('at-name').textContent = twin.name;
-  var diff = Math.abs(birth.getFullYear() - twin.year);
-  document.getElementById('at-badge').textContent = diff === 0 ? 'Same birth year' : diff + ' year' + (diff > 1 ? 's' : '') + ' apart';
-  document.getElementById('at-fact').textContent = twin.fact;
+  var m = birth.getMonth() + 1;
+  var d = birth.getDate();
+  var isExact = twin.month === m && twin.day === d;
+  var badgeEl = document.getElementById('at-badge');
+  badgeEl.textContent = isExact ? 'Same day' : 'Same season';
+  if (isExact) badgeEl.classList.add('same-day');
+  else badgeEl.classList.remove('same-day');
+  document.getElementById('at-fact').textContent = (isExact
+    ? 'You were born on the same day as ' + twin.name + '. '
+    : 'You share your time with ' + twin.name + '. ')
+    + twin.era + '. Different lives. Same moment in time.';
   el.classList.remove('hidden');
 }
 

@@ -2401,6 +2401,12 @@ main {
   flex-shrink: 0;
 }
 
+.at-badge.same-day {
+  color: #34d399;
+  background: rgba(52,211,153,0.1);
+  border-color: rgba(52,211,153,0.3);
+}
+
 .at-fact {
   font-size: 0.85rem;
   color: #64748b;

@@ -1137,9 +1137,15 @@ function buildLifeCalendar(birth, name) {
     fragment.appendChild(cell);
   }
 
+  // calendar reveal — perceived event, not instant UI
+  grid.style.opacity = '0';
   grid.appendChild(fragment);
   section.classList.remove('hidden');
   section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  setTimeout(function() {
+    grid.style.transition = 'opacity 0.6s ease';
+    grid.style.opacity = '1';
+  }, 350);
 }
 
 // ─── Story-style insights upgrade ────────────────────────────

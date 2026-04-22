@@ -479,8 +479,8 @@
         </div>
         <div class="footer-links-col">
           <span class="footer-col-title">Tool</span>
-          <a href="#calculator">Calculator</a>
-          <a href="#life-calendar" id="footer-cal-link">Life Calendar</a>
+          <a href="#calculator" class="footer-scroll">Calculator</a>
+          <a href="#life-calendar" class="footer-scroll">Life Calendar</a>
         </div>
         <div class="footer-links-col">
           <span class="footer-col-title">Connect</span>
@@ -580,7 +580,7 @@
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(function() {});
     }
-    // smooth scroll nav
+    // smooth scroll nav (covers header nav + footer links)
     document.querySelectorAll('a[href^="#"]').forEach(function(a) {
       a.addEventListener('click', function(e) {
         var href = a.getAttribute('href');

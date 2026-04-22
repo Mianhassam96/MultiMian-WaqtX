@@ -426,7 +426,7 @@ document.getElementById('lq-yes').addEventListener('click', function() {
 
 document.getElementById('lq-no').addEventListener('click', function() {
   var resp = document.getElementById('lq-response');
-  resp.textContent = 'Then this moment matters more than you think.';
+  resp.textContent = 'Then this is not just a number. It\'s a warning.';
   resp.classList.remove('hidden');
   document.getElementById('lq-no').classList.add('lq-chosen');
   document.getElementById('lq-yes').classList.add('lq-unchosen');
@@ -438,10 +438,23 @@ document.getElementById('ss-copy-msg').addEventListener('click', function() {
   var msg = 'I just saw something about my life that made me think. You should try this.\n' + link;
   navigator.clipboard.writeText(msg).then(function() {
     var copied = document.getElementById('ss-copied');
+    copied.textContent = '✅ Message copied. Send it to someone who matters.';
     copied.classList.remove('hidden');
-    setTimeout(function() { copied.classList.add('hidden'); }, 2500);
+    setTimeout(function() { copied.classList.add('hidden'); }, 3000);
   });
   track('send_someone', 'copy_msg');
+});
+
+document.getElementById('ss-copy-parents').addEventListener('click', function() {
+  var link = window.location.href.split('?')[0];
+  var msg = 'I saw something about time that made me think of you. Try this.\n' + link;
+  navigator.clipboard.writeText(msg).then(function() {
+    var copied = document.getElementById('ss-copied');
+    copied.textContent = '✅ Message copied. Send it to someone who matters.';
+    copied.classList.remove('hidden');
+    setTimeout(function() { copied.classList.add('hidden'); }, 3000);
+  });
+  track('send_someone', 'copy_parents');
 });
 
 document.getElementById('ss-share-card').addEventListener('click', function() {

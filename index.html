@@ -318,12 +318,38 @@
           <!-- ── FINAL CLOSING INSIGHT ── -->
           <div class="closing-insight hidden reveal-fifth" id="closing-insight">
             <div class="ci-quote" id="ci-quote"></div>
+            <div class="ci-moments">"You don't measure life in hours. You measure it in moments with people."</div>
             <div class="ci-sub">— AgeWise</div>
+          </div>
+
+          <!-- ── LIFE QUESTION ── -->
+          <div class="life-question hidden" id="life-question">
+            <div class="lq-text">Are you spending your time the way you actually want?</div>
+            <div class="lq-choices">
+              <button class="lq-btn lq-yes" id="lq-yes">Yes</button>
+              <button class="lq-btn lq-no" id="lq-no">Not really</button>
+            </div>
+            <div class="lq-response hidden" id="lq-response"></div>
+          </div>
+
+          <!-- ── SEND TO SOMEONE ── -->
+          <div class="send-someone hidden" id="send-someone">
+            <div class="ss-label">Send this to someone you care about</div>
+            <div class="ss-actions">
+              <button class="ss-btn ss-msg" id="ss-copy-msg">💬 Copy message</button>
+              <button class="ss-btn ss-card" id="ss-share-card">📸 Share card</button>
+            </div>
+            <div class="ss-copied hidden" id="ss-copied">✅ Copied to clipboard</div>
+          </div>
+
+          <!-- ── REMEMBER THIS ── -->
+          <div class="remember-wrap hidden" id="remember-wrap">
+            <button class="btn-remember" id="btn-remember">🔖 Remember this moment</button>
+            <div class="remember-saved hidden" id="remember-saved"></div>
           </div>
 
           <!-- ── ACTIONS ── -->
           <div class="result-actions">
-            <button class="btn-share" id="btn-share-single">📸 Share Card</button>
             <button class="btn-challenge" id="btn-challenge">🏆 Challenge</button>
             <button class="btn-copy-link" id="btn-copy-link">🔗 Copy Link</button>
           </div>
@@ -344,10 +370,11 @@
             <div class="co-tag">Tag us <strong>@MultiMian</strong> when you share 🚀</div>
           </div>
 
+          <!-- hidden share trigger for JS -->
+          <button class="hidden" id="btn-share-single" aria-hidden="true" tabindex="-1"></button>
+
         </div>
       </section>
-
-      <!-- ── Compare ── -->
       <section id="compare" class="tab-content">
         <div class="card">
           <h2>Age Comparison</h2>

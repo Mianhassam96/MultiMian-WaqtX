@@ -2589,3 +2589,176 @@ main {
   .age-twin, .next-milestone { margin-bottom: 10px; }
   .closing-insight { margin: 20px 0 16px; padding: 24px 18px; }
 }
+
+/* ══════════════════════════════════════
+   CLOSING INSIGHT — MOMENTS LINE
+══════════════════════════════════════ */
+.ci-moments {
+  font-size: 0.88rem;
+  color: #64748b;
+  font-style: italic;
+  margin: 10px 0 14px;
+  line-height: 1.6;
+}
+
+/* ══════════════════════════════════════
+   LIFE QUESTION
+══════════════════════════════════════ */
+.life-question {
+  text-align: center;
+  padding: 28px 20px 20px;
+}
+
+.lq-text {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #c4b5fd;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.lq-choices {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.lq-btn {
+  padding: 12px 32px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.15s ease;
+}
+
+.lq-btn:active { transform: scale(0.96); }
+
+.lq-yes {
+  background: linear-gradient(135deg, #34d399, #0ea5e9);
+  color: #fff;
+  border-color: transparent;
+}
+
+.lq-no {
+  background: rgba(255,255,255,0.05);
+  color: #94a3b8;
+  border-color: rgba(255,255,255,0.12);
+}
+
+.lq-yes:hover  { box-shadow: 0 4px 16px rgba(52,211,153,0.35); transform: translateY(-2px); }
+.lq-no:hover   { background: rgba(255,255,255,0.09); color: #e2e8f0; transform: translateY(-2px); }
+
+.lq-chosen   { opacity: 1 !important; }
+.lq-unchosen { opacity: 0.3 !important; pointer-events: none; }
+
+.lq-response {
+  font-size: 0.92rem;
+  color: #a78bfa;
+  font-style: italic;
+  animation: fade-up 0.4s ease;
+  line-height: 1.6;
+}
+
+/* ══════════════════════════════════════
+   SEND TO SOMEONE
+══════════════════════════════════════ */
+.send-someone {
+  margin: 4px 0 12px;
+  padding: 18px 20px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(167,139,250,0.15);
+  border-radius: 16px;
+  text-align: center;
+  animation: fade-up 0.4s ease;
+}
+
+.ss-label {
+  font-size: 0.88rem;
+  color: #64748b;
+  margin-bottom: 14px;
+  font-weight: 600;
+}
+
+.ss-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.ss-btn {
+  padding: 11px 22px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s ease;
+}
+
+.ss-btn:active { transform: scale(0.96); }
+
+.ss-msg {
+  background: rgba(167,139,250,0.12);
+  border: 1px solid rgba(167,139,250,0.3);
+  color: #c4b5fd;
+}
+
+.ss-msg:hover { background: rgba(167,139,250,0.2); transform: translateY(-2px); }
+
+.ss-card {
+  background: linear-gradient(135deg, #0ea5e9, #6366f1);
+  color: #fff;
+}
+
+.ss-card:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(14,165,233,0.3); }
+
+.ss-copied {
+  margin-top: 10px;
+  font-size: 0.82rem;
+  color: #34d399;
+  animation: fade-up 0.3s ease;
+}
+
+/* ══════════════════════════════════════
+   REMEMBER THIS MOMENT
+══════════════════════════════════════ */
+.remember-wrap {
+  text-align: center;
+  margin: 4px 0 16px;
+}
+
+.btn-remember {
+  background: none;
+  border: 1px dashed rgba(167,139,250,0.3);
+  color: #7c3aed;
+  border-radius: 10px;
+  padding: 10px 24px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.btn-remember:hover {
+  background: rgba(124,58,237,0.08);
+  border-color: rgba(167,139,250,0.5);
+  color: #a78bfa;
+}
+
+.remember-saved {
+  margin-top: 10px;
+  font-size: 0.82rem;
+  color: #34d399;
+  animation: fade-up 0.3s ease;
+}
+
+@media (max-width: 640px) {
+  .lq-choices { flex-direction: column; align-items: center; }
+  .lq-btn { width: 100%; max-width: 240px; }
+  .ss-actions { flex-direction: column; }
+  .ss-btn { width: 100%; }
+}

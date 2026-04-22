@@ -396,6 +396,82 @@ function renderNextMilestone(t) {
   }
 }
 
+// ─── Life Question + Send to Someone + Remember ───────────────
+function showLifeQuestion() {
+  var el    = document.getElementById('life-question');
+  var sendEl = document.getElementById('send-someone');
+  var remEl  = document.getElementById('remember-wrap');
+  if (el) {
+    el.classList.remove('hidden');
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(16px)';
+    setTimeout(function() {
+      el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+      el.style.opacity = '1';
+      el.style.transform = 'translateY(0)';
+    }, 50);
+  }
+  if (sendEl) sendEl.classList.remove('hidden');
+  if (remEl)  remEl.classList.remove('hidden');
+}
+
+document.getElementById('lq-yes').addEventListener('click', function() {
+  var resp = document.getElementById('lq-response');
+  resp.textContent = 'Then protect it. Most people never stop to notice.';
+  resp.classList.remove('hidden');
+  document.getElementById('lq-yes').classList.add('lq-chosen');
+  document.getElementById('lq-no').classList.add('lq-unchosen');
+  track('life_question', 'yes');
+});
+
+document.getElementById('lq-no').addEventListener('click', function() {
+  var resp = document.getElementById('lq-response');
+  resp.textContent = 'Then this moment matters more than you think.';
+  resp.classList.remove('hidden');
+  document.getElementById('lq-no').classList.add('lq-chosen');
+  document.getElementById('lq-yes').classList.add('lq-unchosen');
+  track('life_question', 'no');
+});
+
+document.getElementById('ss-copy-msg').addEventListener('click', function() {
+  var link = window.location.href.split('?')[0];
+  var msg = 'I just saw something about my life that made me think. You should try this.\n' + link;
+  navigator.clipboard.writeText(msg).then(function() {
+    var copied = document.getElementById('ss-copied');
+    copied.classList.remove('hidden');
+    setTimeout(function() { copied.classList.add('hidden'); }, 2500);
+  });
+  track('send_someone', 'copy_msg');
+});
+
+document.getElementById('ss-share-card').addEventListener('click', function() {
+  if (!window._shareData) return;
+  _shareStyle = 'classic';
+  document.querySelectorAll('.sc-style-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.querySelector('[data-style="classic"]').classList.add('active');
+  renderShareCard();
+  document.getElementById('share-modal').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+  track('send_someone', 'share_card');
+});
+
+document.getElementById('btn-remember').addEventListener('click', function() {
+  if (!window._shareData) return;
+  var b = getBreakdown(window._shareData.birth);
+  var pct = Math.round(Math.min(100, ((b.yy + b.mo / 12) / AVG_LIFESPAN_YEARS) * 100));
+  localStorage.setItem('aw_moment', JSON.stringify({
+    pct: pct,
+    date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+    name: window._shareData.name
+  }));
+  var savedEl = document.getElementById('remember-saved');
+  savedEl.textContent = '✅ Saved. Next time you visit, we\'ll show how much has changed.';
+  savedEl.classList.remove('hidden');
+  document.getElementById('btn-remember').style.opacity = '0.5';
+  document.getElementById('btn-remember').disabled = true;
+  track('remember_moment', window._shareData.name);
+});
+
 // ─── Perception toggle ────────────────────────────────────────
 var _perceptionMode = 'realistic';
 
@@ -640,6 +716,13 @@ document.getElementById('calc-single').addEventListener('click', function() {
       var quote = pct < 30 ? quotes[0] : pct < 50 ? quotes[1] : pct < 70 ? quotes[2] : quotes[3];
       document.getElementById('ci-quote').textContent = quote;
       stepClosing.classList.remove('hidden');
+
+      // show life question after closing insight appears
+      stepClosing.addEventListener('animationend', function() {
+        showLifeQuestion();
+      }, { once: true });
+      // fallback if animationend doesn't fire
+      setTimeout(showLifeQuestion, 800);
     }
   }
 
@@ -1152,6 +1235,20 @@ document.getElementById('pw-clear').addEventListener('click', function() {
 });
 
 loadProfile();
+
+// ─── Return visit: show saved moment delta ────────────────────
+(function() {
+  var saved = JSON.parse(localStorage.getItem('aw_moment') || 'null');
+  var lastSaved = JSON.parse(localStorage.getItem('aw_last') || 'null');
+  if (!saved || !lastSaved || !lastSaved.dob) return;
+  var birth = parseDOB(lastSaved.dob);
+  var b = getBreakdown(birth);
+  var currentPct = Math.round(Math.min(100, ((b.yy + b.mo / 12) / AVG_LIFESPAN_YEARS) * 100));
+  if (currentPct > saved.pct) {
+    var sub = document.getElementById('pw-sub');
+    if (sub) sub.textContent = 'Last time you checked, you had used ' + saved.pct + '% of your life. Now it\'s ' + currentPct + '%.';
+  }
+})();
 
 // ─── Empty state live demo ────────────────────────────────────
 (function() {

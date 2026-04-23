@@ -1226,82 +1226,116 @@ function getInsights(b, t) {
 }
 
 // ─── Add Life Calendar button to result card ──────────────────
-// (injected after render, only once)
+// Uses a dedicated slot div — never touches btn-share-single's DOM position
 var _calBtnAdded = false;
 function addCalendarButton(birth) {
-  if (_calBtnAdded) return;
-  _calBtnAdded = true;
-  var shareBtn = document.getElementById('btn-share-single');
-  var calBtn   = document.createElement('button');
+  var slot = document.getElementById('cal-btn-slot');
+  if (!slot) return;
+  // Always refresh the button so birth date is current
+  slot.innerHTML = '';
+  var calBtn = document.createElement('button');
   calBtn.className = 'btn-calendar';
   calBtn.id = 'btn-calendar';
   calBtn.textContent = '🗓️ View My Life Calendar';
-  shareBtn.parentNode.insertBefore(calBtn, shareBtn);
   calBtn.addEventListener('click', function() {
     buildLifeCalendar(birth, window._shareData ? window._shareData.name : '');
   });
+  slot.appendChild(calBtn);
+  _calBtnAdded = true;
 }
 
 // patch into single calc render — wrap original
-var _origCalcClick = document.getElementById('calc-single').onclick;
 document.getElementById('calc-single').addEventListener('click', function() {
-  _calBtnAdded = false; // reset so button re-adds on new calc
+  _calBtnAdded = false; // reset for new calc
 });
 
 // ─── PWA Install Banner ───────────────────────────────────────
 var _deferredPrompt = null;
 var _pwaInstallHandled = false;
 
+// Clear any stale dismissed flag so banner can show again
+// (only clear if it was set more than 1 day ago via localStorage)
+(function() {
+  var dismissed = localStorage.getItem('aw_pwa_dismissed_ts');
+  if (dismissed) {
+    var age = Date.now() - parseInt(dismissed, 10);
+    if (age > 86400000) { // older than 1 day — allow showing again
+      localStorage.removeItem('aw_pwa_dismissed_ts');
+      sessionStorage.removeItem('aw_pwa_dismissed');
+    }
+  }
+})();
+
+function showPWABanner() {
+  var banner = document.getElementById('pwa-banner');
+  if (!banner) return;
+  if (sessionStorage.getItem('aw_pwa_dismissed')) return;
+  // Don't show if already installed (standalone mode)
+  if (window.navigator.standalone === true) return;
+  if (window.matchMedia('(display-mode: standalone)').matches) return;
+  setTimeout(function() { banner.classList.remove('hidden'); }, 5000);
+}
+
 window.addEventListener('beforeinstallprompt', function(e) {
   e.preventDefault();
   _deferredPrompt = e;
-  var banner = document.getElementById('pwa-banner');
-  // only show if not dismissed this session
-  if (banner && !sessionStorage.getItem('aw_pwa_dismissed')) {
-    setTimeout(function() { banner.classList.remove('hidden'); }, 4000);
-  }
+  showPWABanner();
 });
 
-// iOS detection — show manual install hint
+// iOS — show manual install hint
 (function() {
   var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
   var isStandalone = window.navigator.standalone === true;
-  if (isIOS && !isStandalone && !sessionStorage.getItem('aw_pwa_dismissed')) {
-    var banner = document.getElementById('pwa-banner');
+  if (isIOS && !isStandalone) {
     var installBtn = document.getElementById('pwa-install');
-    if (banner && installBtn) {
+    if (installBtn) {
       installBtn.textContent = 'How to Install';
       installBtn.onclick = function() {
         alert('To install AgeWise:\n\n1. Tap the Share button (□↑) in Safari\n2. Scroll down and tap "Add to Home Screen"\n3. Tap "Add"');
         sessionStorage.setItem('aw_pwa_dismissed', '1');
-        banner.classList.add('hidden');
+        document.getElementById('pwa-banner').classList.add('hidden');
       };
-      setTimeout(function() { banner.classList.remove('hidden'); }, 4000);
     }
+    showPWABanner();
+  }
+})();
+
+// Android / Desktop Chrome — show banner even if beforeinstallprompt already fired
+// (handles case where user visits again after dismissing)
+(function() {
+  var isAndroid = /android/i.test(navigator.userAgent);
+  var isChrome  = /chrome/i.test(navigator.userAgent) && !/edge|opr/i.test(navigator.userAgent);
+  var isIOS     = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  if (!isIOS && (isAndroid || isChrome)) {
+    // Show banner as a general "install" prompt even without the native event
+    showPWABanner();
   }
 })();
 
 document.getElementById('pwa-install').addEventListener('click', function() {
   if (_pwaInstallHandled) return;
   _pwaInstallHandled = true;
-  
-  if (!_deferredPrompt) {
-    // Fallback for iOS or if beforeinstallprompt didn't fire
+
+  if (_deferredPrompt) {
+    _deferredPrompt.prompt();
+    _deferredPrompt.userChoice.then(function(result) {
+      _deferredPrompt = null;
+      document.getElementById('pwa-banner').classList.add('hidden');
+      sessionStorage.setItem('aw_pwa_dismissed', '1');
+      localStorage.setItem('aw_pwa_dismissed_ts', Date.now().toString());
+    });
+  } else {
+    // No native prompt — show instructions
     var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
     if (isIOS) {
       alert('To install AgeWise:\n\n1. Tap the Share button (□↑) in Safari\n2. Scroll down and tap "Add to Home Screen"\n3. Tap "Add"');
+    } else {
+      alert('To install AgeWise:\n\n1. Click the ⋮ menu in Chrome\n2. Select "Install AgeWise" or "Add to Home Screen"');
     }
     sessionStorage.setItem('aw_pwa_dismissed', '1');
     document.getElementById('pwa-banner').classList.add('hidden');
-    return;
   }
-  
-  _deferredPrompt.prompt();
-  _deferredPrompt.userChoice.then(function(result) {
-    _deferredPrompt = null;
-    document.getElementById('pwa-banner').classList.add('hidden');
-    sessionStorage.setItem('aw_pwa_dismissed', '1');
-  });
+  _pwaInstallHandled = false; // allow re-trigger if needed
 });
 
 document.getElementById('pwa-dismiss').addEventListener('click', function() {
@@ -1314,10 +1348,8 @@ document.getElementById('pwa-dismiss').addEventListener('click', function() {
     banner.style.opacity = '';
     banner.style.transform = '';
   }, 300);
-  // session-only — shows again next visit so user can still install
   sessionStorage.setItem('aw_pwa_dismissed', '1');
-  // clear any old permanent dismissal
-  localStorage.removeItem('aw_pwa_dismissed');
+  localStorage.setItem('aw_pwa_dismissed_ts', Date.now().toString());
 });
 
 // ─── Return Trigger ───────────────────────────────────────────

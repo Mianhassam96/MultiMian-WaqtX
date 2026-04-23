@@ -3729,3 +3729,90 @@ main {
 /* ── Future You consequence highlights ── */
 .fy-stat-warn .fy-stat-val { color: #f87171; }
 .fy-stat-good .fy-stat-val { color: #34d399; }
+
+/* ══════════════════════════════════════
+   SIGNATURE LINE — closing insight
+══════════════════════════════════════ */
+.ci-signature {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #f87171;
+  letter-spacing: -0.3px;
+  margin-bottom: 24px;
+  line-height: 1.4;
+}
+
+@media (max-width: 640px) {
+  .ci-signature { font-size: 0.95rem; }
+}
+
+/* ══════════════════════════════════════
+   BEST IMPROVE CARD
+══════════════════════════════════════ */
+.improve-card-best {
+  border-color: rgba(52,211,153,0.4) !important;
+  background: rgba(52,211,153,0.06) !important;
+  position: relative;
+}
+
+.ic-best-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #34d399;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ══════════════════════════════════════
+   CURIOSITY LOOP
+══════════════════════════════════════ */
+.curiosity-loop {
+  margin-top: 20px;
+  padding: 16px 18px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(167,139,250,0.15);
+  border-radius: 14px;
+  text-align: center;
+  animation: fade-up 0.4s ease;
+}
+
+.cl-label {
+  font-size: 0.82rem;
+  color: #64748b;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.cl-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.cl-btn {
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: rgba(167,139,250,0.1);
+  border: 1px solid rgba(167,139,250,0.25);
+  color: #c4b5fd;
+  transition: all 0.2s;
+}
+
+.cl-btn:hover {
+  background: rgba(167,139,250,0.2);
+  border-color: rgba(167,139,250,0.45);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 640px) {
+  .cl-actions { flex-direction: column; }
+  .cl-btn { width: 100%; }
+}

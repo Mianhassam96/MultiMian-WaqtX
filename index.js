@@ -389,6 +389,11 @@ document.getElementById('lq-yes').addEventListener('click', function() {
   document.getElementById('lq-yes').classList.add('lq-chosen');
   document.getElementById('lq-no').classList.add('lq-unchosen');
   track('life_question', 'yes');
+  // show curiosity loop after answer
+  setTimeout(function() {
+    var cl = document.getElementById('curiosity-loop');
+    if (cl) cl.classList.remove('hidden');
+  }, 600);
 });
 
 document.getElementById('lq-no').addEventListener('click', function() {
@@ -398,6 +403,11 @@ document.getElementById('lq-no').addEventListener('click', function() {
   document.getElementById('lq-no').classList.add('lq-chosen');
   document.getElementById('lq-yes').classList.add('lq-unchosen');
   track('life_question', 'no');
+  // show curiosity loop after answer
+  setTimeout(function() {
+    var cl = document.getElementById('curiosity-loop');
+    if (cl) cl.classList.remove('hidden');
+  }, 600);
 });
 
 document.getElementById('ss-copy-msg').addEventListener('click', function() {
@@ -1533,10 +1543,43 @@ document.getElementById('lq-no').addEventListener('click', function() {
   setTimeout(function() { self.classList.remove('shake'); }, 500);
 });
 
-// ─── Tap ripple ───────────────────────────────────────────────
+// ─── Curiosity loop buttons ───────────────────────────────────
+document.getElementById('cl-older').addEventListener('click', function() {
+  document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+  document.querySelectorAll('.tab-content').forEach(function(s) { s.classList.remove('active'); });
+  document.querySelector('[data-tab="compare"]').classList.add('active');
+  document.getElementById('compare').classList.add('active');
+  if (window._shareData) {
+    var d = window._shareData.birth;
+    document.getElementById('p2-name').value = window._shareData.name;
+    document.getElementById('p2-dob').value = d.getFullYear() + '-' +
+      String(d.getMonth() + 1).padStart(2, '0') + '-' +
+      String(d.getDate()).padStart(2, '0');
+    document.getElementById('p1-name').focus();
+  }
+  document.getElementById('compare').scrollIntoView({ behavior: 'smooth' });
+  track('curiosity_loop', 'older');
+});
+
+document.getElementById('cl-younger').addEventListener('click', function() {
+  document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+  document.querySelectorAll('.tab-content').forEach(function(s) { s.classList.remove('active'); });
+  document.querySelector('[data-tab="compare"]').classList.add('active');
+  document.getElementById('compare').classList.add('active');
+  if (window._shareData) {
+    var d = window._shareData.birth;
+    document.getElementById('p2-name').value = window._shareData.name;
+    document.getElementById('p2-dob').value = d.getFullYear() + '-' +
+      String(d.getMonth() + 1).padStart(2, '0') + '-' +
+      String(d.getDate()).padStart(2, '0');
+    document.getElementById('p1-name').focus();
+  }
+  document.getElementById('compare').scrollIntoView({ behavior: 'smooth' });
+  track('curiosity_loop', 'younger');
+});
 document.addEventListener('click', function(e) {
   var btn = e.target.closest(
-    '.btn-primary, .lq-btn, .ss-btn, .btn-remember, .btn-bday-trigger, .btn-gen-msg'
+    '.btn-primary, .lq-btn, .ss-btn, .btn-remember, .btn-bday-trigger, .btn-gen-msg, .cl-btn, .st-btn'
   );
   if (!btn) return;
   var r = btn.getBoundingClientRect();
@@ -1939,8 +1982,13 @@ function renderImproveSection(birth) {
     }
   ];
 
-  grid.innerHTML = actions.map(function(a) {
-    return '<div class="improve-card">' +
+  // Find the best card — highest gain that's universally actionable (walk 30min)
+  var bestIndex = 2; // walk 30min — universally actionable, research-backed
+
+  grid.innerHTML = actions.map(function(a, i) {
+    var isBest = i === bestIndex;
+    return '<div class="improve-card' + (isBest ? ' improve-card-best' : '') + '">' +
+      (isBest ? '<div class="ic-best-label">⭐ Biggest impact for you</div>' : '') +
       '<div class="ic-top">' +
         '<span class="ic-icon">' + a.icon + '</span>' +
         '<div class="ic-habit">' + a.habit + '</div>' +
@@ -1984,13 +2032,13 @@ function renderShareTrigger(birth, name) {
   // Pick the most striking stat
   var shockLine;
   if (pct >= 50) {
-    shockLine = 'You\'ve already used <strong>' + pct + '% of your life.</strong> More than half is gone.';
+    shockLine = 'You\'ve already used <strong>' + pct + '% of your life.</strong> More than half is gone forever.';
   } else if (pct >= 30) {
-    shockLine = 'You\'ve used <strong>' + pct + '% of your life</strong> — and most people your age don\'t realise it.';
+    shockLine = 'You\'ve used <strong>' + pct + '% of your life.</strong> That time is gone. You will never get it back.';
   } else {
-    shockLine = 'You\'ve used <strong>' + pct + '% of your life.</strong> The clock has always been running.';
+    shockLine = 'You\'ve already used <strong>' + pct + '% of your life.</strong> The clock started the day you were born.';
   }
-  shockLine += '<br><span style="font-size:0.82rem;color:#94a3b8;font-weight:400;">Send this to someone your age. They\'ll see their own number — and it hits differently when you compare.</span>';
+  shockLine += '<br><span style="font-size:0.82rem;color:#94a3b8;font-weight:400;">Send this before they waste more time. They won\'t expect what they see.</span>';
 
   shock.innerHTML = shockLine;
   el.classList.remove('hidden');

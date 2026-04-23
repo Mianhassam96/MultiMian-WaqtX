@@ -1705,3 +1705,264 @@ document.getElementById('btn-download').addEventListener('click', function() {
   var base = parseInt(localStorage.getItem('aw_share_base') || '0', 10);
   localStorage.setItem('aw_share_base', base + 1);
 });
+
+// ══════════════════════════════════════════════════════════════
+// COSMIC AGE + REALITY DISTORTION
+// ══════════════════════════════════════════════════════════════
+
+// ─── Planet data ─────────────────────────────────────────────
+var PLANETS = [
+  { name: 'Mercury', icon: '☿',  color: '#94a3b8', year: 0.2408,  twist: 'You\'ve lived many lifetimes here. Mercury moves fast — and so does time.' },
+  { name: 'Venus',   icon: '♀',  color: '#fbbf24', year: 0.6152,  twist: 'On Venus, a day is longer than a year. Time here is beautifully broken.' },
+  { name: 'Earth',   icon: '🌍', color: '#60a5fa', year: 1.0,     twist: 'This is the only timeline you actually know.' },
+  { name: 'Mars',    icon: '♂',  color: '#f87171', year: 1.8808,  twist: 'On Mars, you\'re younger. A slower orbit, a slower life.' },
+  { name: 'Jupiter', icon: '♃',  color: '#a78bfa', year: 11.862,  twist: 'Still a child on Jupiter. You haven\'t even started.' },
+  { name: 'Saturn',  icon: '♄',  color: '#34d399', year: 29.457,  twist: 'On Saturn, most people never reach their first birthday.' },
+  { name: 'Uranus',  icon: '⛢',  color: '#38bdf8', year: 84.011,  twist: 'On Uranus, you may not have been born yet in this orbit.' },
+  { name: 'Neptune', icon: '♆',  color: '#818cf8', year: 164.8,   twist: 'Neptune hasn\'t even completed one orbit since humans landed on the Moon.' }
+];
+
+// ─── Render Cosmic Section ────────────────────────────────────
+function renderCosmicSection(birth) {
+  var section = document.getElementById('cosmic-section');
+  if (!section) return;
+
+  var t = getTotals(birth);
+  var earthYears = t.day / 365.25;
+
+  // Planet grid
+  var grid = document.getElementById('planet-grid');
+  if (grid) {
+    grid.innerHTML = PLANETS.map(function(p) {
+      var age = earthYears / p.year;
+      var ageDisplay, label;
+      if (age < 1) {
+        var months = Math.floor(age * 12);
+        ageDisplay = months > 0 ? months + ' months' : '< 1 month';
+        label = 'barely begun';
+      } else {
+        ageDisplay = age.toFixed(1) + ' yrs';
+        label = age < 5 ? 'still young' : age < 20 ? 'growing' : age < 50 ? 'in your prime' : age < 80 ? 'wise' : 'ancient';
+      }
+      var isEarth = p.name === 'Earth';
+      return '<div class="planet-card' + (isEarth ? ' planet-earth' : '') + '">' +
+        '<div class="pc-icon" style="color:' + p.color + '">' + p.icon + '</div>' +
+        '<div class="pc-name">' + p.name + '</div>' +
+        '<div class="pc-age" style="color:' + p.color + '">' + ageDisplay + '</div>' +
+        '<div class="pc-label">' + label + '</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  // Emotional twist
+  var twist = document.getElementById('cosmic-twist');
+  if (twist) {
+    var mercuryAge = Math.floor(earthYears / 0.2408);
+    var neptuneAge = (earthYears / 164.8);
+    var neptuneStr = neptuneAge < 1
+      ? 'haven\'t completed your first Neptune year'
+      : 'are ' + neptuneAge.toFixed(2) + ' years old on Neptune';
+    twist.innerHTML =
+      '<span class="ct-line">On Mercury you\'re <strong>' + mercuryAge + ' years old</strong> — ancient.</span>' +
+      '<span class="ct-sep">·</span>' +
+      '<span class="ct-line">On Neptune you ' + neptuneStr + ' — barely a whisper.</span>' +
+      '<span class="ct-full">Same life. Infinite perspectives.</span>';
+  }
+
+  // You vs The Universe
+  var universeAgeYears = 13.8e9;
+  var pctOfUniverse = (earthYears / universeAgeYears * 100);
+  var pctStr = pctOfUniverse.toExponential(2);
+  // If universe = 1 day (86400s), your life in seconds
+  var lifeAsUniverseSeconds = (earthYears / universeAgeYears) * 86400;
+  var lifeStr = lifeAsUniverseSeconds < 1
+    ? (lifeAsUniverseSeconds * 1000).toFixed(1) + ' milliseconds'
+    : lifeAsUniverseSeconds.toFixed(2) + ' seconds';
+
+  var usStats = document.getElementById('us-stats');
+  if (usStats) {
+    usStats.innerHTML =
+      '<div class="us-stat"><span class="us-val">' + pctStr + '%</span><span class="us-lbl">of universe age</span></div>' +
+      '<div class="us-stat"><span class="us-val">' + lifeStr + '</span><span class="us-lbl">if universe = 1 day</span></div>' +
+      '<div class="us-stat"><span class="us-val">' + (earthYears / 200000).toFixed(4) + 'x</span><span class="us-lbl">vs human species age</span></div>';
+  }
+  var usLine = document.getElementById('us-line');
+  if (usLine) {
+    usLine.textContent = 'You are a ' + lifeStr + ' in a 24-hour universe. And yet — here you are, aware of it.';
+  }
+
+  // Cosmic Events Since Birth
+  var ceGrid = document.getElementById('ce-grid');
+  if (ceGrid) {
+    var days = t.day;
+    var seconds = t.sec;
+    var events = [
+      { icon: '🌍', label: 'Earth orbits completed', val: (days / 365.25).toFixed(1) },
+      { icon: '🌙', label: 'Full moons', val: Math.floor(days / 29.53).toLocaleString() },
+      { icon: '☀️', label: 'km Sun traveled in galaxy', val: (seconds * 230).toLocaleString() },
+      { icon: '☄️', label: 'Meteors hit Earth (est.)', val: Math.floor(days * 100).toLocaleString() },
+      { icon: '⚡', label: 'Lightning strikes on Earth', val: (days * 86400 * 100).toLocaleString() },
+      { icon: '💥', label: 'Supernovas in observable universe', val: Math.floor(days / 365.25 * 3).toLocaleString() }
+    ];
+    ceGrid.innerHTML = events.map(function(e) {
+      return '<div class="ce-item">' +
+        '<span class="ce-icon">' + e.icon + '</span>' +
+        '<div class="ce-body"><div class="ce-val">' + e.val + '</div><div class="ce-lbl">' + e.label + '</div></div>' +
+        '</div>';
+    }).join('');
+  }
+
+  // Random Reality Fact — initial render
+  renderRandomFact(earthYears, t);
+
+  section.classList.remove('hidden');
+}
+
+// ─── Random Reality Facts ─────────────────────────────────────
+var _factIndex = 0;
+function renderRandomFact(earthYears, t) {
+  var facts = [
+    'Your heart has beaten approximately ' + Math.floor(t.day * 24 * 60 * 70).toLocaleString() + ' times. Each one was a small miracle.',
+    'You\'ve blinked roughly ' + Math.floor(t.day * 24 * 60 * 15).toLocaleString() + ' times — and barely noticed any of them.',
+    'Light from the Sun takes 8 minutes to reach Earth. In your lifetime, ' + Math.floor(t.day * 24 * 60 / 8).toLocaleString() + ' of those journeys have completed.',
+    'You\'ve breathed approximately ' + Math.floor(t.day * 24 * 60 * 15).toLocaleString() + ' times. Your body did that without you asking.',
+    'The Voyager 1 probe has traveled ' + (t.day * 24 * 3600 * 17000 / 1e9).toFixed(2) + ' billion km since launch — most of that during your lifetime.',
+    'In the time you\'ve been alive, the universe expanded by roughly ' + (earthYears * 73.3 * 3.086e19 / 9.461e15).toFixed(0) + ' light-years in every direction.',
+    'You\'ve slept through approximately ' + Math.floor(t.day / 3).toLocaleString() + ' days of your life. Your brain used every one of them.',
+    'If your life were a film at 24fps, it would run for ' + Math.floor(t.day * 24 * 3600 * 24 / 3600).toLocaleString() + ' hours.',
+    'The cells in your body have replaced themselves multiple times. You are not the same physical person you were 7 years ago.',
+    'You\'ve experienced approximately ' + Math.floor(t.day * 24 * 60 / 90).toLocaleString() + ' complete sleep cycles — each one resetting your mind.'
+  ];
+  _factIndex = (_factIndex + 1) % facts.length;
+  var el = document.getElementById('rf-text');
+  if (el) {
+    el.style.opacity = '0';
+    setTimeout(function() {
+      el.textContent = facts[_factIndex];
+      el.style.transition = 'opacity 0.4s ease';
+      el.style.opacity = '1';
+    }, 150);
+  }
+}
+
+document.getElementById('rf-btn').addEventListener('click', function() {
+  if (!window._shareData) return;
+  var t = getTotals(window._shareData.birth);
+  var earthYears = t.day / 365.25;
+  renderRandomFact(earthYears, t);
+  track('random_fact', '');
+});
+
+// ─── Daily Insight ────────────────────────────────────────────
+function renderDailyInsight(birth) {
+  var el = document.getElementById('daily-insight');
+  var txt = document.getElementById('di-text');
+  if (!el || !txt) return;
+
+  var t = getTotals(birth);
+  var b = getBreakdown(birth);
+
+  // Unique to today's exact day count
+  var insights = [
+    'Today you are exactly ' + t.day.toLocaleString() + ' days old. A number you will never see again.',
+    'You have lived ' + t.wk.toLocaleString() + ' weeks. Each one was a chapter. Most went unnoticed.',
+    'Right now, ' + b.hh + ' hours and ' + b.mi + ' minutes into today of your life. This second is already gone.',
+    'You\'ve completed ' + (t.day / 365.25).toFixed(3) + ' Earth orbits. The universe counted every one.',
+    'In the last 24 hours, your heart beat ~' + (24 * 60 * 70).toLocaleString() + ' times for you. Automatically. Silently.',
+    'You are ' + t.day.toLocaleString() + ' days old today — and the only person on Earth with exactly this history.'
+  ];
+
+  // Pick based on day of year so it changes daily
+  var dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+  txt.textContent = insights[dayOfYear % insights.length];
+  el.classList.remove('hidden');
+}
+
+// ─── Improve My Life ─────────────────────────────────────────
+function renderImproveSection(birth) {
+  var section = document.getElementById('improve-section');
+  var grid = document.getElementById('improve-grid');
+  if (!section || !grid) return;
+
+  var t = getTotals(birth);
+  var b = getBreakdown(birth);
+  var yearsLeft = Math.max(0, AVG_LIFESPAN_YEARS - (b.yy + b.mo / 12));
+
+  var actions = [
+    {
+      icon: '📱',
+      habit: 'Cut screen time by 1 hr/day',
+      gain: Math.round(yearsLeft * 365 * 1 / 24 / 365 * 10) / 10,
+      unit: 'years gained',
+      color: '#f87171',
+      note: 'That\'s ' + Math.round(yearsLeft * 365 * 1) + ' hours of real life back.'
+    },
+    {
+      icon: '😴',
+      habit: 'Sleep 8hrs instead of 6',
+      gain: Math.round(yearsLeft * 365 * 2 / 24 / 365 * 10) / 10,
+      unit: 'years of better health',
+      color: '#818cf8',
+      note: 'Sleep debt compounds. Every night matters.'
+    },
+    {
+      icon: '🚶',
+      habit: 'Walk 30 min/day',
+      gain: Math.round(yearsLeft * 0.035 * 10) / 10,
+      unit: 'extra years (avg)',
+      color: '#34d399',
+      note: 'Studies show 30min daily walking adds ~3.5 years to lifespan.'
+    },
+    {
+      icon: '🚬',
+      habit: 'Quit smoking (if applicable)',
+      gain: 10,
+      unit: 'years gained on average',
+      color: '#fbbf24',
+      note: 'The single highest-return health decision a person can make.'
+    },
+    {
+      icon: '🧠',
+      habit: 'Read 20 min/day instead of scrolling',
+      gain: Math.round(yearsLeft * 365 * 20 / 60 / 24 / 365 * 10) / 10,
+      unit: 'years of compounding knowledge',
+      color: '#60a5fa',
+      note: 'Same time. Completely different outcome.'
+    },
+    {
+      icon: '🫂',
+      habit: 'Invest in 1 deep relationship',
+      gain: 7,
+      unit: 'years longer (avg, research-backed)',
+      color: '#f97316',
+      note: 'Loneliness is as deadly as smoking 15 cigarettes a day.'
+    }
+  ];
+
+  grid.innerHTML = actions.map(function(a) {
+    return '<div class="improve-card">' +
+      '<div class="ic-top">' +
+        '<span class="ic-icon">' + a.icon + '</span>' +
+        '<div class="ic-habit">' + a.habit + '</div>' +
+      '</div>' +
+      '<div class="ic-gain" style="color:' + a.color + '">+' + a.gain + ' <span class="ic-unit">' + a.unit + '</span></div>' +
+      '<div class="ic-note">' + a.note + '</div>' +
+      '</div>';
+  }).join('');
+
+  section.classList.remove('hidden');
+}
+
+// ─── Hook into render ─────────────────────────────────────────
+// Patch the existing calc-single click to also render new sections
+var _origCalcSingleForCosmic = document.getElementById('calc-single').onclick;
+document.getElementById('calc-single').addEventListener('click', function() {
+  // Wait for _shareData to be set by the main handler (runs first)
+  setTimeout(function() {
+    if (!window._shareData) return;
+    var birth = window._shareData.birth;
+    renderCosmicSection(birth);
+    renderDailyInsight(birth);
+    renderImproveSection(birth);
+  }, 50);
+});

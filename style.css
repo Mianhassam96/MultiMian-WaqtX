@@ -3143,3 +3143,371 @@ main {
   cursor: pointer;
   flex-shrink: 0;
 }
+
+/* ══════════════════════════════════════
+   COSMIC AGE SECTION
+══════════════════════════════════════ */
+.cosmic-section {
+  margin-bottom: 28px;
+  animation: fade-up 0.5s ease;
+}
+
+.cosmic-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.cosmic-icon { font-size: 2rem; flex-shrink: 0; }
+
+.cosmic-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #c4b5fd;
+  margin-bottom: 3px;
+}
+
+.cosmic-sub {
+  font-size: 0.78rem;
+  color: #475569;
+}
+
+/* Planet grid */
+.planet-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.planet-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  padding: 14px 10px;
+  text-align: center;
+  transition: transform 0.2s, border-color 0.2s;
+  cursor: default;
+}
+
+.planet-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(167,139,250,0.25);
+}
+
+.planet-earth {
+  border-color: rgba(96,165,250,0.35);
+  background: rgba(96,165,250,0.06);
+}
+
+.pc-icon { font-size: 1.5rem; margin-bottom: 6px; }
+.pc-name { font-size: 0.7rem; color: #475569; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+.pc-age  { font-size: 1rem; font-weight: 800; line-height: 1; margin-bottom: 4px; font-variant-numeric: tabular-nums; }
+.pc-label { font-size: 0.65rem; color: #334155; text-transform: uppercase; letter-spacing: 0.06em; }
+
+/* Cosmic twist line */
+.cosmic-twist {
+  background: linear-gradient(135deg, rgba(124,58,237,0.1), rgba(37,99,235,0.1));
+  border: 1px solid rgba(167,139,250,0.2);
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-size: 0.85rem;
+  color: #94a3b8;
+  line-height: 1.8;
+  margin-bottom: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.ct-line strong { color: #c4b5fd; }
+.ct-sep { color: rgba(255,255,255,0.15); font-size: 1.2rem; }
+.ct-full {
+  width: 100%;
+  font-size: 0.82rem;
+  color: #7c3aed;
+  font-weight: 700;
+  font-style: italic;
+  margin-top: 4px;
+}
+
+/* You vs Universe */
+.universe-scale {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(167,139,250,0.15);
+  border-radius: 16px;
+  padding: 18px 20px;
+  margin-bottom: 18px;
+}
+
+.us-title {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #c4b5fd;
+  margin-bottom: 14px;
+}
+
+.us-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.us-stat {
+  text-align: center;
+  background: rgba(255,255,255,0.04);
+  border-radius: 10px;
+  padding: 10px 6px;
+}
+
+.us-val {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #a78bfa;
+  margin-bottom: 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+.us-lbl {
+  display: block;
+  font-size: 0.62rem;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.us-line {
+  font-size: 0.82rem;
+  color: #64748b;
+  font-style: italic;
+  text-align: center;
+  line-height: 1.6;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  padding-top: 12px;
+}
+
+/* Cosmic Events */
+.cosmic-events {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px;
+  padding: 18px 20px;
+  margin-bottom: 18px;
+}
+
+.ce-title {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #c4b5fd;
+  margin-bottom: 14px;
+}
+
+.ce-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.ce-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.ce-icon { font-size: 1.2rem; flex-shrink: 0; }
+
+.ce-val {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #e2e8f0;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.ce-lbl {
+  font-size: 0.65rem;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+
+/* Random Reality Fact */
+.reality-fact {
+  background: rgba(124,58,237,0.08);
+  border: 1px solid rgba(124,58,237,0.2);
+  border-radius: 14px;
+  padding: 16px 18px;
+  text-align: center;
+}
+
+.rf-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #7c3aed;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
+}
+
+.rf-text {
+  font-size: 0.88rem;
+  color: #94a3b8;
+  line-height: 1.7;
+  margin-bottom: 12px;
+  min-height: 3em;
+  font-style: italic;
+}
+
+.rf-btn {
+  background: none;
+  border: 1px solid rgba(124,58,237,0.3);
+  color: #7c3aed;
+  border-radius: 8px;
+  padding: 7px 18px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.rf-btn:hover {
+  background: rgba(124,58,237,0.1);
+  border-color: rgba(167,139,250,0.5);
+  color: #a78bfa;
+}
+
+/* ══════════════════════════════════════
+   DAILY INSIGHT
+══════════════════════════════════════ */
+.daily-insight {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: rgba(255,255,255,0.03);
+  border-left: 3px solid #7c3aed;
+  border-radius: 0 12px 12px 0;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  animation: fade-up 0.4s ease;
+}
+
+.di-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #7c3aed;
+  flex-shrink: 0;
+  margin-top: 5px;
+  animation: hc-blink 2s ease-in-out infinite;
+}
+
+.di-text {
+  font-size: 0.9rem;
+  color: #c4b5fd;
+  line-height: 1.6;
+  font-style: italic;
+  font-weight: 600;
+}
+
+/* ══════════════════════════════════════
+   IMPROVE MY LIFE
+══════════════════════════════════════ */
+.improve-section {
+  margin-bottom: 28px;
+  animation: fade-up 0.5s ease;
+}
+
+.improve-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.improve-icon { font-size: 1.8rem; flex-shrink: 0; }
+
+.improve-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #c4b5fd;
+  margin-bottom: 2px;
+}
+
+.improve-sub {
+  font-size: 0.78rem;
+  color: #475569;
+}
+
+.improve-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.improve-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  padding: 16px;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.improve-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(167,139,250,0.2);
+}
+
+.ic-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.ic-icon { font-size: 1.2rem; flex-shrink: 0; }
+
+.ic-habit {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  line-height: 1.3;
+}
+
+.ic-gain {
+  font-size: 1.2rem;
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.ic-unit {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.8;
+}
+
+.ic-note {
+  font-size: 0.72rem;
+  color: #475569;
+  line-height: 1.5;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .planet-grid { grid-template-columns: repeat(2, 1fr); }
+  .us-stats { grid-template-columns: 1fr; }
+  .ce-grid { grid-template-columns: 1fr; }
+  .improve-grid { grid-template-columns: 1fr; }
+  .cosmic-twist { flex-direction: column; gap: 4px; }
+  .ct-sep { display: none; }
+}

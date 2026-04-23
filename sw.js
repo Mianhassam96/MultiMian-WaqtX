@@ -1,4 +1,4 @@
-var CACHE = 'agewise-v2';
+var CACHE = 'agewise-v5';
 var ASSETS = [
   '/AgeWise/',
   '/AgeWise/index.html',
@@ -26,10 +26,21 @@ self.addEventListener('activate', function(e) {
   self.clients.claim();
 });
 
+// Network-first strategy: always try network, fall back to cache
 self.addEventListener('fetch', function(e) {
+  // Only handle GET requests for our own assets
+  if (e.request.method !== 'GET') return;
   e.respondWith(
-    caches.match(e.request).then(function(cached) {
-      return cached || fetch(e.request).catch(function() { return caches.match('/AgeWise/index.html'); });
+    fetch(e.request).then(function(response) {
+      // Update cache with fresh response
+      var clone = response.clone();
+      caches.open(CACHE).then(function(c) { c.put(e.request, clone); });
+      return response;
+    }).catch(function() {
+      // Network failed — serve from cache
+      return caches.match(e.request).then(function(cached) {
+        return cached || caches.match('/AgeWise/index.html');
+      });
     })
   );
 });

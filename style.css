@@ -292,3 +292,26 @@ img{max-width:100%}
 /* ── EXPLORE TEASER ── */
 .explore-teaser{text-align:center;font-size:0.82rem;color:#475569;font-style:italic;margin-bottom:10px;padding:0 24px}
 .explore-toggle-wrap{padding:0 24px 24px;max-width:1280px;margin:0 auto}
+
+/* ══════════════════════════════════════
+   CONTACT PAGE
+══════════════════════════════════════ */
+.contact-page-main{flex:1;display:flex;align-items:center;justify-content:center;padding:60px 24px;position:relative;z-index:1;min-height:calc(100vh - 120px)}
+.contact-inner{max-width:680px;width:100%;margin:0 auto;position:relative}
+.contact-glow{position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(124,58,237,0.2),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;border-radius:50%}
+.contact-title{font-size:2rem;font-weight:900;text-align:center;background:linear-gradient(90deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px}
+.contact-sub{text-align:center;color:#64748b;font-size:0.95rem;margin-bottom:36px}
+.contact-form{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);border-radius:20px;padding:32px;backdrop-filter:blur(12px);position:relative;z-index:1}
+.cf-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.cf-group{margin-bottom:18px}
+.cf-group label{display:block;font-size:0.78rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:7px}
+.cf-group input,.cf-group textarea{width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:#f1f5f9;font-size:1rem;font-family:inherit;outline:none;resize:vertical;transition:border-color 0.2s,box-shadow 0.2s;color-scheme:dark}
+.cf-group input:focus,.cf-group textarea:focus{border-color:#818cf8;box-shadow:0 0 0 3px rgba(129,140,248,0.15)}
+.btn-send{margin-top:4px}
+.cf-success{margin-top:14px;background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.35);color:#6ee7b7;border-radius:8px;padding:12px 16px;font-size:0.9rem;text-align:center}
+.contact-links{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:28px}
+.c-link{color:#818cf8;text-decoration:none;font-size:0.9rem;font-weight:600;padding:9px 20px;border:1px solid rgba(129,140,248,0.25);border-radius:999px;transition:all 0.25s}
+.c-link:hover{background:rgba(129,140,248,0.12);border-color:rgba(129,140,248,0.5);color:#c4b5fd;transform:translateY(-2px)}
+.btn-primary{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.2s}
+.btn-primary:hover{opacity:0.9;transform:translateY(-2px);box-shadow:0 8px 24px rgba(79,70,229,0.4)}
+@media(max-width:640px){.cf-row{grid-template-columns:1fr}.contact-form{padding:20px}}

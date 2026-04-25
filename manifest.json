@@ -5,8 +5,8 @@
   "start_url": "/MultiMian-WaqtX/",
   "scope": "/MultiMian-WaqtX/",
   "display": "standalone",
-  "background_color": "#0a0818",
-  "theme_color": "#0f0c29",
+  "background_color": "#0B0F0C",
+  "theme_color": "#0B0F0C",
   "orientation": "portrait-primary",
   "icons": [
     { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },

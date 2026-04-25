@@ -73,7 +73,7 @@ function initParticles(){
   var container=el('hero-particles');
   if(!container)return;
   container.innerHTML='';
-  var colors=['rgba(124,92,255,0.6)','rgba(255,77,141,0.5)','rgba(96,165,250,0.4)','rgba(251,191,36,0.3)'];
+  var colors=['rgba(22,163,74,0.5)','rgba(250,204,21,0.3)','rgba(34,197,94,0.35)','rgba(20,83,45,0.4)'];
   for(var i=0;i<28;i++){
     var p=document.createElement('div');
     p.className='particle';
@@ -345,9 +345,9 @@ function renderPeakYears(birth){
     var peakYear1=birthYear+p.startAge;
     var peakYear2=birthYear+p.endAge;
     var status='';
-    if(age<p.startAge){status='<span style="color:#7C5CFF;font-size:0.7rem;font-weight:700;">UPCOMING ('+(peakYear1)+')</span>';}
-    else if(age>=p.startAge&&age<=p.endAge){status='<span style="color:#34d399;font-size:0.7rem;font-weight:700;">YOU ARE HERE NOW</span>';}
-    else{status='<span style="color:#475569;font-size:0.7rem;">Completed ('+peakYear1+'-'+peakYear2+')</span>';}
+    if(age<p.startAge){status='<span style="color:#16A34A;font-size:0.7rem;font-weight:700;">UPCOMING ('+(peakYear1)+')</span>';}
+    else if(age>=p.startAge&&age<=p.endAge){status='<span style="color:#FACC15;font-size:0.7rem;font-weight:700;">YOU ARE HERE NOW</span>';}
+    else{status='<span style="color:rgba(255,255,255,0.28);font-size:0.7rem;">Completed ('+peakYear1+'-'+peakYear2+')</span>';}
     return '<div class="peak-item"><div class="peak-icon">'+p.icon+'</div><div><div class="peak-title">'+p.title+' <small style="color:#64748b;font-weight:400;">Age '+p.ageRange+'</small></div><div class="peak-desc">'+p.desc+'</div><div class="peak-age">'+status+'</div></div></div>';
   }).join('');
 }
@@ -606,7 +606,7 @@ function openShare(){
   var statsEl=el('sc-stats-card');
   if(statsEl){
     statsEl.innerHTML=fmt(t.day)+' days lived &nbsp;&middot;&nbsp; '+fmtShort(Math.floor(t.day*24*60*70))+' heartbeats';
-    if(twin)statsEl.innerHTML+='<br><span style="color:#c4b5fd;font-size:0.82rem;">Birthday twin: '+twin.icon+' '+twin.name+'</span>';
+    if(twin)statsEl.innerHTML+='<br><span style="color:#22c55e;font-size:0.82rem;">Birthday twin: '+twin.icon+' '+twin.name+'</span>';
   }
   el('share-modal').classList.remove('hidden');
   document.body.style.overflow='hidden';

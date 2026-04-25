@@ -876,10 +876,126 @@ function initFreezeObserver(){
   obs.observe(sec);
 }
 
+// ── Daily Islamic Wisdom ──────────────────────────────────────
+var WISDOM=[
+  {q:'Indeed, with hardship comes ease.',s:'Quran 94:6'},
+  {q:'The best among you are those who learn the Quran and teach it.',s:'Sahih Bukhari'},
+  {q:'Do not lose hope in the mercy of Allah. Indeed, Allah forgives all sins.',s:'Quran 39:53'},
+  {q:'Take advantage of five before five: your youth before old age, your health before sickness, your wealth before poverty, your free time before busyness, and your life before death.',s:'Prophet Muhammad ﷺ'},
+  {q:'Speak good or remain silent.',s:'Sahih Bukhari & Muslim'},
+  {q:'The strong person is not the one who can overpower others. The strong person is the one who controls himself when he is angry.',s:'Sahih Bukhari'},
+  {q:'Make things easy, do not make them difficult. Give glad tidings, do not drive people away.',s:'Sahih Bukhari'},
+  {q:'None of you truly believes until he loves for his brother what he loves for himself.',s:'Sahih Bukhari & Muslim'},
+  {q:'Whoever believes in Allah and the Last Day, let him speak good or remain silent.',s:'Sahih Bukhari'},
+  {q:'The world is a prison for the believer and a paradise for the disbeliever.',s:'Sahih Muslim'},
+  {q:'Be in this world as if you were a stranger or a traveler.',s:'Sahih Bukhari'},
+  {q:'Allah does not look at your appearance or your wealth, but He looks at your hearts and your deeds.',s:'Sahih Muslim'},
+  {q:'Verily, the hearts of all the sons of Adam are between the two fingers of the Most Merciful as one heart.',s:'Sahih Muslim'},
+  {q:'Whoever removes a worldly grief from a believer, Allah will remove from him one of the griefs of the Day of Judgment.',s:'Sahih Muslim'},
+  {q:'The most beloved of deeds to Allah are those that are most consistent, even if they are small.',s:'Sahih Bukhari'},
+];
+
+var _wisdomIdx=0;
+function initWisdom(){
+  var qEl=el('wisdom-quote');
+  var sEl=el('wisdom-source');
+  var dotsEl=el('wisdom-dots');
+  if(!qEl||!sEl)return;
+
+  // Pick today's wisdom as default (rotates daily)
+  var today=new Date();
+  _wisdomIdx=(today.getFullYear()*366+today.getMonth()*31+today.getDate())%WISDOM.length;
+
+  function renderWisdom(idx,animate){
+    var w=WISDOM[idx];
+    if(animate){
+      qEl.classList.add('fading');sEl.classList.add('fading');
+      setTimeout(function(){
+        qEl.textContent='\u201C'+w.q+'\u201D';
+        sEl.textContent='— '+w.s;
+        qEl.classList.remove('fading');sEl.classList.remove('fading');
+      },400);
+    } else {
+      qEl.textContent='\u201C'+w.q+'\u201D';
+      sEl.textContent='— '+w.s;
+    }
+    // dots
+    if(dotsEl){
+      dotsEl.innerHTML=WISDOM.map(function(_,i){
+        return '<div class="wisdom-dot'+(i===idx?' active':'')+'" data-i="'+i+'"></div>';
+      }).join('');
+      dotsEl.querySelectorAll('.wisdom-dot').forEach(function(d){
+        d.addEventListener('click',function(){
+          _wisdomIdx=parseInt(d.getAttribute('data-i'));
+          renderWisdom(_wisdomIdx,true);
+        });
+      });
+    }
+  }
+
+  renderWisdom(_wisdomIdx,false);
+
+  var prevBtn=el('wisdom-prev');
+  var nextBtn=el('wisdom-next');
+  if(prevBtn)prevBtn.addEventListener('click',function(){
+    _wisdomIdx=(_wisdomIdx-1+WISDOM.length)%WISDOM.length;
+    renderWisdom(_wisdomIdx,true);
+  });
+  if(nextBtn)nextBtn.addEventListener('click',function(){
+    _wisdomIdx=(_wisdomIdx+1)%WISDOM.length;
+    renderWisdom(_wisdomIdx,true);
+  });
+}
+
+// ── PWA Install Prompt ────────────────────────────────────────
+var _deferredInstall=null;
+function initPWA(){
+  window.addEventListener('beforeinstallprompt',function(e){
+    e.preventDefault();
+    _deferredInstall=e;
+    // Show prompt after 8 seconds
+    setTimeout(function(){
+      var prompt=el('pwa-prompt');
+      if(prompt)prompt.classList.remove('hidden');
+    },8000);
+  });
+
+  var installBtn=el('pwa-install-btn');
+  var dismissBtn=el('pwa-dismiss');
+
+  if(installBtn){
+    installBtn.addEventListener('click',function(){
+      if(!_deferredInstall)return;
+      _deferredInstall.prompt();
+      _deferredInstall.userChoice.then(function(result){
+        _deferredInstall=null;
+        var prompt=el('pwa-prompt');
+        if(prompt)prompt.classList.add('hidden');
+      });
+    });
+  }
+  if(dismissBtn){
+    dismissBtn.addEventListener('click',function(){
+      var prompt=el('pwa-prompt');
+      if(prompt)prompt.classList.add('hidden');
+      // Don't show again for 3 days
+      localStorage.setItem('pwa_dismissed',Date.now());
+    });
+  }
+
+  // Don't show if dismissed recently
+  var dismissed=localStorage.getItem('pwa_dismissed');
+  if(dismissed&&(Date.now()-parseInt(dismissed))<3*24*60*60*1000){
+    window.removeEventListener('beforeinstallprompt',function(){});
+  }
+}
+
 // ── Init ──────────────────────────────────────────────────────
 initParticles();
 initScrollReveal();
 initFreezeObserver();
+initWisdom();
+initPWA();
 
 // Restore last DOB
 (function(){

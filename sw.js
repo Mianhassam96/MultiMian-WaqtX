@@ -1,10 +1,11 @@
 'use strict';
-var CACHE = 'waqtx-v14';
+var CACHE = 'waqtx-v15';
 var ASSETS = [
   './',
   './index.html',
   './style.css',
   './index.js',
+  './lang.js',
   './manifest.json',
   './favicon.svg',
   './favicon-32.svg',

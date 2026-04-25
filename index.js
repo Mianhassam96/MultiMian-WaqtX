@@ -453,7 +453,7 @@ function renderAll(birth,name){
   var fajrCount=t.day;
   var wowLine1=el('wow-line1');
   if(wowLine1){
-    wowLine1.innerHTML='You have had over <strong><span id="wow-counter">0</span></strong> chances to pray Fajr.';
+    wowLine1.innerHTML=(typeof t==='function'?t('wowLine1pre'):'You have had over')+' <strong><span id="wow-counter">0</span></strong> '+(typeof t==='function'?t('wowLine1post'):'chances to pray Fajr.');
     // Animate counter after a short delay
     setTimeout(function(){
       animateCounter(el('wow-counter'),fajrCount,1200);
@@ -655,7 +655,7 @@ function showLoading(cb){
   overlay.classList.remove('hidden');
   overlay.classList.remove('fade-out');
   document.body.style.overflow='hidden';
-  var msgs=['Analyzing your time\u2026','Every moment you\u2019ve lived\u2026','Every opportunity you were given\u2026'];
+  var msgs = (typeof getLoadMsgs === 'function') ? getLoadMsgs() : ['Analyzing your time\u2026','Every moment you\u2019ve lived\u2026','Every opportunity you were given\u2026'];
   var i=0;
   lineEl.textContent=msgs[0];
   var seq=setInterval(function(){
@@ -1122,6 +1122,7 @@ function initPWA(){
 initParticles();
 initAyahReveal();
 initScreenFade();
+if(typeof initLang==='function')initLang();
 initScrollReveal();
 initFreezeObserver();
 initFinalObserver();

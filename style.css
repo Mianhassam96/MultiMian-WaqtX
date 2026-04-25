@@ -1103,3 +1103,89 @@ body::before{
   .wow-section::before{width:200px;height:200px}
   .final-section::before{display:none}
 }
+
+
+/* ══════════════════════════════════════════════════════════════
+   MULTILINGUAL SYSTEM — v14
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Globe button ── */
+.btn-lang-globe{
+  width:34px;height:34px;border-radius:50%;
+  background:var(--glass);border:1px solid var(--border);
+  color:var(--text-muted);font-size:0.95rem;
+  display:flex;align-items:center;justify-content:center;
+  transition:var(--t);cursor:pointer;
+}
+.btn-lang-globe:hover{border-color:var(--green-border);color:var(--white)}
+
+/* ── Language Panel ── */
+.lang-panel{
+  position:fixed;inset:0;z-index:600;
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;
+}
+.lang-panel.open{pointer-events:all}
+.lang-panel-backdrop{
+  position:absolute;inset:0;
+  background:rgba(0,0,0,0.7);
+  backdrop-filter:blur(6px);
+  opacity:0;transition:opacity 0.35s ease;
+}
+.lang-panel.open .lang-panel-backdrop{opacity:1}
+.lang-panel-inner{
+  position:relative;z-index:1;
+  background:rgba(13,18,16,0.97);
+  border:1px solid var(--green-border);
+  border-radius:20px;
+  padding:36px 32px;
+  max-width:420px;width:calc(100% - 48px);
+  opacity:0;transform:translateY(20px) scale(0.97);
+  transition:opacity 0.35s ease,transform 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+.lang-panel.open .lang-panel-inner{opacity:1;transform:translateY(0) scale(1)}
+.lang-panel-title{
+  font-size:0.78rem;font-weight:800;letter-spacing:2px;
+  color:var(--green);text-transform:uppercase;
+  margin-bottom:24px;text-align:center;
+}
+.lang-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:10px;
+}
+.lang-option{
+  padding:12px 16px;border-radius:10px;
+  font-size:0.9rem;font-weight:600;
+  color:var(--text-muted);
+  background:var(--glass);border:1px solid var(--border);
+  cursor:pointer;transition:var(--t);text-align:center;
+}
+.lang-option:hover{color:var(--white);border-color:var(--green-border)}
+.lang-option.active{
+  color:var(--white);
+  background:rgba(22,163,74,0.12);
+  border-color:var(--green-border);
+}
+
+/* ── RTL Support ── */
+body.rtl{direction:rtl;text-align:right}
+body.rtl .nav-inner{flex-direction:row-reverse}
+body.rtl .nav-logo{flex-direction:row-reverse}
+body.rtl .nav-actions{flex-direction:row-reverse}
+body.rtl .hero-inner{direction:rtl}
+body.rtl .hero-ayah{direction:rtl}
+body.rtl .ibadah-grid{direction:rtl}
+body.rtl .footer-inner{direction:rtl}
+body.rtl .footer-links{align-items:flex-start}
+body.rtl .bd-row{flex-direction:row-reverse}
+body.rtl .stat-card{flex-direction:row-reverse}
+body.rtl .ff-item{flex-direction:row-reverse}
+body.rtl .history-item{flex-direction:row-reverse}
+body.rtl .lang-grid{direction:rtl}
+/* Keep Arabic Quran verse always RTL regardless */
+.hero-ayah{direction:rtl!important}
+
+/* ── Mobile lang panel ── */
+@media(max-width:480px){
+  .lang-grid{grid-template-columns:1fr 1fr}
+  .lang-panel-inner{padding:28px 20px}
+}

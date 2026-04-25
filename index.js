@@ -68,8 +68,90 @@ function getBirthFlower(m){
   return f[m-1];
 }
 
-// ── Particles ─────────────────────────────────────────────────
-function initParticles(){
+// ── Cinematic: Word-by-word Ayah reveal ──────────────────────
+function initAyahReveal(){
+  var ayah=document.querySelector('.hero-ayah');
+  if(!ayah)return;
+  var text=ayah.textContent.trim();
+  var words=text.split(' ');
+  ayah.innerHTML=words.map(function(w,i){
+    return '<span class="ayah-word" style="animation-delay:'+(0.3+i*0.28)+'s">'+w+'</span>';
+  }).join(' ');
+}
+
+// ── Cinematic: Screen fade on CTA click ──────────────────────
+function initScreenFade(){
+  var fade=document.createElement('div');
+  fade.className='screen-fade';
+  fade.id='screen-fade';
+  document.body.appendChild(fade);
+}
+
+function triggerScreenFade(cb){
+  var fade=el('screen-fade');
+  if(!fade){cb();return;}
+  fade.classList.add('active');
+  setTimeout(function(){
+    cb();
+    setTimeout(function(){fade.classList.remove('active');},400);
+  },600);
+}
+
+// ── Cinematic: Number counter ─────────────────────────────────
+function animateCounter(el,target,duration){
+  if(!el)return;
+  var start=0,step=Math.ceil(target/60),current=0;
+  var interval=Math.floor(duration/60);
+  var timer=setInterval(function(){
+    current=Math.min(current+step,target);
+    el.textContent=Number(current).toLocaleString();
+    if(current>=target)clearInterval(timer);
+  },interval);
+}
+
+// ── Cinematic: Ibadah cards stagger ──────────────────────────
+function initIbadahStagger(){
+  var cards=document.querySelectorAll('.ibadah-card');
+  if(!cards.length)return;
+  var obs=new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        var idx=Array.prototype.indexOf.call(cards,entry.target);
+        setTimeout(function(){entry.target.classList.add('card-visible');},idx*100);
+        obs.unobserve(entry.target);
+      }
+    });
+  },{threshold:0.1});
+  cards.forEach(function(c){obs.observe(c);});
+}
+
+// ── Cinematic: Passing lines stagger ─────────────────────────
+function initPassingLines(){
+  var lines=document.querySelectorAll('.passing-line');
+  if(!lines.length)return;
+  var obs=new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        var idx=Array.prototype.indexOf.call(lines,entry.target);
+        setTimeout(function(){entry.target.classList.add('line-visible');},idx*300);
+        obs.unobserve(entry.target);
+      }
+    });
+  },{threshold:0.2});
+  lines.forEach(function(l){obs.observe(l);});
+}
+
+// ── Cinematic: Final section observer ────────────────────────
+function initFinalObserver(){
+  var sec=document.querySelector('.final-section');
+  if(!sec)return;
+  var obs=new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){sec.classList.add('final-active');obs.unobserve(sec);}
+    });
+  },{threshold:0.3});
+  obs.observe(sec);
+}
   var container=el('hero-particles');
   if(!container)return;
   container.innerHTML='';
@@ -368,10 +450,14 @@ function renderAll(birth,name){
   el('results-section').classList.remove('hidden');
 
   // ── WOW Section ──
-  var fajrCount=t.day; // 1 Fajr per day
+  var fajrCount=t.day;
   var wowLine1=el('wow-line1');
   if(wowLine1){
-    wowLine1.innerHTML='You have had over <strong>'+fmt(fajrCount)+'</strong> chances to pray Fajr.';
+    wowLine1.innerHTML='You have had over <strong><span id="wow-counter">0</span></strong> chances to pray Fajr.';
+    // Animate counter after a short delay
+    setTimeout(function(){
+      animateCounter(el('wow-counter'),fajrCount,1200);
+    },300);
   }
   setTimeout(function(){
     var l2=el('wow-line2');
@@ -480,9 +566,11 @@ function renderAll(birth,name){
   // ── Save ──
   localStorage.setItem('aw_dob',birth.toISOString().split('T')[0]);
 
-  // Re-init scroll reveal for newly visible elements
+  // Re-init scroll reveal + cinematic observers for newly visible elements
   setTimeout(function(){
     initScrollReveal();
+    initIbadahStagger();
+    initPassingLines();
     el('wow-section').scrollIntoView({behavior:'smooth',block:'start'});
   },100);
 }
@@ -565,24 +653,29 @@ function showLoading(cb){
   var overlay=el('loading-overlay');
   var lineEl=el('loading-line');
   overlay.classList.remove('hidden');
+  overlay.classList.remove('fade-out');
   document.body.style.overflow='hidden';
-  var msgs=['Analyzing your time...','Every moment you\'ve lived\u2026','Every opportunity you\'ve been given\u2026'];
+  var msgs=['Analyzing your time\u2026','Every moment you\u2019ve lived\u2026','Every opportunity you were given\u2026'];
   var i=0;
   lineEl.textContent=msgs[0];
   var seq=setInterval(function(){
     i++;
     if(i<msgs.length){
       lineEl.style.opacity='0';
-      setTimeout(function(){lineEl.textContent=msgs[i];lineEl.style.opacity='1';},200);
+      setTimeout(function(){lineEl.textContent=msgs[i];lineEl.style.opacity='1';},300);
     } else {
       clearInterval(seq);
       setTimeout(function(){
-        overlay.classList.add('hidden');
-        document.body.style.overflow='';
-        cb();
-      },400);
+        overlay.classList.add('fade-out');
+        setTimeout(function(){
+          overlay.classList.add('hidden');
+          overlay.classList.remove('fade-out');
+          document.body.style.overflow='';
+          cb();
+        },500);
+      },600);
     }
-  },800);
+  },1100);
 }
 
 // ── Share modal ───────────────────────────────────────────────
@@ -704,9 +797,11 @@ document.getElementById('btn-calculate').addEventListener('click',function(){
   if(!dob){errEl.textContent='Please select your date of birth.';errEl.classList.remove('hidden');return;}
   var birth=parseDOB(dob);
   if(birth>new Date()){errEl.textContent='Date of birth cannot be in the future.';errEl.classList.remove('hidden');return;}
-  showLoading(function(){
-    renderAll(birth,'');
-    if(typeof gtag!=='undefined')gtag('event','calculate',{event_category:'MultiMain WaqtX',event_label:'main'});
+  triggerScreenFade(function(){
+    showLoading(function(){
+      renderAll(birth,'');
+      if(typeof gtag!=='undefined')gtag('event','calculate',{event_category:'MultiMain WaqtX',event_label:'main'});
+    });
   });
 });
 
@@ -1025,8 +1120,11 @@ function initPWA(){
 }
 // ── Init ──────────────────────────────────────────────────────
 initParticles();
+initAyahReveal();
+initScreenFade();
 initScrollReveal();
 initFreezeObserver();
+initFinalObserver();
 initWisdom();
 initPWA();
 initPersonalitiesToggle();

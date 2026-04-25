@@ -90,9 +90,9 @@ input,textarea{font-family:inherit;outline:none}
   padding:16px 44px;border-radius:var(--radius);
   font-size:1rem;font-weight:800;color:var(--bg);
   background:var(--green);
-  transition:var(--t);letter-spacing:0.3px;margin-top:8px;
+  transition:var(--t);letter-spacing:0.04em;margin-top:8px;
 }
-.btn-reflect:hover{opacity:.85}
+.btn-reflect:hover{opacity:.82}
 
 /* -- Input Section -- */
 .input-section{padding:60px 24px;display:flex;justify-content:center;background:var(--bg)}
@@ -117,9 +117,9 @@ input,textarea{font-family:inherit;outline:none}
   width:100%;padding:15px 24px;border-radius:var(--radius-sm);
   font-size:1rem;font-weight:800;color:var(--bg);
   background:var(--green);
-  transition:var(--t);letter-spacing:0.3px;
+  transition:var(--t);letter-spacing:0.04em;
 }
-.btn-begin:hover{opacity:.88;transform:translateY(-1px)}
+.btn-begin:hover{opacity:.82}
 .input-trust{font-size:0.7rem;color:var(--text-dim);text-align:center}
 .error{color:#f87171;font-size:0.83rem;padding:8px 12px;background:rgba(248,113,113,0.07);border-radius:8px;border:1px solid rgba(248,113,113,0.18);width:100%}
 
@@ -229,8 +229,9 @@ input,textarea{font-family:inherit;outline:none}
 .passing-dim{color:var(--text-dim);font-size:clamp(0.88rem,1.8vw,1rem)!important}
 .passing-final{color:var(--text-dim);font-style:italic;font-size:clamp(0.88rem,1.8vw,1rem)!important}
 
-/* -- Share Section -- */
-.share-section{padding:80px 24px;text-align:center;border-top:1px solid var(--border)}
+/* ── Share Section ── */
+.share-section{padding:80px 24px;text-align:center;border-top:1px solid var(--border);opacity:0;transition:opacity 0.8s ease}
+.share-section.share-visible{opacity:1}
 .share-section-inner{max-width:400px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:20px}
 .share-preview-card{
   width:100%;
@@ -268,7 +269,7 @@ input,textarea{font-family:inherit;outline:none}
 }
 .final-inner{max-width:460px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
 .final-line1{font-size:clamp(1rem,2.5vw,1.4rem);color:var(--text-dim);line-height:1.8}
-.final-line2{font-size:clamp(1.4rem,4vw,2.4rem);font-weight:900;color:var(--white);line-height:1.3}
+.final-line2{font-size:clamp(1.5rem,4.2vw,2.6rem);font-weight:900;color:var(--white);line-height:1.3;opacity:0.96}
 
 /* -- Explore Section -- */
 .explore-section{padding:0 24px 60px;border-top:1px solid var(--border)}
@@ -485,10 +486,12 @@ input,textarea{font-family:inherit;outline:none}
   .hero{padding:80px 20px 48px}
   .hero-headline{font-size:clamp(1.7rem,8vw,2.4rem);letter-spacing:-1px}
   .hero-ayah{font-size:clamp(1.2rem,6vw,1.8rem)}
-  .wow-section{padding:80px 20px}
+  .wow-section{padding:90px 20px}
   .wow-line1 strong{font-size:clamp(3.2rem,16vw,5rem);letter-spacing:-2px}
-  .reflection-section,.existence-section,.passing-section{padding:80px 20px}
-  .freeze-section{padding:80px 20px}
+  .reflection-section,.existence-section,.passing-section{padding:90px 20px}
+  .ibadah-section,.ramadan-section,.ummah-section{padding:72px 20px}
+  .freeze-section{padding:90px 20px}
+  .final-section{padding:90px 20px}
   .input-card{padding:28px 20px}
   .twin-reveal-section{padding:24px 16px}
   .tr-twins-row{gap:10px}
@@ -718,7 +721,7 @@ input,textarea{font-family:inherit;outline:none}
 /* -- Scene Reveal � opacity + translateY only, no blur -- */
 .scene-reveal{
   opacity:0;
-  transform:translateY(20px);
+  transform:translateY(16px);
   transition:opacity 0.7s cubic-bezier(0.4,0,0.2,1),transform 0.7s cubic-bezier(0.4,0,0.2,1);
   transition-delay:var(--reveal-delay,0s);
 }

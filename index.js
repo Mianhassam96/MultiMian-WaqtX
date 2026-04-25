@@ -869,6 +869,11 @@ function initFreezeObserver(){
     entries.forEach(function(entry){
       if(entry.isIntersecting){
         sec.classList.add('freeze-active');
+        // Reveal share section after freeze pause (1.4s line2 delay + 0.8s fade + 1.8s silence)
+        setTimeout(function(){
+          var shareEl=document.querySelector('.share-section');
+          if(shareEl)shareEl.classList.add('share-visible');
+        },4000);
         obs.unobserve(sec);
       }
     });

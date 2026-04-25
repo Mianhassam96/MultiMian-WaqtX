@@ -21,6 +21,10 @@
   --radius:14px;
   --radius-sm:10px;
   --t:all 0.6s cubic-bezier(0.4,0,0.2,1);
+  --transition:all 0.6s cubic-bezier(0.4,0,0.2,1);
+  --border-green:rgba(22,163,74,0.22);
+  --shadow-green:0 4px 24px rgba(22,163,74,0.1);
+  --glass-hover:rgba(255,255,255,0.06);
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -229,9 +233,7 @@ input,textarea{font-family:inherit;outline:none}
 
 
 
-/* ── Share Section ── */
-.share-section{padding:80px 24px;text-align:center;border-top:1px solid var(--border);opacity:0;transition:opacity 0.8s ease}
-.share-section.share-visible{opacity:1}
+/* ── Share Section — see cinematic layer ── */
 .share-section-inner{max-width:400px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:20px}
 .share-preview-card{
   width:100%;

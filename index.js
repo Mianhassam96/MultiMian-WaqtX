@@ -376,11 +376,11 @@ function renderAll(birth,name){
   setTimeout(function(){
     var l2=el('wow-line2');
     if(l2){l2.classList.remove('hidden');l2.classList.add('fade-in');}
-  },800);
+  },1400);
   setTimeout(function(){
     var l3=el('wow-line3');
     if(l3){l3.classList.remove('hidden');l3.classList.add('fade-in');}
-  },1600);
+  },3200);
 
   // ── Core Data ──
   var coreEl=el('core-days');

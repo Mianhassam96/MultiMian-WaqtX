@@ -1,40 +1,51 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1e1040"/>
-      <stop offset="100%" stop-color="#0f0c29"/>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d1410"/>
+      <stop offset="100%" stop-color="#0B0F0C"/>
     </linearGradient>
-    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#a78bfa"/>
-      <stop offset="100%" stop-color="#60a5fa"/>
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#16A34A"/>
+      <stop offset="100%" stop-color="#22c55e"/>
     </linearGradient>
-    <linearGradient id="sand" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#c4b5fd"/>
-      <stop offset="100%" stop-color="#93c5fd"/>
+    <linearGradient id="sandGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#EAB308"/>
+      <stop offset="100%" stop-color="#fde047"/>
     </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
   </defs>
 
-  <!-- Background circle -->
-  <circle cx="32" cy="32" r="30" fill="url(#bg)" stroke="url(#grad)" stroke-width="2"/>
+  <!-- Dark background circle -->
+  <circle cx="32" cy="32" r="31" fill="url(#bgGrad)"/>
 
-  <!-- Hourglass outer frame top bar -->
-  <rect x="16" y="13" width="32" height="4" rx="2" fill="url(#grad)"/>
-  <!-- Hourglass outer frame bottom bar -->
-  <rect x="16" y="47" width="32" height="4" rx="2" fill="url(#grad)"/>
+  <!-- Green ring border -->
+  <circle cx="32" cy="32" r="30" fill="none" stroke="#16A34A" stroke-width="1.5" opacity="0.6"/>
 
-  <!-- Hourglass top half (sand container) -->
-  <path d="M18 17 L46 17 L36 32 L28 32 Z" fill="url(#grad)" opacity="0.25"/>
-  <!-- Sand in top half (partially empty) -->
-  <path d="M22 17 L42 17 L36 32 L28 32 Z" fill="url(#sand)" opacity="0.7"/>
+  <!-- Hourglass top bar -->
+  <rect x="15" y="12" width="34" height="3.5" rx="1.75" fill="url(#greenGrad)"/>
+  <!-- Hourglass bottom bar -->
+  <rect x="15" y="48.5" width="34" height="3.5" rx="1.75" fill="url(#greenGrad)"/>
 
-  <!-- Hourglass bottom half (sand container) -->
-  <path d="M28 32 L36 32 L46 47 L18 47 Z" fill="url(#grad)" opacity="0.25"/>
-  <!-- Sand collected at bottom -->
-  <path d="M21 47 L43 47 L38 39 L26 39 Z" fill="url(#sand)" opacity="0.85"/>
+  <!-- Hourglass glass outline top half -->
+  <path d="M17 15.5 L47 15.5 L36.5 32 L27.5 32 Z" fill="#16A34A" opacity="0.08"/>
+  <path d="M17 15.5 L47 15.5 L36.5 32 L27.5 32 Z" fill="none" stroke="#16A34A" stroke-width="0.8" opacity="0.35"/>
 
-  <!-- Narrow neck glow dot -->
-  <circle cx="32" cy="32" r="2.5" fill="url(#grad)" opacity="0.9"/>
+  <!-- Sand in top half (gold, partially drained) -->
+  <path d="M20 15.5 L44 15.5 L36.5 32 L27.5 32 Z" fill="url(#sandGrad)" opacity="0.55"/>
 
-  <!-- Outer glow ring -->
-  <circle cx="32" cy="32" r="30" fill="none" stroke="url(#grad)" stroke-width="1" opacity="0.4"/>
+  <!-- Hourglass glass outline bottom half -->
+  <path d="M27.5 32 L36.5 32 L47 48.5 L17 48.5 Z" fill="#16A34A" opacity="0.08"/>
+  <path d="M27.5 32 L36.5 32 L47 48.5 L17 48.5 Z" fill="none" stroke="#16A34A" stroke-width="0.8" opacity="0.35"/>
+
+  <!-- Sand collected at bottom (gold, bright) -->
+  <path d="M19.5 48.5 L44.5 48.5 L39 40 L25 40 Z" fill="url(#sandGrad)" opacity="0.9"/>
+
+  <!-- Neck glow dot -->
+  <circle cx="32" cy="32" r="2.5" fill="#EAB308" opacity="0.95" filter="url(#glow)"/>
+
+  <!-- Subtle inner glow ring -->
+  <circle cx="32" cy="32" r="28" fill="none" stroke="#16A34A" stroke-width="0.5" opacity="0.15"/>
 </svg>

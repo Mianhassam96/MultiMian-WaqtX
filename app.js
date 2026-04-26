@@ -306,6 +306,11 @@ function renderAll(birth) {
   setText('scdl-days',  fmt(t.day) + ' Days Lived');
   setText('scdl-hijri', hijriBirth.year + ' AH \u2013 ' + hijriNow.year + ' AH');
 
+  /* ── New Features ── */
+  renderLifeStory(birth, ageYears, hijriBirth, hijriNow, ramadans, t);
+  renderTimeTruth(ageYears, t);
+  renderInsight(birth, t);
+
   /* Animate day counter */
   setTimeout(function () { animateCounter('g-days', t.day, 1200); }, 500);
 
@@ -553,3 +558,402 @@ if (pwaDismiss) pwaDismiss.addEventListener('click', function () {
     }
   } catch(e) {}
 })();
+
+/* Init tracker on page load — works without DOB */
+initTracker();
+
+
+/* ══════════════════════════════════════════════
+   FEATURE 1 — LIFE STORY (Narrative)
+   ══════════════════════════════════════════════ */
+function renderLifeStory(birth, ageYears, hijriBirth, hijriNow, ramadans, t) {
+  var container = el('story-body');
+  if (!container) return;
+
+  var b = getBreakdown(birth);
+  var birthYear = birth.getFullYear();
+  var birthMonth = birth.toLocaleDateString('en-US', { month: 'long' });
+  var birthDay = birth.toLocaleDateString('en-US', { weekday: 'long' });
+  var fajrOpportunities = Math.floor(t.day);
+  var fridaysPassed = Math.floor(t.day / 7);
+  var sleepYears = (ageYears * 0.333).toFixed(1);
+  var screenYears = (ageYears * 0.17).toFixed(1);
+  var meaningfulHours = Math.round(ageYears * 365 * 0.08); // ~8% meaningful
+
+  var lines = [
+    'You were born on a <strong>' + birthDay + '</strong> in <em>' + birthMonth + ' ' + birthYear + '</em> — a day chosen by Allah, not by chance.',
+    'In the Islamic calendar, that was the year <strong>' + hijriBirth.year + ' AH</strong>, in the month of <em>' + (HIJRI_MONTHS[(hijriBirth.month - 1) || 0]) + '</em>.',
+    'Since that day, you have lived <strong>' + fmt(t.day) + ' days</strong> — each one a gift, each one a test.',
+    'You have witnessed <strong>' + ramadans + ' Ramadans</strong> — ' + ramadans + ' months of mercy, forgiveness, and renewal.',
+    'The Fajr prayer was called <strong>' + fmt(fajrOpportunities) + ' times</strong> since you were born. Each one was a chance to stand before Allah.',
+    'You have seen <strong>' + fmt(fridaysPassed) + ' Fridays</strong> — the best day of the week, repeated ' + fmt(fridaysPassed) + ' times in your life.',
+    'You have slept for approximately <strong>' + sleepYears + ' years</strong> — your body resting while your soul continued its journey.',
+    'The world has changed around you — from <em>' + (birthYear < 2000 ? 'the pre-internet era' : 'the digital age') + '</em> to today. You lived through all of it.',
+    'You are now <strong>' + b.yy + ' years, ' + b.mo + ' months, and ' + b.dd + ' days</strong> old. Your story is still unfolding.',
+    'From <strong>' + hijriBirth.year + ' AH</strong> to <strong>' + hijriNow.year + ' AH</strong> — that is your Islamic timeline. ' + (hijriNow.year - hijriBirth.year) + ' Islamic years of life.'
+  ];
+
+  container.innerHTML = lines.map(function(line) {
+    return '<div class="story-line">' + line + '</div>';
+  }).join('');
+}
+
+/* ══════════════════════════════════════════════
+   FEATURE 2 — TIME TRUTH
+   ══════════════════════════════════════════════ */
+function renderTimeTruth(ageYears, t) {
+  var introEl   = el('truth-intro');
+  var gridEl    = el('truth-grid');
+  var verdictEl = el('truth-verdict');
+  if (!gridEl) return;
+
+  var sleepYears    = +(ageYears * 0.333).toFixed(1);
+  var screenYears   = +(ageYears * 0.17).toFixed(1);
+  var workYears     = +(ageYears * 0.13).toFixed(1);
+  var eatYears      = +(ageYears * 0.04).toFixed(1);
+  var commYears     = +(ageYears * 0.05).toFixed(1);
+  var meaningYears  = +(ageYears - sleepYears - screenYears - workYears - eatYears - commYears).toFixed(1);
+  if (meaningYears < 0) meaningYears = 0;
+
+  var meaningPct = Math.round((meaningYears / ageYears) * 100);
+
+  if (introEl) {
+    introEl.innerHTML = 'You have lived <strong>' + ageYears.toFixed(1) + ' years</strong>. Here is where that time actually went — based on global averages.';
+  }
+
+  var cards = [
+    { icon: '😴', label: 'Sleeping',       value: sleepYears,   unit: 'Years', sub: '~8 hrs/day — your body needed rest.', cls: '' },
+    { icon: '📱', label: 'Screen Time',    value: screenYears,  unit: 'Years', sub: '~4 hrs/day on phones, TV, social media.', cls: 'truth-bad' },
+    { icon: '💼', label: 'Work / Study',   value: workYears,    unit: 'Years', sub: 'Building your dunya, day by day.', cls: '' },
+    { icon: '🍽️', label: 'Eating',         value: eatYears,     unit: 'Years', sub: '~1 hr/day — nourishing the body.', cls: '' },
+    { icon: '🚗', label: 'Commuting',      value: commYears,    unit: 'Years', sub: '~1.2 hrs/day in transit.', cls: '' },
+    { icon: '✨', label: 'Meaningful Time', value: meaningYears, unit: 'Years', sub: 'Growth, ibadah, family, purpose.', cls: 'truth-good' }
+  ];
+
+  gridEl.innerHTML = cards.map(function(c) {
+    return '<div class="truth-card ' + c.cls + '">' +
+      '<div class="truth-card-icon">' + c.icon + '</div>' +
+      '<div class="truth-card-label">' + c.label + '</div>' +
+      '<div class="truth-card-value">' + c.value + '</div>' +
+      '<div class="truth-card-unit">' + c.unit + '</div>' +
+      '<div class="truth-card-sub">' + c.sub + '</div>' +
+    '</div>';
+  }).join('');
+
+  if (verdictEl) {
+    var msg = meaningPct < 10
+      ? 'Less than <strong>' + meaningPct + '%</strong> of your life has been truly meaningful. That is the honest truth. The rest of your life can be different — but only if you decide now.'
+      : meaningPct < 20
+      ? 'About <strong>' + meaningPct + '%</strong> of your life has been meaningful. There is still so much time to change the ratio. Every day is a new chance.'
+      : 'Around <strong>' + meaningPct + '%</strong> of your life has been meaningful. You are doing better than most — keep building on it.';
+
+    verdictEl.innerHTML = '<div class="truth-verdict-headline">The Honest Picture</div>' +
+      '<div class="truth-verdict-text">' + msg + ' The Prophet ﷺ said: <em>"Take advantage of five before five: your youth before your old age, your health before your sickness, your wealth before your poverty, your free time before your busyness, and your life before your death."</em></div>';
+  }
+}
+
+/* ══════════════════════════════════════════════
+   FEATURE 3 — SALAH & IBADAH TRACKER
+   ══════════════════════════════════════════════ */
+var TRACKER_KEY = 'waqtx_tracker';
+var STREAK_KEY  = 'waqtx_streak';
+
+function getTodayKey() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function loadTrackerData() {
+  try {
+    var raw = localStorage.getItem(TRACKER_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch(e) { return {}; }
+}
+
+function saveTrackerData(data) {
+  try { localStorage.setItem(TRACKER_KEY, JSON.stringify(data)); } catch(e) {}
+}
+
+function getStreakCount() {
+  try {
+    var data = loadTrackerData();
+    var today = getTodayKey();
+    var streak = 0;
+    var d = new Date();
+    for (var i = 0; i < 365; i++) {
+      var key = d.toISOString().split('T')[0];
+      var dayData = data[key];
+      if (!dayData) break;
+      var salahDone = (dayData.salah || []).length;
+      if (salahDone >= 5) { streak++; d.setDate(d.getDate() - 1); }
+      else if (key === today) { d.setDate(d.getDate() - 1); } // today not complete yet
+      else break;
+    }
+    return streak;
+  } catch(e) { return 0; }
+}
+
+function updateSalahUI() {
+  var data = loadTrackerData();
+  var today = getTodayKey();
+  var todayData = data[today] || { salah: [], dhikr: [] };
+  var salahDone = todayData.salah || [];
+  var dhikrDone = todayData.dhikr || [];
+
+  // Update salah checkboxes
+  document.querySelectorAll('.salah-item').forEach(function(item) {
+    var name = item.querySelector('input').getAttribute('data-salah');
+    if (salahDone.indexOf(name) > -1) {
+      item.classList.add('checked');
+    } else {
+      item.classList.remove('checked');
+    }
+  });
+
+  // Update dhikr checkboxes
+  document.querySelectorAll('.dhikr-item').forEach(function(item) {
+    var name = item.querySelector('input').getAttribute('data-dhikr');
+    if (dhikrDone.indexOf(name) > -1) {
+      item.classList.add('checked');
+    } else {
+      item.classList.remove('checked');
+    }
+  });
+
+  // Progress bar
+  var pct = (salahDone.length / 5) * 100;
+  var barFill = el('salah-bar-fill');
+  if (barFill) barFill.style.width = pct + '%';
+  setText('salah-done', salahDone.length);
+
+  // Streak
+  setText('salah-streak', getStreakCount());
+
+  // Dhikr count
+  setText('dhikr-done', dhikrDone.length);
+
+  // Dhikr message
+  var msgs = [
+    'Start your day with remembrance.',
+    'One step closer to Allah. Keep going.',
+    'Halfway there. Your heart is being polished.',
+    'Almost complete. SubhanAllah.',
+    'Four done. One more — finish strong.',
+    'All completed. \u0627\u0644\u062D\u0645\u062F \u0644\u0644\u0647 — Alhamdulillah!'
+  ];
+  var dhikrMsg = el('dhikr-msg');
+  if (dhikrMsg) dhikrMsg.textContent = msgs[Math.min(dhikrDone.length, 5)];
+
+  // Week grid
+  renderWeekGrid(data);
+}
+
+function renderWeekGrid(data) {
+  var weekGrid = el('week-grid');
+  var weekSummary = el('week-summary');
+  if (!weekGrid) return;
+
+  var days = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+  var today = new Date();
+  var totalFull = 0;
+  var html = '';
+
+  for (var i = 6; i >= 0; i--) {
+    var d = new Date(today);
+    d.setDate(today.getDate() - i);
+    var key = d.toISOString().split('T')[0];
+    var dayData = data[key] || { salah: [] };
+    var count = (dayData.salah || []).length;
+    var isToday = (i === 0);
+    var cls = count >= 5 ? 'full' : count > 0 ? 'partial' : isToday ? 'today' : '';
+    if (count >= 5) totalFull++;
+    html += '<div class="week-day">' +
+      '<div class="week-day-label">' + days[d.getDay()] + '</div>' +
+      '<div class="week-day-dot ' + cls + '">' + (count > 0 ? count : (isToday ? '·' : '')) + '</div>' +
+    '</div>';
+  }
+  weekGrid.innerHTML = html;
+
+  if (weekSummary) {
+    weekSummary.innerHTML = '<strong>' + totalFull + '/7</strong> days with all 5 prayers this week.' +
+      (totalFull === 7 ? ' 🌟 Perfect week!' : totalFull >= 5 ? ' Keep it up!' : ' Every prayer counts.');
+  }
+}
+
+function initTracker() {
+  // Salah click handlers
+  document.querySelectorAll('.salah-item').forEach(function(item) {
+    item.addEventListener('click', function() {
+      var name = item.querySelector('input').getAttribute('data-salah');
+      var data = loadTrackerData();
+      var today = getTodayKey();
+      if (!data[today]) data[today] = { salah: [], dhikr: [] };
+      var idx = data[today].salah.indexOf(name);
+      if (idx > -1) data[today].salah.splice(idx, 1);
+      else data[today].salah.push(name);
+      saveTrackerData(data);
+      updateSalahUI();
+    });
+  });
+
+  // Dhikr click handlers
+  document.querySelectorAll('.dhikr-item').forEach(function(item) {
+    item.addEventListener('click', function() {
+      var name = item.querySelector('input').getAttribute('data-dhikr');
+      var data = loadTrackerData();
+      var today = getTodayKey();
+      if (!data[today]) data[today] = { salah: [], dhikr: [] };
+      var idx = data[today].dhikr.indexOf(name);
+      if (idx > -1) data[today].dhikr.splice(idx, 1);
+      else data[today].dhikr.push(name);
+      saveTrackerData(data);
+      updateSalahUI();
+    });
+  });
+
+  // Reset today
+  var resetBtn = el('btn-reset-tracker');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', function() {
+      var data = loadTrackerData();
+      var today = getTodayKey();
+      data[today] = { salah: [], dhikr: [] };
+      saveTrackerData(data);
+      updateSalahUI();
+    });
+  }
+
+  updateSalahUI();
+}
+
+/* ══════════════════════════════════════════════
+   FEATURE 4 — DAILY INSIGHT
+   ══════════════════════════════════════════════ */
+var DAILY_INSIGHTS = [
+  {
+    icon: '⏳',
+    headline: 'Every second is a step closer.',
+    body: 'Right now, as you read this, your life is moving forward. Not backward. Not paused. Forward. The question is not how much time you have — it is what you are doing with the time that is passing right now.',
+    ayah: '"And He is with you wherever you are." — (Quran 57:4)'
+  },
+  {
+    icon: '🌙',
+    headline: 'Fajr changes everything.',
+    body: 'The person who wakes for Fajr starts their day with Allah. That one act — 10 minutes before sunrise — sets the tone for the entire day. It is not just a prayer. It is a declaration: "My day belongs to You."',
+    ayah: '"Establish prayer at the decline of the sun until the darkness of the night and the Quran of dawn." — (Quran 17:78)'
+  },
+  {
+    icon: '📖',
+    headline: 'One page a day. One life changed.',
+    body: 'If you read just one page of the Quran every day, you will complete it in about 3 years. But the real change is not finishing — it is the daily habit of sitting with the words of Allah. That habit reshapes who you are.',
+    ayah: '"Indeed, this Quran guides to that which is most suitable." — (Quran 17:9)'
+  },
+  {
+    icon: '🤲',
+    headline: 'Istighfar opens closed doors.',
+    body: 'The Prophet ﷺ made istighfar more than 70 times a day — and he was already forgiven. Imagine what it does for us. Saying "Astaghfirullah" is not just asking forgiveness. It is resetting your connection with Allah.',
+    ayah: '"Ask forgiveness of your Lord. Indeed, He is ever a Perpetual Forgiver." — (Quran 71:10)'
+  },
+  {
+    icon: '🌅',
+    headline: 'This morning will never come again.',
+    body: 'The morning you woke up today — this exact morning — will never exist again. Every sunrise is unique. Every day is a new page. What will you write on today\'s page before it closes tonight?',
+    ayah: '"By the dawn. And by the ten nights." — (Quran 89:1-2)'
+  },
+  {
+    icon: '💭',
+    headline: 'Your thoughts become your life.',
+    body: 'What you think about most becomes what you do. What you do becomes who you are. Guard your thoughts. Fill your mind with what is good, true, and purposeful. The battle for your life is won or lost in your mind first.',
+    ayah: '"Allah does not change the condition of a people until they change what is in themselves." — (Quran 13:11)'
+  },
+  {
+    icon: '🕌',
+    headline: 'The masjid is waiting for you.',
+    body: 'There is a masjid near you right now. It has been there every day. The call to prayer has gone out five times today. Each time was an invitation — personal, direct, from Allah to you. How many did you answer?',
+    ayah: '"In houses which Allah has ordered to be raised and that His name be mentioned therein." — (Quran 24:36)'
+  },
+  {
+    icon: '❤️',
+    headline: 'Your parents\' du\'a is your shield.',
+    body: 'The du\'a of a parent for their child is never rejected. If your parents are alive, their happiness with you is a door to Jannah. If they have passed, your du\'a for them is a gift that reaches them. Do not let this connection weaken.',
+    ayah: '"Your Lord has decreed that you worship none but Him, and that you be kind to parents." — (Quran 17:23)'
+  },
+  {
+    icon: '🎯',
+    headline: 'Small consistent beats big occasional.',
+    body: 'The Prophet ﷺ said the most beloved deeds to Allah are those done consistently, even if small. You do not need to pray all night. You need to pray every night. Consistency is the secret that most people miss.',
+    ayah: '"The most beloved of deeds to Allah are those that are most consistent, even if they are small." — (Hadith, Bukhari)'
+  },
+  {
+    icon: '🌍',
+    headline: 'You are part of something bigger.',
+    body: 'Right now, over 1.8 billion Muslims around the world are praying, fasting, making du\'a, and striving. You are not alone in this journey. You are part of the Ummah — a community that spans every country, every language, every generation.',
+    ayah: '"And hold firmly to the rope of Allah all together and do not become divided." — (Quran 3:103)'
+  },
+  {
+    icon: '⚖️',
+    headline: 'The scales will be real.',
+    body: 'On the Day of Judgment, every deed will be weighed. Not just the big ones — every word, every glance, every moment of patience, every act of kindness. Nothing is too small to matter. Nothing is too small to count.',
+    ayah: '"So whoever does an atom\'s weight of good will see it, and whoever does an atom\'s weight of evil will see it." — (Quran 99:7-8)'
+  },
+  {
+    icon: '🔑',
+    headline: 'Gratitude is the key that opens more.',
+    body: 'You woke up today. Your heart is beating. You can read these words. You have been given another chance. Gratitude is not just a feeling — it is a practice. Say Alhamdulillah and mean it. Watch what happens.',
+    ayah: '"If you are grateful, I will surely increase you in favor." — (Quran 14:7)'
+  },
+  {
+    icon: '🌿',
+    headline: 'Sadaqah protects you.',
+    body: 'Give something today — even a smile, a kind word, a small amount of money. The Prophet ﷺ said sadaqah extinguishes sins like water extinguishes fire. It also protects from calamity. Giving is not losing — it is investing.',
+    ayah: '"The example of those who spend their wealth in the way of Allah is like a seed which grows seven spikes." — (Quran 2:261)'
+  },
+  {
+    icon: '🕐',
+    headline: 'Time is the only thing you cannot get back.',
+    body: 'Money lost can be earned again. Health lost can sometimes be restored. But time lost is gone forever. The hour that just passed will never return. This is not meant to create anxiety — it is meant to create intention. Be intentional today.',
+    ayah: '"By time, indeed, mankind is in loss." — (Quran 103:1-2)'
+  }
+];
+
+var _insightIndex = 0;
+
+function renderInsight(birth, t) {
+  var container = el('insight-card');
+  if (!container) return;
+
+  // Pick insight based on day of year for consistency
+  var dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+  _insightIndex = dayOfYear % DAILY_INSIGHTS.length;
+
+  var today = new Date();
+  var dateStr = today.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  var daysLived = t.day;
+
+  renderInsightCard(container, _insightIndex, dateStr, daysLived);
+}
+
+function renderInsightCard(container, idx, dateStr, daysLived) {
+  var insight = DAILY_INSIGHTS[idx];
+  container.innerHTML =
+    '<div class="insight-date">' + dateStr + ' &nbsp;·&nbsp; Day ' + fmt(daysLived) + ' of your life</div>' +
+    '<span class="insight-icon">' + insight.icon + '</span>' +
+    '<div class="insight-headline">' + insight.headline + '</div>' +
+    '<div class="insight-body">' + insight.body + '</div>' +
+    '<div class="insight-ayah">' + insight.ayah + '</div>' +
+    '<div class="insight-nav">' +
+      '<button class="insight-nav-btn" id="insight-prev">← Previous</button>' +
+      '<button class="insight-nav-btn" id="insight-next">Next →</button>' +
+    '</div>';
+
+  // Wire nav buttons
+  var prevBtn = el('insight-prev');
+  var nextBtn = el('insight-next');
+  if (prevBtn) prevBtn.addEventListener('click', function() {
+    _insightIndex = (_insightIndex - 1 + DAILY_INSIGHTS.length) % DAILY_INSIGHTS.length;
+    renderInsightCard(container, _insightIndex, dateStr, daysLived);
+  });
+  if (nextBtn) nextBtn.addEventListener('click', function() {
+    _insightIndex = (_insightIndex + 1) % DAILY_INSIGHTS.length;
+    renderInsightCard(container, _insightIndex, dateStr, daysLived);
+  });
+}

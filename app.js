@@ -306,10 +306,10 @@ function renderAll(birth) {
   setText('scdl-days',  fmt(t.day) + ' Days Lived');
   setText('scdl-hijri', hijriBirth.year + ' AH \u2013 ' + hijriNow.year + ' AH');
 
-  /* ── New Features ── */
+  /* ── New Features (require birth) ── */
   renderLifeStory(birth, ageYears, hijriBirth, hijriNow, ramadans, t);
   renderTimeTruth(ageYears, t);
-  renderInsight(birth, t);
+  renderInsight(t.day); /* update day count in insight */
 
   /* Animate day counter */
   setTimeout(function () { animateCounter('g-days', t.day, 1200); }, 500);
@@ -561,6 +561,32 @@ if (pwaDismiss) pwaDismiss.addEventListener('click', function () {
 
 /* Init tracker on page load — works without DOB */
 initTracker();
+/* Render daily insight on page load */
+renderInsight(0);
+
+/* ── Scroll-reveal animation ── */
+(function() {
+  var targets = document.querySelectorAll(
+    '.glance-card, .islamic-card, .world-card, .journey-card, .reflection-card, ' +
+    '.milestones-card, .share-card, .tracker-card, .story-card, .truth-card, ' +
+    '.insight-card, .section-heading'
+  );
+  targets.forEach(function(t) { t.classList.add('reveal'); });
+
+  if ('IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    targets.forEach(function(t) { obs.observe(t); });
+  } else {
+    targets.forEach(function(t) { t.classList.add('visible'); });
+  }
+})();
 
 
 /* ══════════════════════════════════════════════
@@ -917,19 +943,14 @@ var DAILY_INSIGHTS = [
 
 var _insightIndex = 0;
 
-function renderInsight(birth, t) {
+function renderInsight(daysLived) {
   var container = el('insight-card');
   if (!container) return;
-
-  // Pick insight based on day of year for consistency
   var dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
   _insightIndex = dayOfYear % DAILY_INSIGHTS.length;
-
   var today = new Date();
   var dateStr = today.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-  var daysLived = t.day;
-
-  renderInsightCard(container, _insightIndex, dateStr, daysLived);
+  renderInsightCard(container, _insightIndex, dateStr, daysLived || 0);
 }
 
 function renderInsightCard(container, idx, dateStr, daysLived) {

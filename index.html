@@ -457,81 +457,6 @@
     </div>
   </section>
 
-  <!-- ══════════════════════════════════════════
-       FEATURE 3: DAILY SALAH TRACKER
-       ══════════════════════════════════════════ -->
-  <section class="section tracker-section" id="tracker-section">
-    <div class="section-inner">
-      <div class="section-heading">
-        <span class="sh-line"></span>
-        <span class="sh-icon">◆</span>
-        <span class="sh-text">TODAY'S IBADAH TRACKER</span>
-        <span class="sh-icon">◆</span>
-        <span class="sh-line"></span>
-      </div>
-      <div class="tracker-grid">
-
-        <!-- Salah -->
-        <div class="tracker-card">
-          <div class="tracker-card-title">🕌 Salah Today</div>
-          <div class="salah-list" id="salah-list">
-            <label class="salah-item"><input type="checkbox" data-salah="fajr"><span class="salah-name">Fajr</span><span class="salah-time">Dawn</span></label>
-            <label class="salah-item"><input type="checkbox" data-salah="dhuhr"><span class="salah-name">Dhuhr</span><span class="salah-time">Midday</span></label>
-            <label class="salah-item"><input type="checkbox" data-salah="asr"><span class="salah-name">Asr</span><span class="salah-time">Afternoon</span></label>
-            <label class="salah-item"><input type="checkbox" data-salah="maghrib"><span class="salah-name">Maghrib</span><span class="salah-time">Sunset</span></label>
-            <label class="salah-item"><input type="checkbox" data-salah="isha"><span class="salah-name">Isha</span><span class="salah-time">Night</span></label>
-          </div>
-          <div class="salah-progress">
-            <div class="salah-bar"><div class="salah-bar-fill" id="salah-bar-fill"></div></div>
-            <div class="salah-count"><span id="salah-done">0</span> / 5 prayers</div>
-          </div>
-          <div class="salah-streak">🔥 Streak: <span id="salah-streak">0</span> days</div>
-        </div>
-
-        <!-- Quran & Dhikr -->
-        <div class="tracker-card">
-          <div class="tracker-card-title">📖 Quran & Dhikr</div>
-          <div class="dhikr-list">
-            <label class="dhikr-item"><input type="checkbox" data-dhikr="quran"><span>Quran recitation today</span></label>
-            <label class="dhikr-item"><input type="checkbox" data-dhikr="morning"><span>Morning Adhkar (أذكار الصباح)</span></label>
-            <label class="dhikr-item"><input type="checkbox" data-dhikr="evening"><span>Evening Adhkar (أذكار المساء)</span></label>
-            <label class="dhikr-item"><input type="checkbox" data-dhikr="istighfar"><span>Istighfar (100×)</span></label>
-            <label class="dhikr-item"><input type="checkbox" data-dhikr="durood"><span>Durood Ibrahim</span></label>
-          </div>
-          <div class="dhikr-score">
-            <span id="dhikr-done">0</span>/5 completed
-            <div class="dhikr-msg" id="dhikr-msg">Start your day with remembrance.</div>
-          </div>
-        </div>
-
-        <!-- Weekly Report -->
-        <div class="tracker-card tracker-report">
-          <div class="tracker-card-title">📊 This Week</div>
-          <div class="week-grid" id="week-grid"><!-- filled by JS --></div>
-          <div class="week-summary" id="week-summary"><!-- filled by JS --></div>
-          <button class="btn-reset-tracker" id="btn-reset-tracker">↺ Reset Today</button>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ══════════════════════════════════════════
-       FEATURE 4: DAILY INSIGHT (Return Hook)
-       ══════════════════════════════════════════ -->
-  <section class="section insight-section" id="insight-section">
-    <div class="section-inner">
-      <div class="section-heading">
-        <span class="sh-line"></span>
-        <span class="sh-icon">◆</span>
-        <span class="sh-text">TODAY'S REFLECTION</span>
-        <span class="sh-icon">◆</span>
-        <span class="sh-line"></span>
-      </div>
-      <div class="insight-card" id="insight-card"><!-- filled by JS --></div>
-    </div>
-  </section>
-
   <!-- ── FOOTER AYAH ── -->
   <div class="footer-ayah">
     <span class="faq-mark">"</span>
@@ -546,6 +471,83 @@
   </div>
 
 </div><!-- /results-section -->
+
+<!-- ═══════════════════════════════════════════════
+     ALWAYS-VISIBLE: DAILY IBADAH TRACKER
+     (works without entering DOB — daily return hook)
+     ═══════════════════════════════════════════════ -->
+<section class="section tracker-section" id="tracker-section">
+  <div class="section-inner">
+    <div class="section-heading">
+      <span class="sh-line"></span>
+      <span class="sh-icon">◆</span>
+      <span class="sh-text">TODAY'S IBADAH TRACKER</span>
+      <span class="sh-icon">◆</span>
+      <span class="sh-line"></span>
+    </div>
+    <div class="tracker-sub-heading">Track your daily عبادات — saved on your device, private to you.</div>
+    <div class="tracker-grid">
+
+      <!-- Salah -->
+      <div class="tracker-card">
+        <div class="tracker-card-title">🕌 Salah Today</div>
+        <div class="salah-list" id="salah-list">
+          <label class="salah-item"><input type="checkbox" data-salah="fajr"><span class="salah-name">Fajr</span><span class="salah-time">Dawn</span></label>
+          <label class="salah-item"><input type="checkbox" data-salah="dhuhr"><span class="salah-name">Dhuhr</span><span class="salah-time">Midday</span></label>
+          <label class="salah-item"><input type="checkbox" data-salah="asr"><span class="salah-name">Asr</span><span class="salah-time">Afternoon</span></label>
+          <label class="salah-item"><input type="checkbox" data-salah="maghrib"><span class="salah-name">Maghrib</span><span class="salah-time">Sunset</span></label>
+          <label class="salah-item"><input type="checkbox" data-salah="isha"><span class="salah-name">Isha</span><span class="salah-time">Night</span></label>
+        </div>
+        <div class="salah-progress">
+          <div class="salah-bar"><div class="salah-bar-fill" id="salah-bar-fill"></div></div>
+          <div class="salah-count"><span id="salah-done">0</span> / 5 prayers</div>
+        </div>
+        <div class="salah-streak">🔥 Streak: <span id="salah-streak">0</span> days</div>
+      </div>
+
+      <!-- Quran & Dhikr -->
+      <div class="tracker-card">
+        <div class="tracker-card-title">📖 Quran &amp; Dhikr</div>
+        <div class="dhikr-list">
+          <label class="dhikr-item"><input type="checkbox" data-dhikr="quran"><span>Quran recitation today</span></label>
+          <label class="dhikr-item"><input type="checkbox" data-dhikr="morning"><span>Morning Adhkar (أذكار الصباح)</span></label>
+          <label class="dhikr-item"><input type="checkbox" data-dhikr="evening"><span>Evening Adhkar (أذكار المساء)</span></label>
+          <label class="dhikr-item"><input type="checkbox" data-dhikr="istighfar"><span>Istighfar (100×)</span></label>
+          <label class="dhikr-item"><input type="checkbox" data-dhikr="durood"><span>Durood Ibrahim</span></label>
+        </div>
+        <div class="dhikr-score">
+          <span id="dhikr-done">0</span>/5 completed
+          <div class="dhikr-msg" id="dhikr-msg">Start your day with remembrance.</div>
+        </div>
+      </div>
+
+      <!-- Weekly Report -->
+      <div class="tracker-card tracker-report">
+        <div class="tracker-card-title">📊 This Week</div>
+        <div class="week-grid" id="week-grid"></div>
+        <div class="week-summary" id="week-summary"></div>
+        <button class="btn-reset-tracker" id="btn-reset-tracker">↺ Reset Today</button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     ALWAYS-VISIBLE: DAILY INSIGHT
+     ═══════════════════════════════════════════════ -->
+<section class="section insight-section" id="insight-section">
+  <div class="section-inner">
+    <div class="section-heading">
+      <span class="sh-line"></span>
+      <span class="sh-icon">◆</span>
+      <span class="sh-text">TODAY'S REFLECTION</span>
+      <span class="sh-icon">◆</span>
+      <span class="sh-line"></span>
+    </div>
+    <div class="insight-card" id="insight-card"></div>
+  </div>
+</section>
 
 <!-- ═══ SHARE MODAL ═══ -->
 <div class="share-modal hidden" id="share-modal" role="dialog" aria-modal="true" aria-label="Share your timeline">

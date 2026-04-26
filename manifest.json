@@ -1,12 +1,12 @@
 {
-  "name": "MultiMain WaqtX — Age Calculator",
+  "name": "WaqtX — Your Life in Time & History",
   "short_name": "WaqtX",
-  "description": "See your life in numbers. Days, heartbeats, moments — updated every second.",
+  "description": "Discover your timeline through Islamic history, world events and meaningful insights.",
   "start_url": "/MultiMian-WaqtX/",
   "scope": "/MultiMian-WaqtX/",
   "display": "standalone",
-  "background_color": "#0B0F0C",
-  "theme_color": "#0B0F0C",
+  "background_color": "#0d1a0f",
+  "theme_color": "#0d1a0f",
   "orientation": "portrait-primary",
   "icons": [
     { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },

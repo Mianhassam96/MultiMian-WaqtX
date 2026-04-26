@@ -1,14 +1,12 @@
 'use strict';
-var CACHE = 'waqtx-v15';
+var CACHE = 'waqtx-v1';
 var ASSETS = [
   './',
   './index.html',
   './style.css',
-  './index.js',
-  './lang.js',
+  './app.js',
   './manifest.json',
   './favicon.svg',
-  './favicon-32.svg',
   './about.html',
   './contact.html',
   './privacy.html'
@@ -34,7 +32,6 @@ self.addEventListener('activate', function(e) {
 });
 
 self.addEventListener('fetch', function(e) {
-  // Network first for HTML, cache first for assets
   if (e.request.mode === 'navigate') {
     e.respondWith(
       fetch(e.request).catch(function() {

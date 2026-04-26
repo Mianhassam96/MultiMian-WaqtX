@@ -1880,3 +1880,14 @@ img { max-width: 100%; }
   .story-footer { flex-direction: column; align-items: flex-start; }
   .celebration { min-width: 240px; padding: 16px 20px; }
 }
+
+/* ── Name personalisation ── */
+.results-name-bar {
+  text-align: center;
+  padding: 12px 24px 0;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--gold);
+  letter-spacing: -0.01em;
+  opacity: 0.9;
+}

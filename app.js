@@ -6,6 +6,7 @@
 
 var AVG_LIFESPAN_YEARS = 75;
 var _birth = null;
+var _name  = '';
 
 /* ── Helpers ── */
 function el(id) { return document.getElementById(id); }
@@ -256,6 +257,10 @@ function renderAll(birth) {
   el('results-section').classList.remove('hidden');
   el('hero').style.minHeight = 'auto';
 
+  /* Personalise heading if name given */
+  var nameEl = el('results-name');
+  if (nameEl) nameEl.textContent = _name ? _name + '\u2019s Timeline' : 'Your Timeline';
+
   /* Glance */
   setText('g-days',    fmt(t.day));
   setText('g-hours',   fmt(t.hr));
@@ -300,11 +305,15 @@ function renderAll(birth) {
   /* Share preview */
   setText('sp-days',  fmt(t.day));
   setText('sp-hijri', hijriBirth.year + ' AH \u2013 ' + hijriNow.year + ' AH');
+  var spLogo = el('sp-logo');
+  if (spLogo) spLogo.textContent = _name ? '\u25C6 ' + _name : '\u25C6 WaqtX';
 
   /* Modal card */
   setText('scdl-pct',   pctInt + '%');
   setText('scdl-days',  fmt(t.day) + ' Days Lived');
   setText('scdl-hijri', hijriBirth.year + ' AH \u2013 ' + hijriNow.year + ' AH');
+  var scdlLogo = el('scdl-logo');
+  if (scdlLogo) scdlLogo.textContent = _name ? '\u25C6 ' + _name + ' \u2014 WaqtX' : '\u25C6 WaqtX';
 
   /* ── New Features (require birth) ── */
   renderLifeStory(birth, ageYears, hijriBirth, hijriNow, ramadans, t);
@@ -325,8 +334,11 @@ function renderAll(birth) {
     setText('g-seconds', (t2.sec / 1e6).toFixed(1));
   }, 1000);
 
-  /* Save DOB */
-  try { localStorage.setItem('waqtx_dob', birth.toISOString().split('T')[0]); } catch(e) {}
+  /* Save DOB + name */
+  try {
+    localStorage.setItem('waqtx_dob', birth.toISOString().split('T')[0]);
+    if (_name) localStorage.setItem('waqtx_name', _name);
+  } catch(e) {}
 
   /* Scroll to results */
   setTimeout(function () {
@@ -362,6 +374,8 @@ function openStoryModal() {
   setText('story-sc-days', fmt(t.day));
   setText('story-sc-ramadans', ramadans + ' Ramadans witnessed');
   setText('story-sc-hijri', hijriBirth.year + ' AH \u2013 ' + hijriNow.year + ' AH');
+  var storyLogo = el('story-card-dl') && el('story-card-dl').querySelector('.scdl-logo');
+  if (storyLogo) storyLogo.textContent = _name ? '\u25C6 ' + _name + ' \u2014 WaqtX' : '\u25C6 WaqtX';
   modal.classList.remove('hidden');
   document.body.style.overflow = 'hidden';
 }
@@ -419,6 +433,7 @@ el('btn-calculate').addEventListener('click', function () {
   var dob   = el('hero-dob').value;
   var errEl = el('hero-error');
   errEl.classList.add('hidden');
+  _name = (el('hero-name').value || '').trim();
 
   if (!dob) {
     errEl.textContent = 'Please select your date of birth.';
@@ -448,7 +463,8 @@ el('btn-start-again').addEventListener('click', function () {
   el('results-section').classList.add('hidden');
   el('hero').style.minHeight = '';
   el('hero-dob').value = '';
-  _birth = null;
+  var nameInp = el('hero-name'); if (nameInp) nameInp.value = '';
+  _birth = null; _name = '';
   clearInterval(window._ticker);
   /* Reset steps */
   [1,2,3,4].forEach(function(n) {
@@ -616,14 +632,13 @@ if (pwaDismiss) pwaDismiss.addEventListener('click', function () {
   try { localStorage.setItem('pwa_dismissed', Date.now()); } catch(e) {}
 });
 
-/* Restore last DOB */
+/* Restore last DOB + name */
 (function () {
   try {
     var saved = localStorage.getItem('waqtx_dob');
-    if (saved) {
-      var inp = el('hero-dob');
-      if (inp) inp.value = saved;
-    }
+    if (saved) { var inp = el('hero-dob'); if (inp) inp.value = saved; }
+    var savedName = localStorage.getItem('waqtx_name');
+    if (savedName) { var nameInp = el('hero-name'); if (nameInp) nameInp.value = savedName; }
   } catch(e) {}
 })();
 
@@ -687,8 +702,9 @@ function renderLifeStory(birth, ageYears, hijriBirth, hijriNow, ramadans, t) {
   var screenYears = (ageYears * 0.17).toFixed(1);
   var meaningfulHours = Math.round(ageYears * 365 * 0.08); // ~8% meaningful
 
+  var greeting = _name ? _name + ', you were born' : 'You were born';
   var lines = [
-    'You were born on a <strong>' + birthDay + '</strong> in <em>' + birthMonth + ' ' + birthYear + '</em> — a day chosen by Allah, not by chance.',
+    greeting + ' on a <strong>' + birthDay + '</strong> in <em>' + birthMonth + ' ' + birthYear + '</em> — a day chosen by Allah, not by chance.',
     'In the Islamic calendar, that was the year <strong>' + hijriBirth.year + ' AH</strong>, in the month of <em>' + (HIJRI_MONTHS[(hijriBirth.month - 1) || 0]) + '</em>.',
     'Since that day, you have lived <strong>' + fmt(t.day) + ' days</strong> — each one a gift, each one a test.',
     'You have witnessed <strong>' + ramadans + ' Ramadans</strong> — ' + ramadans + ' months of mercy, forgiveness, and renewal.',

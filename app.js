@@ -4,73 +4,73 @@
    WaqtX — App Logic v1
    ═══════════════════════════════════════════════ */
 
-var AVG_LIFESPAN_YEARS = 75;
-var _birth = null;
-var _name  = '';
+const AVG_LIFESPAN_YEARS = 75;
+let _birth = null;
+let _name  = '';
 
 /* ── Helpers ── */
 function el(id) { return document.getElementById(id); }
-function setText(id, v) { var e = el(id); if (e) e.textContent = v; }
+function setText(id, v) { const e = el(id); if (e) e.textContent = v; }
 function fmt(n) { return Number(n).toLocaleString(); }
 
 function parseDOB(str) {
-  var p = str.split('-');
+  const p = str.split('-');
   return new Date(+p[0], +p[1] - 1, +p[2]);
 }
 
 function getTotals(birth) {
-  var ms = Date.now() - birth.getTime();
-  var sec = Math.floor(ms / 1000);
-  var min = Math.floor(sec / 60);
-  var hr  = Math.floor(min / 60);
-  var day = Math.floor(hr / 24);
-  return { sec: sec, min: min, hr: hr, day: day };
+  const ms  = Date.now() - birth.getTime();
+  const sec = Math.floor(ms / 1000);
+  const min = Math.floor(sec / 60);
+  const hr  = Math.floor(min / 60);
+  const day = Math.floor(hr / 24);
+  return { sec, min, hr, day };
 }
 
 function getBreakdown(birth) {
-  var n = new Date();
-  var yy = n.getFullYear() - birth.getFullYear();
-  var mo = n.getMonth()    - birth.getMonth();
-  var dd = n.getDate()     - birth.getDate();
+  const n  = new Date();
+  let yy   = n.getFullYear() - birth.getFullYear();
+  let mo   = n.getMonth()    - birth.getMonth();
+  let dd   = n.getDate()     - birth.getDate();
   if (dd < 0) { dd += new Date(n.getFullYear(), n.getMonth(), 0).getDate(); mo--; }
   if (mo < 0) { mo += 12; yy--; }
-  return { yy: yy, mo: mo, dd: dd };
+  return { yy, mo, dd };
 }
 
 /* ── Gregorian → Hijri ── */
 function toHijri(date) {
-  var jd = Math.floor((14 + date.getMonth() + 1) / 12);
-  var y  = date.getFullYear() + 4800 - jd;
-  var m  = date.getMonth() + 1 + 12 * jd - 3;
-  var jdn = date.getDate()
+  const jd = Math.floor((14 + date.getMonth() + 1) / 12);
+  const y  = date.getFullYear() + 4800 - jd;
+  const m  = date.getMonth() + 1 + 12 * jd - 3;
+  let jdn = date.getDate()
     + Math.floor((153 * m + 2) / 5)
     + 365 * y
     + Math.floor(y / 4)
     - Math.floor(y / 100)
     + Math.floor(y / 400)
     - 32045;
-  var l = jdn - 1948440 + 10632;
-  var n = Math.floor((l - 1) / 10631);
-  l = l - 10631 * n + 354;
-  var j = (Math.floor((10985 - l) / 5316)) * (Math.floor((50 * l) / 17719))
-        + (Math.floor(l / 5670)) * (Math.floor((43 * l) / 15238));
-  l = l
+  const l = jdn - 1948440 + 10632;
+  const n = Math.floor((l - 1) / 10631);
+  let l2 = l - 10631 * n + 354;
+  const j = (Math.floor((10985 - l2) / 5316)) * (Math.floor((50 * l2) / 17719))
+          + (Math.floor(l2 / 5670)) * (Math.floor((43 * l2) / 15238));
+  l2 = l2
     - (Math.floor((30 - j) / 15)) * (Math.floor((17719 * j) / 50))
     - (Math.floor(j / 16)) * (Math.floor((15238 * j) / 43))
     + 29;
-  var hYear  = 19 * n + Math.floor(j / 4) + Math.floor(l / 29) - 30;
-  var hMonth = Math.floor((59 * (l - 1) + 1) / 1771);
+  const hYear  = 19 * n + Math.floor(j / 4) + Math.floor(l2 / 29) - 30;
+  const hMonth = Math.floor((59 * (l2 - 1) + 1) / 1771);
   return { year: hYear, month: hMonth };
 }
 
-var HIJRI_MONTHS = [
+const HIJRI_MONTHS = [
   'Muharram', 'Safar', "Rabi' al-Awwal", "Rabi' al-Thani",
   'Jumada al-Awwal', 'Jumada al-Thani', 'Rajab', "Sha'ban",
   'Ramadan', 'Shawwal', "Dhu al-Qi'dah", 'Dhu al-Hijjah'
 ];
 
-/* ── World Data (Pakistan-focused, 1947–2024) ── */
-var WORLD_DATA = {
+/* ── World Data (Pakistan-focused, 1947–2025) ── */
+const WORLD_DATA = {
   1947: { pm: 'Liaquat Ali Khan',        president: 'Muhammad Ali Jinnah',    currency: 'Pakistani Rupee (PKR)', pop: '2.3 Billion', event: 'Pakistan Independence',        tech: 'First Transistor Invented' },
   1948: { pm: 'Liaquat Ali Khan',        president: 'Khawaja Nazimuddin',     currency: 'Pakistani Rupee (PKR)', pop: '2.4 Billion', event: 'State of Israel Founded',       tech: 'Long-Playing Record (LP)' },
   1949: { pm: 'Liaquat Ali Khan',        president: 'Khawaja Nazimuddin',     currency: 'Pakistani Rupee (PKR)', pop: '2.5 Billion', event: 'NATO Founded',                  tech: 'First Stored-Program Computer' },
@@ -159,21 +159,21 @@ function getWorldData(year) {
     currency: 'British Indian Rupee', pop: 'Below 2.3 Billion',
     event: 'World War II Era', tech: 'Early Radio & Aviation'
   };
-  return WORLD_DATA[2024];
+  return WORLD_DATA[2025];
 }
 
 /* ── Islamic Dates ── */
 function getNextRamadan() {
-  var today = new Date();
-  // Approximate Ramadan start dates (calculated)
-  var ramadans = [
-    new Date(2025, 2, 1),   // 1 Mar 2025
-    new Date(2026, 1, 18),  // 18 Feb 2026
-    new Date(2027, 1, 7),   // 7 Feb 2027
-    new Date(2028, 0, 27),  // 27 Jan 2028
-    new Date(2029, 0, 16)   // 16 Jan 2029
+  const today = new Date();
+  // Approximate Ramadan start dates
+  const ramadans = [
+    new Date(2025, 2, 1),
+    new Date(2026, 1, 18),
+    new Date(2027, 1, 7),
+    new Date(2028, 0, 27),
+    new Date(2029, 0, 16)
   ];
-  for (var i = 0; i < ramadans.length; i++) {
+  for (let i = 0; i < ramadans.length; i++) {
     if (ramadans[i] > today) {
       return ramadans[i].toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
     }
@@ -182,17 +182,17 @@ function getNextRamadan() {
 }
 
 function getNextJumua() {
-  var today = new Date();
-  var day = today.getDay(); // 0=Sun, 5=Fri
-  var daysUntil = (5 - day + 7) % 7;
-  if (daysUntil === 0) daysUntil = 7; // already Friday, next one
-  var next = new Date(today);
+  const today = new Date();
+  const day = today.getDay();
+  let daysUntil = (5 - day + 7) % 7;
+  if (daysUntil === 0) daysUntil = 7;
+  const next = new Date(today);
   next.setDate(today.getDate() + daysUntil);
   return next.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
 }
 
 function getMilestoneDate(birth, targetDays) {
-  var d = new Date(birth.getTime());
+  const d = new Date(birth.getTime());
   d.setDate(d.getDate() + targetDays);
   if (d <= new Date()) return 'Achieved \u2713';
   return d.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -200,22 +200,22 @@ function getMilestoneDate(birth, targetDays) {
 
 /* ── Ring Animation ── */
 function animateRing(pct) {
-  var ring = el('ring-fill');
+  const ring = el('ring-fill');
   if (!ring) return;
-  var circumference = 314;
-  var offset = circumference - (pct / 100) * circumference;
+  const circumference = 314;
+  const offset = circumference - (pct / 100) * circumference;
   setTimeout(function () { ring.style.strokeDashoffset = offset; }, 400);
 }
 
 /* ── Counter Animation ── */
 function animateCounter(elId, target, duration) {
-  var e = el(elId);
+  const e = el(elId);
   if (!e) return;
-  var steps = 60;
-  var step = Math.ceil(target / steps);
-  var current = 0;
-  var interval = Math.floor(duration / steps);
-  var timer = setInterval(function () {
+  const steps = 60;
+  const step = Math.ceil(target / steps);
+  let current = 0;
+  const interval = Math.floor(duration / steps);
+  const timer = setInterval(function () {
     current = Math.min(current + step, target);
     e.textContent = Number(current).toLocaleString();
     if (current >= target) clearInterval(timer);
@@ -225,25 +225,25 @@ function animateCounter(elId, target, duration) {
 /* ── Main Render ── */
 function renderAll(birth) {
   _birth = birth;
-  var t = getTotals(birth);
-  var b = getBreakdown(birth);
-  var ageYears = b.yy + b.mo / 12 + b.dd / 365;
-  var pct = Math.min(100, (ageYears / AVG_LIFESPAN_YEARS) * 100);
-  var pctRound = Math.round(pct * 10) / 10;
-  var pctInt = Math.round(pct);
+  const t = getTotals(birth);
+  const b = getBreakdown(birth);
+  const ageYears = b.yy + b.mo / 12 + b.dd / 365;
+  const pct = Math.min(100, (ageYears / AVG_LIFESPAN_YEARS) * 100);
+  const pctRound = Math.round(pct * 10) / 10;
+  const pctInt = Math.round(pct);
 
-  var hijriBirth = toHijri(birth);
-  var hijriNow   = toHijri(new Date());
-  var islamicYears = hijriNow.year - hijriBirth.year;
-  var ramadans = Math.floor(ageYears);
+  const hijriBirth = toHijri(birth);
+  const hijriNow   = toHijri(new Date());
+  const islamicYears = hijriNow.year - hijriBirth.year;
+  const ramadans = Math.floor(ageYears);
 
-  var worldData = getWorldData(birth.getFullYear());
-  var sleepYears = (ageYears * 0.333).toFixed(1);
-  var heartBillions = (t.day * 24 * 60 * 70 / 1e9).toFixed(2);
-  var secondsMillion = (t.sec / 1e6).toFixed(1);
+  const worldData = getWorldData(birth.getFullYear());
+  const sleepYears = (ageYears * 0.333).toFixed(1);
+  const heartBillions = (t.day * 24 * 60 * 70 / 1e9).toFixed(2);
+  const secondsMillion = (t.sec / 1e6).toFixed(1);
 
-  var dayName = birth.toLocaleDateString('en-US', { weekday: 'long' });
-  var daySubMap = {
+  const dayName = birth.toLocaleDateString('en-US', { weekday: 'long' });
+  const daySubMap = {
     Friday:    "Jumu'ah \u2013 the best day of the week.",
     Monday:    'A blessed day of the week.',
     Thursday:  'A day of fasting for many.',
@@ -258,7 +258,7 @@ function renderAll(birth) {
   el('hero').style.minHeight = 'auto';
 
   /* Personalise heading if name given */
-  var nameEl = el('results-name');
+  const nameEl = el('results-name');
   if (nameEl) nameEl.textContent = _name ? _name : 'Your Timeline';
 
   /* Glance */
@@ -298,21 +298,21 @@ function renderAll(birth) {
   /* Milestones */
   setText('ms-jumua',  getNextJumua());
   setText('ms-10k',    getMilestoneDate(birth, 10000));
-  var age30 = new Date(birth.getFullYear() + 30, birth.getMonth(), birth.getDate());
+  const age30 = new Date(birth.getFullYear() + 30, birth.getMonth(), birth.getDate());
   setText('ms-age30',  age30 <= new Date() ? 'Achieved \u2713' : age30.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }));
   setText('ms-1b',     getMilestoneDate(birth, Math.floor(1e9 / 86400)));
 
   /* Share preview */
   setText('sp-days',  fmt(t.day));
   setText('sp-hijri', hijriBirth.year + ' AH \u2013 ' + hijriNow.year + ' AH');
-  var spLogo = el('sp-logo');
+  const spLogo = el('sp-logo');
   if (spLogo) spLogo.textContent = _name ? '\u25C6 ' + _name : '\u25C6 WaqtX';
 
   /* Modal card */
   setText('scdl-pct',   pctInt + '%');
   setText('scdl-days',  fmt(t.day) + ' Days Lived');
   setText('scdl-hijri', hijriBirth.year + ' AH \u2013 ' + hijriNow.year + ' AH');
-  var scdlLogo = el('scdl-logo');
+  const scdlLogo = el('scdl-logo');
   if (scdlLogo) scdlLogo.textContent = _name ? '\u25C6 ' + _name + ' \u2014 WaqtX' : '\u25C6 WaqtX';
 
   /* ── New Features (require birth) ── */
@@ -329,7 +329,7 @@ function renderAll(birth) {
   /* Live tick every second */
   clearInterval(window._ticker);
   window._ticker = setInterval(function () {
-    var t2 = getTotals(_birth);
+    const t2 = getTotals(_birth);
     setText('g-hours',   fmt(t2.hr));
     setText('g-seconds', (t2.sec / 1e6).toFixed(1));
   }, 1000);
@@ -342,7 +342,7 @@ function renderAll(birth) {
 
   /* Scroll to results */
   setTimeout(function () {
-    var gs = el('results-section');
+    const gs = el('results-section');
     if (gs) gs.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, 200);
 }
@@ -350,11 +350,11 @@ function renderAll(birth) {
 /* ── Progressive Step Reveal ── */
 function revealStep(step) {
   document.querySelectorAll('.journey-step').forEach(function(s) {
-    var n = parseInt(s.getAttribute('data-step'));
+    const n = parseInt(s.getAttribute('data-step'));
     s.classList.toggle('active', n <= step);
     s.classList.toggle('done', n < step);
   });
-  var block = el('step-' + step);
+  const block = el('step-' + step);
   if (!block) return;
   block.classList.remove('hidden');
   block.classList.add('step-entering');
@@ -364,17 +364,17 @@ function revealStep(step) {
 
 /* ── Story Share Modal ── */
 function openStoryModal() {
-  var modal = el('story-modal');
+  const modal = el('story-modal');
   if (!modal || !_birth) return;
-  var t = getTotals(_birth);
-  var b = getBreakdown(_birth);
-  var hijriBirth = toHijri(_birth);
-  var hijriNow = toHijri(new Date());
-  var ramadans = Math.floor(b.yy + b.mo / 12);
+  const t = getTotals(_birth);
+  const b = getBreakdown(_birth);
+  const hijriBirth = toHijri(_birth);
+  const hijriNow = toHijri(new Date());
+  const ramadans = Math.floor(b.yy + b.mo / 12);
   setText('story-sc-days', fmt(t.day));
   setText('story-sc-ramadans', ramadans + ' Ramadans witnessed');
   setText('story-sc-hijri', hijriBirth.year + ' AH \u2013 ' + hijriNow.year + ' AH');
-  var storyLogo = el('story-card-dl') && el('story-card-dl').querySelector('.scdl-logo');
+  const storyLogo = el('story-card-dl') && el('story-card-dl').querySelector('.scdl-logo');
   if (storyLogo) storyLogo.textContent = _name ? '\u25C6 ' + _name + ' \u2014 WaqtX' : '\u25C6 WaqtX';
   modal.classList.remove('hidden');
   document.body.style.overflow = 'hidden';
@@ -382,14 +382,13 @@ function openStoryModal() {
 
 /* ── Loading Sequence ── */
 function showLoading(cb) {
-  var overlay = el('loading-overlay');
-  var textEl  = el('loading-text');
-  var barFill = el('loading-bar-fill');
+  const overlay = el('loading-overlay');
+  const textEl  = el('loading-text');
+  const barFill = el('loading-bar-fill');
 
   overlay.classList.remove('hidden');
   document.body.style.overflow = 'hidden';
 
-  /* Reset and animate bar */
   if (barFill) {
     barFill.style.transition = 'none';
     barFill.style.width = '0%';
@@ -399,16 +398,16 @@ function showLoading(cb) {
     }, 30);
   }
 
-  var msgs = [
+  const msgs = [
     'Analyzing your time\u2026',
     'Calculating your Islamic history\u2026',
     'Building your timeline\u2026'
   ];
-  var i = 0;
+  let i = 0;
   textEl.textContent = msgs[0];
   textEl.style.opacity = '1';
 
-  var seq = setInterval(function () {
+  const seq = setInterval(function () {
     i++;
     if (i < msgs.length) {
       textEl.style.opacity = '0';
@@ -430,8 +429,8 @@ function showLoading(cb) {
 
 /* ── Event Listeners ── */
 el('btn-calculate').addEventListener('click', function () {
-  var dob   = el('hero-dob').value;
-  var errEl = el('hero-error');
+  const dob   = el('hero-dob').value;
+  const errEl = el('hero-error');
   errEl.classList.add('hidden');
   _name = (el('hero-name').value || '').trim();
 
@@ -440,13 +439,13 @@ el('btn-calculate').addEventListener('click', function () {
     errEl.classList.remove('hidden');
     return;
   }
-  var birth = parseDOB(dob);
+  const birth = parseDOB(dob);
   if (birth > new Date()) {
     errEl.textContent = 'Date of birth cannot be in the future.';
     errEl.classList.remove('hidden');
     return;
   }
-  var minYear = 1900;
+  const minYear = 1900;
   if (birth.getFullYear() < minYear) {
     errEl.textContent = 'Please enter a year after ' + minYear + '.';
     errEl.classList.remove('hidden');
@@ -463,12 +462,11 @@ el('btn-start-again').addEventListener('click', function () {
   el('results-section').classList.add('hidden');
   el('hero').style.minHeight = '';
   el('hero-dob').value = '';
-  var nameInp = el('hero-name'); if (nameInp) nameInp.value = '';
+  const nameInp = el('hero-name'); if (nameInp) nameInp.value = '';
   _birth = null; _name = '';
   clearInterval(window._ticker);
-  /* Reset steps */
   [1,2,3,4].forEach(function(n) {
-    var b = el('step-' + n);
+    const b = el('step-' + n);
     if (b && n > 1) b.classList.add('hidden');
   });
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -490,8 +488,8 @@ el('btn-download').addEventListener('click', function () {
 
 /* Copy link */
 el('btn-copy-link').addEventListener('click', function () {
-  var btn = this;
-  var url = 'https://mianhassam96.github.io/MultiMian-WaqtX/';
+  const btn = this;
+  const url = 'https://mianhassam96.github.io/MultiMian-WaqtX/';
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(url).then(function () {
       btn.textContent = '\u2713 Copied!';
@@ -501,8 +499,7 @@ el('btn-copy-link').addEventListener('click', function () {
       setTimeout(function () { btn.textContent = '\uD83D\uDD17 Copy Link'; }, 2000);
     });
   } else {
-    /* Fallback */
-    var ta = document.createElement('textarea');
+    const ta = document.createElement('textarea');
     ta.value = url;
     ta.style.position = 'fixed';
     ta.style.opacity = '0';
@@ -528,16 +525,16 @@ el('share-modal').addEventListener('click', function (e) {
 
 /* Download card */
 el('btn-dl-card').addEventListener('click', function () {
-  var card = el('share-card-dl');
+  const card = el('share-card-dl');
   if (typeof html2canvas === 'undefined') {
     alert('Please take a screenshot to save your card.');
     return;
   }
-  var btn = this;
+  const btn = this;
   btn.textContent = 'Generating\u2026';
   btn.disabled = true;
   html2canvas(card, { backgroundColor: '#061008', scale: 2 }).then(function (canvas) {
-    var a = document.createElement('a');
+    const a = document.createElement('a');
     a.download = 'waqtx-timeline.png';
     a.href = canvas.toDataURL('image/png');
     a.click();
@@ -551,21 +548,20 @@ el('btn-dl-card').addEventListener('click', function () {
 
 /* Hamburger */
 el('hamburger').addEventListener('click', function () {
-  var links = el('nav-links');
+  const links = el('nav-links');
   if (links) links.classList.toggle('open');
 });
 
-/* Close mobile menu on link click */
 document.querySelectorAll('.nav-link').forEach(function (link) {
   link.addEventListener('click', function () {
-    var links = el('nav-links');
+    const links = el('nav-links');
     if (links) links.classList.remove('open');
   });
 });
 
 /* Navbar scroll effect */
 window.addEventListener('scroll', function () {
-  var nav = el('navbar');
+  const nav = el('navbar');
   if (nav) {
     if (window.scrollY > 20) {
       nav.style.borderBottomColor = 'rgba(201,168,76,0.2)';
@@ -577,57 +573,57 @@ window.addEventListener('scroll', function () {
 
 /* Story Share Modal */
 (function() {
-  var btn = el('btn-story-share');
+  const btn = el('btn-story-share');
   if (btn) btn.addEventListener('click', openStoryModal);
-  var closeBtn = el('story-modal-close');
+  const closeBtn = el('story-modal-close');
   if (closeBtn) closeBtn.addEventListener('click', function() {
     el('story-modal').classList.add('hidden');
     document.body.style.overflow = '';
   });
-  var storyModal = el('story-modal');
+  const storyModal = el('story-modal');
   if (storyModal) storyModal.addEventListener('click', function(e) {
     if (e.target === this) { this.classList.add('hidden'); document.body.style.overflow = ''; }
   });
-  var dlBtn = el('btn-story-dl');
+  const dlBtn = el('btn-story-dl');
   if (dlBtn) dlBtn.addEventListener('click', function() {
-    var card = el('story-card-dl');
+    const card = el('story-card-dl');
     if (typeof html2canvas === 'undefined') { alert('Please screenshot to save.'); return; }
-    var btn = this; btn.textContent = 'Generating\u2026'; btn.disabled = true;
+    const dlBtnRef = this; dlBtnRef.textContent = 'Generating\u2026'; dlBtnRef.disabled = true;
     html2canvas(card, { backgroundColor: '#061008', scale: 2 }).then(function(canvas) {
-      var a = document.createElement('a');
+      const a = document.createElement('a');
       a.download = 'waqtx-story.png';
       a.href = canvas.toDataURL('image/png');
       a.click();
-      btn.textContent = 'Downloaded!';
-      setTimeout(function() { btn.textContent = '\u2B07 Download Story Card'; btn.disabled = false; }, 2000);
-    }).catch(function() { btn.textContent = '\u2B07 Download Story Card'; btn.disabled = false; });
+      dlBtnRef.textContent = 'Downloaded!';
+      setTimeout(function() { dlBtnRef.textContent = '\u2B07 Download Story Card'; dlBtnRef.disabled = false; }, 2000);
+    }).catch(function() { dlBtnRef.textContent = '\u2B07 Download Story Card'; dlBtnRef.disabled = false; });
   });
 })();
 
 /* PWA Install */
-var _deferredInstall = null;
+let _deferredInstall = null;
 window.addEventListener('beforeinstallprompt', function (e) {
   e.preventDefault();
   _deferredInstall = e;
   setTimeout(function () {
-    var p = el('pwa-prompt');
+    const p = el('pwa-prompt');
     if (p) p.classList.remove('hidden');
   }, 10000);
 });
 
-var pwaInstall = el('pwa-install');
-var pwaDismiss = el('pwa-dismiss');
+const pwaInstall = el('pwa-install');
+const pwaDismiss = el('pwa-dismiss');
 if (pwaInstall) pwaInstall.addEventListener('click', function () {
   if (!_deferredInstall) return;
   _deferredInstall.prompt();
   _deferredInstall.userChoice.then(function () {
     _deferredInstall = null;
-    var p = el('pwa-prompt');
+    const p = el('pwa-prompt');
     if (p) p.classList.add('hidden');
   });
 });
 if (pwaDismiss) pwaDismiss.addEventListener('click', function () {
-  var p = el('pwa-prompt');
+  const p = el('pwa-prompt');
   if (p) p.classList.add('hidden');
   try { localStorage.setItem('pwa_dismissed', Date.now()); } catch(e) {}
 });
@@ -635,10 +631,10 @@ if (pwaDismiss) pwaDismiss.addEventListener('click', function () {
 /* Restore last DOB + name */
 (function () {
   try {
-    var saved = localStorage.getItem('waqtx_dob');
-    if (saved) { var inp = el('hero-dob'); if (inp) inp.value = saved; }
-    var savedName = localStorage.getItem('waqtx_name');
-    if (savedName) { var nameInp = el('hero-name'); if (nameInp) nameInp.value = savedName; }
+    const saved = localStorage.getItem('waqtx_dob');
+    if (saved) { const inp = el('hero-dob'); if (inp) inp.value = saved; }
+    const savedName = localStorage.getItem('waqtx_name');
+    if (savedName) { const nameInp = el('hero-name'); if (nameInp) nameInp.value = savedName; }
   } catch(e) {}
 })();
 
@@ -649,8 +645,7 @@ renderInsight(0);
 
 /* ── Scroll-reveal animation ── */
 (function() {
-  /* Only apply reveal to result cards — NOT tracker/insight which are always visible */
-  var targets = document.querySelectorAll(
+  const targets = document.querySelectorAll(
     '#results-section .glance-card, #results-section .islamic-card, ' +
     '#results-section .world-card, #results-section .journey-card, ' +
     '#results-section .reflection-card, #results-section .milestones-card, ' +
@@ -660,7 +655,7 @@ renderInsight(0);
   targets.forEach(function(t) { t.classList.add('reveal'); });
 
   if ('IntersectionObserver' in window) {
-    var obs = new IntersectionObserver(function(entries) {
+    const obs = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
@@ -677,7 +672,7 @@ renderInsight(0);
 
 /* ── Celebration Toast ── */
 function showCelebration() {
-  var cel = el('celebration');
+  const cel = el('celebration');
   if (!cel) return;
   setText('cel-streak', getStreakCount());
   cel.classList.remove('hidden');
@@ -692,21 +687,19 @@ function showCelebration() {
    FEATURE 1 — LIFE STORY (Narrative)
    ══════════════════════════════════════════════ */
 function renderLifeStory(birth, ageYears, hijriBirth, hijriNow, ramadans, t) {
-  var container = el('story-body');
+  const container = el('story-body');
   if (!container) return;
 
-  var b = getBreakdown(birth);
-  var birthYear = birth.getFullYear();
-  var birthMonth = birth.toLocaleDateString('en-US', { month: 'long' });
-  var birthDay = birth.toLocaleDateString('en-US', { weekday: 'long' });
-  var fajrOpportunities = Math.floor(t.day);
-  var fridaysPassed = Math.floor(t.day / 7);
-  var sleepYears = (ageYears * 0.333).toFixed(1);
-  var screenYears = (ageYears * 0.17).toFixed(1);
-  var meaningfulHours = Math.round(ageYears * 365 * 0.08); // ~8% meaningful
+  const b = getBreakdown(birth);
+  const birthYear = birth.getFullYear();
+  const birthMonth = birth.toLocaleDateString('en-US', { month: 'long' });
+  const birthDay = birth.toLocaleDateString('en-US', { weekday: 'long' });
+  const fajrOpportunities = Math.floor(t.day);
+  const fridaysPassed = Math.floor(t.day / 7);
+  const sleepYears = (ageYears * 0.333).toFixed(1);
 
-  var greeting = _name ? _name + ', you were born' : 'You were born';
-  var lines = [
+  const greeting = _name ? _name + ', you were born' : 'You were born';
+  const lines = [
     greeting + ' on a <strong>' + birthDay + '</strong> in <em>' + birthMonth + ' ' + birthYear + '</em> — a day chosen by Allah, not by chance.',
     'In the Islamic calendar, that was the year <strong>' + hijriBirth.year + ' AH</strong>, in the month of <em>' + (HIJRI_MONTHS[(hijriBirth.month - 1) || 0]) + '</em>.',
     'Since that day, you have lived <strong>' + fmt(t.day) + ' days</strong> — each one a gift, each one a test.',
@@ -728,26 +721,26 @@ function renderLifeStory(birth, ageYears, hijriBirth, hijriNow, ramadans, t) {
    FEATURE 2 — TIME TRUTH
    ══════════════════════════════════════════════ */
 function renderTimeTruth(ageYears, t) {
-  var introEl   = el('truth-intro');
-  var gridEl    = el('truth-grid');
-  var verdictEl = el('truth-verdict');
+  const introEl   = el('truth-intro');
+  const gridEl    = el('truth-grid');
+  const verdictEl = el('truth-verdict');
   if (!gridEl) return;
 
-  var sleepYears    = +(ageYears * 0.333).toFixed(1);
-  var screenYears   = +(ageYears * 0.17).toFixed(1);
-  var workYears     = +(ageYears * 0.13).toFixed(1);
-  var eatYears      = +(ageYears * 0.04).toFixed(1);
-  var commYears     = +(ageYears * 0.05).toFixed(1);
-  var meaningYears  = +(ageYears - sleepYears - screenYears - workYears - eatYears - commYears).toFixed(1);
+  const sleepYears   = +(ageYears * 0.333).toFixed(1);
+  const screenYears  = +(ageYears * 0.17).toFixed(1);
+  const workYears    = +(ageYears * 0.13).toFixed(1);
+  const eatYears     = +(ageYears * 0.04).toFixed(1);
+  const commYears    = +(ageYears * 0.05).toFixed(1);
+  let meaningYears   = +(ageYears - sleepYears - screenYears - workYears - eatYears - commYears).toFixed(1);
   if (meaningYears < 0) meaningYears = 0;
 
-  var meaningPct = Math.round((meaningYears / ageYears) * 100);
+  const meaningPct = Math.round((meaningYears / ageYears) * 100);
 
   if (introEl) {
     introEl.innerHTML = 'You have lived <strong>' + ageYears.toFixed(1) + ' years</strong>. Here is where that time actually went — based on global averages.';
   }
 
-  var cards = [
+  const cards = [
     { icon: '😴', label: 'Sleeping',       value: sleepYears,   unit: 'Years', sub: '~8 hrs/day — your body needed rest.', cls: '' },
     { icon: '📱', label: 'Screen Time',    value: screenYears,  unit: 'Years', sub: '~4 hrs/day on phones, TV, social media.', cls: 'truth-bad' },
     { icon: '💼', label: 'Work / Study',   value: workYears,    unit: 'Years', sub: 'Building your dunya, day by day.', cls: '' },
@@ -767,7 +760,7 @@ function renderTimeTruth(ageYears, t) {
   }).join('');
 
   if (verdictEl) {
-    var msg = meaningPct < 10
+    const msg = meaningPct < 10
       ? 'Based on these averages, a relatively small portion — around <strong>' + meaningPct + '%</strong> — may have gone toward intentional growth. That is not a judgment. It is simply a starting point. The rest of your life can look different.'
       : meaningPct < 20
       ? 'Around <strong>' + meaningPct + '%</strong> of your time has likely gone toward meaningful activities. There is still a great deal of room to grow — and every day is a fresh opportunity to shift that balance.'
@@ -781,8 +774,8 @@ function renderTimeTruth(ageYears, t) {
 /* ══════════════════════════════════════════════
    FEATURE 3 — SALAH & IBADAH TRACKER
    ══════════════════════════════════════════════ */
-var TRACKER_KEY = 'waqtx_tracker';
-var STREAK_KEY  = 'waqtx_streak';
+const TRACKER_KEY = 'waqtx_tracker';
+const STREAK_KEY  = 'waqtx_streak';
 
 function getTodayKey() {
   return new Date().toISOString().split('T')[0];
@@ -790,7 +783,7 @@ function getTodayKey() {
 
 function loadTrackerData() {
   try {
-    var raw = localStorage.getItem(TRACKER_KEY);
+    const raw = localStorage.getItem(TRACKER_KEY);
     return raw ? JSON.parse(raw) : {};
   } catch(e) { return {}; }
 }
@@ -801,17 +794,17 @@ function saveTrackerData(data) {
 
 function getStreakCount() {
   try {
-    var data = loadTrackerData();
-    var today = getTodayKey();
-    var streak = 0;
-    var d = new Date();
-    for (var i = 0; i < 365; i++) {
-      var key = d.toISOString().split('T')[0];
-      var dayData = data[key];
+    const data = loadTrackerData();
+    const today = getTodayKey();
+    let streak = 0;
+    const d = new Date();
+    for (let i = 0; i < 365; i++) {
+      const key = d.toISOString().split('T')[0];
+      const dayData = data[key];
       if (!dayData) break;
-      var salahDone = (dayData.salah || []).length;
+      const salahDone = (dayData.salah || []).length;
       if (salahDone >= 5) { streak++; d.setDate(d.getDate() - 1); }
-      else if (key === today) { d.setDate(d.getDate() - 1); } // today not complete yet
+      else if (key === today) { d.setDate(d.getDate() - 1); }
       else break;
     }
     return streak;
@@ -819,55 +812,39 @@ function getStreakCount() {
 }
 
 function updateSalahUI() {
-  var data = loadTrackerData();
-  var today = getTodayKey();
-  var todayData = data[today] || { salah: [], dhikr: [] };
-  var salahDone = todayData.salah || [];
-  var dhikrDone = todayData.dhikr || [];
+  const data = loadTrackerData();
+  const today = getTodayKey();
+  const todayData = data[today] || { salah: [], dhikr: [] };
+  const salahDone = todayData.salah || [];
+  const dhikrDone = todayData.dhikr || [];
 
-  // Update salah checkboxes
   document.querySelectorAll('.salah-item').forEach(function(item) {
-    var name = item.querySelector('input').getAttribute('data-salah');
-    if (salahDone.indexOf(name) > -1) {
-      item.classList.add('checked');
-    } else {
-      item.classList.remove('checked');
-    }
+    const name = item.querySelector('input').getAttribute('data-salah');
+    item.classList.toggle('checked', salahDone.indexOf(name) > -1);
   });
 
-  // Update dhikr checkboxes
   document.querySelectorAll('.dhikr-item').forEach(function(item) {
-    var name = item.querySelector('input').getAttribute('data-dhikr');
-    if (dhikrDone.indexOf(name) > -1) {
-      item.classList.add('checked');
-    } else {
-      item.classList.remove('checked');
-    }
+    const name = item.querySelector('input').getAttribute('data-dhikr');
+    item.classList.toggle('checked', dhikrDone.indexOf(name) > -1);
   });
 
-  // Progress bar
-  var pct = (salahDone.length / 5) * 100;
-  var barFill = el('salah-bar-fill');
+  const pct = (salahDone.length / 5) * 100;
+  const barFill = el('salah-bar-fill');
   if (barFill) barFill.style.width = pct + '%';
   setText('salah-done', salahDone.length);
-
-  // Streak
   setText('salah-streak', getStreakCount());
 
-  /* Celebration on full completion */
-  var wasFull = el('salah-bar-fill') && el('salah-bar-fill').getAttribute('data-was-full') === '1';
+  const wasFull = barFill && barFill.getAttribute('data-was-full') === '1';
   if (salahDone.length === 5 && !wasFull) {
-    if (el('salah-bar-fill')) el('salah-bar-fill').setAttribute('data-was-full', '1');
+    if (barFill) barFill.setAttribute('data-was-full', '1');
     showCelebration();
   } else if (salahDone.length < 5) {
-    if (el('salah-bar-fill')) el('salah-bar-fill').setAttribute('data-was-full', '0');
+    if (barFill) barFill.setAttribute('data-was-full', '0');
   }
 
-  // Dhikr count
   setText('dhikr-done', dhikrDone.length);
 
-  // Dhikr message
-  var msgs = [
+  const msgs = [
     'Start your day with remembrance.',
     'One step closer to Allah. Keep going.',
     'Halfway there. Your heart is being polished.',
@@ -875,33 +852,31 @@ function updateSalahUI() {
     'Four done. One more — finish strong.',
     'All completed. \u0627\u0644\u062D\u0645\u062F \u0644\u0644\u0647 — Alhamdulillah!'
   ];
-  var dhikrMsg = el('dhikr-msg');
+  const dhikrMsg = el('dhikr-msg');
   if (dhikrMsg) dhikrMsg.textContent = msgs[Math.min(dhikrDone.length, 5)];
 
-  // Week grid
   renderWeekGrid(data);
 }
 
 function renderWeekGrid(data) {
-  var weekGrid = el('week-grid');
-  var weekSummary = el('week-summary');
+  const weekGrid = el('week-grid');
+  const weekSummary = el('week-summary');
   if (!weekGrid) return;
 
-  var dayLabels = ['Su','Mo','Tu','We','Th','Fr','Sa'];
-  var today = new Date();
-  var todayKey = getTodayKey();
-  var totalFull = 0;
-  var html = '';
+  const dayLabels = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+  const today = new Date();
+  const todayKey = getTodayKey();
+  let totalFull = 0;
+  let html = '';
 
-  /* Show last 7 days in chronological order */
-  for (var i = 6; i >= 0; i--) {
-    var d = new Date(today);
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today);
     d.setDate(today.getDate() - i);
-    var key = d.toISOString().split('T')[0];
-    var dayData = data[key] || { salah: [] };
-    var count = (dayData.salah || []).length;
-    var isToday = (key === todayKey);
-    var cls = count >= 5 ? 'full' : count > 0 ? 'partial' : isToday ? 'today' : '';
+    const key = d.toISOString().split('T')[0];
+    const dayData = data[key] || { salah: [] };
+    const count = (dayData.salah || []).length;
+    const isToday = (key === todayKey);
+    const cls = count >= 5 ? 'full' : count > 0 ? 'partial' : isToday ? 'today' : '';
     if (count >= 5) totalFull++;
     html += '<div class="week-day">' +
       '<div class="week-day-label">' + dayLabels[d.getDay()] + '</div>' +
@@ -920,11 +895,11 @@ function initTracker() {
   // Salah click handlers
   document.querySelectorAll('.salah-item').forEach(function(item) {
     item.addEventListener('click', function() {
-      var name = item.querySelector('input').getAttribute('data-salah');
-      var data = loadTrackerData();
-      var today = getTodayKey();
+      const name = item.querySelector('input').getAttribute('data-salah');
+      const data = loadTrackerData();
+      const today = getTodayKey();
       if (!data[today]) data[today] = { salah: [], dhikr: [] };
-      var idx = data[today].salah.indexOf(name);
+      const idx = data[today].salah.indexOf(name);
       if (idx > -1) data[today].salah.splice(idx, 1);
       else data[today].salah.push(name);
       saveTrackerData(data);
@@ -932,14 +907,13 @@ function initTracker() {
     });
   });
 
-  // Dhikr click handlers
   document.querySelectorAll('.dhikr-item').forEach(function(item) {
     item.addEventListener('click', function() {
-      var name = item.querySelector('input').getAttribute('data-dhikr');
-      var data = loadTrackerData();
-      var today = getTodayKey();
+      const name = item.querySelector('input').getAttribute('data-dhikr');
+      const data = loadTrackerData();
+      const today = getTodayKey();
       if (!data[today]) data[today] = { salah: [], dhikr: [] };
-      var idx = data[today].dhikr.indexOf(name);
+      const idx = data[today].dhikr.indexOf(name);
       if (idx > -1) data[today].dhikr.splice(idx, 1);
       else data[today].dhikr.push(name);
       saveTrackerData(data);
@@ -947,12 +921,11 @@ function initTracker() {
     });
   });
 
-  // Reset today
-  var resetBtn = el('btn-reset-tracker');
+  const resetBtn = el('btn-reset-tracker');
   if (resetBtn) {
     resetBtn.addEventListener('click', function() {
-      var data = loadTrackerData();
-      var today = getTodayKey();
+      const data = loadTrackerData();
+      const today = getTodayKey();
       data[today] = { salah: [], dhikr: [] };
       saveTrackerData(data);
       updateSalahUI();
@@ -965,7 +938,7 @@ function initTracker() {
 /* ══════════════════════════════════════════════
    FEATURE 4 — DAILY INSIGHT
    ══════════════════════════════════════════════ */
-var DAILY_INSIGHTS = [
+const DAILY_INSIGHTS = [
   {
     icon: '⏳', headline: 'Every second is a step closer.',
     body: 'Right now, as you read this, your life is moving forward. Not backward. Not paused. Forward. The question is not how much time you have — it is what you are doing with the time that is passing right now.',
@@ -1052,20 +1025,20 @@ var DAILY_INSIGHTS = [
   }
 ];
 
-var _insightIndex = 0;
+let _insightIndex = 0;
 
 function renderInsight(daysLived) {
-  var container = el('insight-card');
+  const container = el('insight-card');
   if (!container) return;
-  var dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
   _insightIndex = dayOfYear % DAILY_INSIGHTS.length;
-  var today = new Date();
-  var dateStr = today.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  const today = new Date();
+  const dateStr = today.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
   renderInsightCard(container, _insightIndex, dateStr, daysLived || 0);
 }
 
 function renderInsightCard(container, idx, dateStr, daysLived) {
-  var insight = DAILY_INSIGHTS[idx];
+  const insight = DAILY_INSIGHTS[idx];
   container.innerHTML =
     '<div class="insight-date">' + dateStr + (daysLived ? ' &nbsp;·&nbsp; Day ' + fmt(daysLived) + ' of your life' : '') + '</div>' +
     '<span class="insight-icon">' + insight.icon + '</span>' +
@@ -1081,8 +1054,8 @@ function renderInsightCard(container, idx, dateStr, daysLived) {
       '<button class="insight-nav-btn" id="insight-next">Next \u2192</button>' +
     '</div>';
 
-  var prevBtn = el('insight-prev');
-  var nextBtn = el('insight-next');
+  const prevBtn = el('insight-prev');
+  const nextBtn = el('insight-next');
   if (prevBtn) prevBtn.addEventListener('click', function() {
     _insightIndex = (_insightIndex - 1 + DAILY_INSIGHTS.length) % DAILY_INSIGHTS.length;
     renderInsightCard(container, _insightIndex, dateStr, daysLived);

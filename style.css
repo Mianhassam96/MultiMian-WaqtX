@@ -226,6 +226,12 @@ img { max-width: 100%; }
   opacity: 0.85;
   letter-spacing: 0.05em;
 }
+.hero-arabic-trans {
+  font-size: 0.75rem;
+  color: var(--text3);
+  font-style: italic;
+  margin-top: -12px;
+}
 .hero-divider {
   display: flex;
   align-items: center;
@@ -568,6 +574,13 @@ img { max-width: 100%; }
   font-size: 0.72rem;
   color: var(--gold);
   line-height: 1.5;
+}
+.ic-note {
+  font-size: 0.62rem;
+  color: var(--text3);
+  opacity: 0.6;
+  margin-top: 4px;
+  font-style: italic;
 }
 
 /* ── 11. World Section ── */

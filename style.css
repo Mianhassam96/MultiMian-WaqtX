@@ -112,7 +112,7 @@ img { max-width: 100%; }
   font-size: 1.35rem;
   letter-spacing: 0.12em;
   /* Green gradient for X */
-  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #16a34a 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

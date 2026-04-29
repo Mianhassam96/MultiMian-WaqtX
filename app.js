@@ -1452,17 +1452,13 @@ function renderInsightCard(container, idx, dateStr, daysLived) {
     try { localStorage.setItem('waqtx_theme', theme); } catch(e) {}
   }
 
-  /* Ensure initial state is correct */
-  var savedTheme;
-  try { savedTheme = localStorage.getItem('waqtx_theme'); } catch(e) {}
-  if (!savedTheme) {
-    savedTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-  }
-  applyTheme(savedTheme);
-
+  /* Read current state from the attribute already set by <head> script.
+     Do NOT call applyTheme() on load — the head script already did it.
+     Just wire the click handler. */
   btn.addEventListener('click', function () {
-    var current = document.documentElement.getAttribute('data-theme');
-    applyTheme(current === 'light' ? 'dark' : 'light');
+    /* Read live attribute — 'light' means currently light, anything else = dark */
+    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    applyTheme(isLight ? 'dark' : 'light');
   });
 })();
 

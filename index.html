@@ -19,11 +19,18 @@
   <meta name="twitter:image" content="https://mianhassam96.github.io/WaqtX/og-image.svg"/>
   <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
   <script>
-    /* Apply saved theme before paint to avoid flash */
+    /* Apply saved theme before paint — zero flash */
     (function(){
-      var t = localStorage.getItem('waqtx_theme') ||
-              (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
-      if (t === 'light') document.documentElement.setAttribute('data-theme','light');
+      var saved = '';
+      try { saved = localStorage.getItem('waqtx_theme') || ''; } catch(e) {}
+      if (!saved) {
+        saved = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        try { localStorage.setItem('waqtx_theme', saved); } catch(e) {}
+      }
+      if (saved === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+      /* data-theme absent = dark (default) */
     })();
   </script>
   <link rel="manifest" href="manifest.json"/>

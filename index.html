@@ -227,6 +227,7 @@
           <div class="glance-value" id="g-days">—</div>
           <div class="glance-unit">Days</div>
           <div class="glance-desc">A journey of time given to you.</div>
+          <div class="glance-reflect" id="gr-days"></div>
         </div>
         <div class="glance-card">
           <div class="glance-icon">⏳</div>
@@ -234,6 +235,7 @@
           <div class="glance-value" id="g-hours">—</div>
           <div class="glance-unit">Hours</div>
           <div class="glance-desc">Every hour is a blessing.</div>
+          <div class="glance-reflect" id="gr-hours"></div>
         </div>
         <div class="glance-card">
           <div class="glance-icon">🌙</div>
@@ -241,6 +243,7 @@
           <div class="glance-value" id="g-sleep">—</div>
           <div class="glance-unit">Years</div>
           <div class="glance-desc">About one third of your life.</div>
+          <div class="glance-reflect" id="gr-sleep"></div>
         </div>
         <div class="glance-card">
           <div class="glance-icon">❤️</div>
@@ -248,6 +251,7 @@
           <div class="glance-value" id="g-hearts">—</div>
           <div class="glance-unit">Billion</div>
           <div class="glance-desc">Your heart has never stopped.</div>
+          <div class="glance-reflect" id="gr-hearts"></div>
         </div>
         <div class="glance-card">
           <div class="glance-icon">🌅</div>
@@ -255,6 +259,7 @@
           <div class="glance-value" id="g-sunsets">—</div>
           <div class="glance-unit"></div>
           <div class="glance-desc">You've seen thousands of beautiful sunsets.</div>
+          <div class="glance-reflect" id="gr-sunsets"></div>
         </div>
         <div class="glance-card">
           <div class="glance-icon">⏱</div>
@@ -262,6 +267,7 @@
           <div class="glance-value" id="g-seconds">—</div>
           <div class="glance-unit">Million</div>
           <div class="glance-desc">Every second counts.</div>
+          <div class="glance-reflect" id="gr-seconds"></div>
         </div>
       </div>
     </div>
@@ -611,23 +617,12 @@
     <div class="section-heading">
       <span class="sh-line"></span>
       <span class="sh-icon">◆</span>
-      <span class="sh-text">TODAY'S HADITH &amp; AYAH</span>
+      <span class="sh-text">DAILY WAKE-UP</span>
       <span class="sh-icon">◆</span>
       <span class="sh-line"></span>
     </div>
-    <div class="hadith-grid">
-      <div class="hadith-card ayah-card" id="ayah-card">
-        <div class="hadith-card-badge">📖 Ayah of the Day</div>
-        <div class="hadith-arabic" id="ayah-arabic"></div>
-        <div class="hadith-translation" id="ayah-translation"></div>
-        <div class="hadith-reference" id="ayah-reference"></div>
-      </div>
-      <div class="hadith-card" id="hadith-card-el">
-        <div class="hadith-card-badge">🕌 Hadith of the Day</div>
-        <div class="hadith-arabic" id="hadith-arabic"></div>
-        <div class="hadith-translation" id="hadith-translation"></div>
-        <div class="hadith-reference" id="hadith-reference"></div>
-      </div>
+    <div class="wakeup-card" id="wakeup-card">
+      <!-- Rendered by JS -->
     </div>
   </div>
 </section>
@@ -752,6 +747,17 @@
     </div>
   </div>
 </section>
+
+<!-- ═══ LIFE MIRROR MODAL ═══ -->
+<div class="life-mirror hidden" id="life-mirror" role="dialog" aria-modal="true" aria-label="Life Mirror">
+  <div class="life-mirror-inner">
+    <div class="lm-crescent">☽</div>
+    <div class="lm-question" id="lm-question"></div>
+    <div class="lm-sub">Take a moment. Breathe. Reflect.</div>
+    <button class="lm-btn" id="lm-close">I will reflect on this ✦</button>
+    <div class="lm-skip" id="lm-skip">Skip for now</div>
+  </div>
+</div>
 
 <div class="celebration hidden" id="celebration">
   <div class="celebration-inner">

@@ -2554,3 +2554,259 @@ img { max-width: 100%; }
   .liveage-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
   .la-card-live { grid-column: 1 / -1; }
 }
+
+/* ══════════════════════════════════════════════
+   LAYER 1 — REFLECTION PROMPTS (under stat cards)
+   ══════════════════════════════════════════════ */
+.glance-reflect {
+  font-size: 0.68rem;
+  color: var(--gold);
+  line-height: 1.55;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(201,168,76,0.15);
+  font-style: italic;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  min-height: 0;
+}
+.glance-reflect.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.glance-reflect strong { font-style: normal; color: var(--text); }
+
+/* Trigger visibility when results shown */
+#results-section .glance-reflect { opacity: 1; transform: translateY(0); }
+
+/* ══════════════════════════════════════════════
+   LAYER 2 — DAILY WAKE-UP SYSTEM
+   ══════════════════════════════════════════════ */
+.wakeup-card {
+  max-width: 780px;
+  margin: 0 auto;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  padding: 40px 44px;
+  position: relative;
+  overflow: hidden;
+}
+.wakeup-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--gold), var(--green2), var(--gold), transparent);
+}
+
+.wu-date {
+  font-size: 0.7rem;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 18px;
+}
+
+.wu-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: rgba(201,168,76,0.08);
+  border: 1px solid rgba(201,168,76,0.22);
+  border-radius: 999px;
+  padding: 5px 16px;
+  margin-bottom: 22px;
+}
+
+.wu-arabic {
+  font-family: var(--font-ar);
+  font-size: 1.6rem;
+  color: var(--gold);
+  direction: rtl;
+  line-height: 2;
+  margin-bottom: 8px;
+  letter-spacing: 0.03em;
+  text-align: center;
+}
+
+.wu-source {
+  font-size: 0.75rem;
+  color: var(--text3);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin-bottom: 28px;
+  text-align: center;
+}
+
+.wu-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.wu-block {
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+}
+
+.wu-meaning {
+  background: rgba(201,168,76,0.05);
+  border: 1px solid rgba(201,168,76,0.15);
+}
+.wu-reality {
+  background: rgba(239,68,68,0.04);
+  border: 1px solid rgba(239,68,68,0.15);
+}
+.wu-action {
+  background: rgba(34,197,94,0.05);
+  border: 1px solid rgba(34,197,94,0.18);
+}
+
+.wu-block-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+.wu-meaning .wu-block-label  { color: var(--gold); }
+.wu-reality .wu-block-label  { color: #fca5a5; }
+.wu-action  .wu-block-label  { color: var(--green2); }
+
+.wu-block-text {
+  font-size: 0.9rem;
+  line-height: 1.75;
+  color: var(--text2);
+}
+.wu-action .wu-block-text { color: var(--text); font-weight: 500; }
+
+.wu-nav {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+.wu-nav-btn {
+  padding: 8px 20px;
+  border: 1px solid rgba(201,168,76,0.25);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  color: var(--text2);
+  transition: all var(--transition);
+  cursor: pointer;
+  background: none;
+}
+.wu-nav-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(201,168,76,0.06);
+}
+
+@media (max-width: 768px) {
+  .wakeup-card { padding: 28px 20px; }
+  .wu-arabic { font-size: 1.25rem; }
+  .wu-block { padding: 14px 16px; }
+  .wu-block-text { font-size: 0.85rem; }
+}
+@media (max-width: 480px) {
+  .wakeup-card { padding: 22px 14px; }
+  .wu-arabic { font-size: 1.1rem; }
+}
+
+/* ══════════════════════════════════════════════
+   LAYER 3 — LIFE MIRROR MODAL
+   ══════════════════════════════════════════════ */
+.life-mirror {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: rgba(0,0,0,0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  animation: mirrorFadeIn 0.6s ease forwards;
+}
+@keyframes mirrorFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.life-mirror-inner {
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  animation: mirrorSlideUp 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+@keyframes mirrorSlideUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.lm-crescent {
+  font-size: 3rem;
+  color: var(--gold);
+  opacity: 0.7;
+  animation: lmPulse 3s ease-in-out infinite;
+}
+@keyframes lmPulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50%       { opacity: 0.9; transform: scale(1.08); }
+}
+
+.lm-question {
+  font-size: clamp(1.2rem, 3.5vw, 1.6rem);
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.45;
+  letter-spacing: -0.02em;
+  max-width: 420px;
+}
+
+.lm-sub {
+  font-size: 0.82rem;
+  color: var(--text3);
+  font-style: italic;
+  letter-spacing: 0.04em;
+}
+
+.lm-btn {
+  padding: 14px 36px;
+  background: linear-gradient(135deg, var(--gold3), var(--gold));
+  border-radius: 999px;
+  color: #0a1a0d;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  border: none;
+  transition: all var(--transition);
+  box-shadow: 0 4px 24px rgba(201,168,76,0.3);
+}
+.lm-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(201,168,76,0.45);
+}
+
+.lm-skip {
+  font-size: 0.75rem;
+  color: var(--text3);
+  cursor: pointer;
+  transition: color var(--transition);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.lm-skip:hover { color: var(--text2); }
+
+[data-theme="light"] .life-mirror { background: rgba(0,0,0,0.7); }

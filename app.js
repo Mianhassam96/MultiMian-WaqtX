@@ -319,6 +319,7 @@ function renderAll(birth) {
   renderLifeStory(birth, ageYears, hijriBirth, hijriNow, ramadans, t);
   renderTimeTruth(ageYears, t);
   renderInsight(t.day); /* update day count in insight */
+  renderReflections(t, sleepYears, heartBillions, secondsMillion);
 
   /* Progressive reveal — start at step 1 */
   revealStep(1);
@@ -1332,31 +1333,245 @@ var DAILY_HADITHS = [
   }
 ];
 
-function renderHadithSection() {
+/* ══════════════════════════════════════════════
+   LAYER 2 — DAILY WAKE-UP SYSTEM
+   Ayah/Hadith + Meaning + Reality Check + Action
+   ══════════════════════════════════════════════ */
+var WAKEUP_MESSAGES = [
+  {
+    badge: '📖 Ayah of the Day',
+    arabic: 'إِنَّ الصَّلَاةَ تَنْهَىٰ عَنِ الْفَحْشَاءِ وَالْمُنكَرِ',
+    source: 'Surah Al-\'Ankabut 29:45',
+    meaning: 'Prayer is not just worship — it is protection. Every Salah is a shield between you and what destroys you.',
+    realityCheck: 'If your prayer is not changing your behavior outside the prayer mat, ask yourself: am I praying with my body only, or with my heart too?',
+    action: 'Do not delay a single Salah today. Pray it on time, with full presence. Just today.'
+  },
+  {
+    badge: '🕌 Hadith of the Day',
+    arabic: 'اسْتَغِلَّ خَمْسًا قَبْلَ خَمْسٍ',
+    source: 'Al-Bayhaqi — Sahih chain',
+    meaning: 'Take advantage of five before five: your youth before old age, your health before sickness, your wealth before poverty, your free time before busyness, and your life before death.',
+    realityCheck: 'You are reading this right now — which means you still have time. But time is the only thing you cannot earn back. Every hour you waste is gone permanently.',
+    action: 'Write down one thing you have been delaying. Do the first step of it today — not tomorrow.'
+  },
+  {
+    badge: '📖 Ayah of the Day',
+    arabic: 'وَمَا الْحَيَاةُ الدُّنْيَا إِلَّا مَتَاعُ الْغُرُورِ',
+    source: 'Surah Ali \'Imran 3:185',
+    meaning: 'The life of this world is nothing but the enjoyment of delusion. What you are chasing is temporary. What you build for the akhirah is permanent.',
+    realityCheck: 'How much of your day is spent building your dunya vs. your akhirah? Be honest. The answer is uncomfortable for most of us.',
+    action: 'Spend 10 minutes today doing something purely for your akhirah — Quran, du\'a, helping someone, or making istighfar.'
+  },
+  {
+    badge: '🕌 Hadith of the Day',
+    arabic: 'أَحَبُّ الأَعْمَالِ إِلَى اللَّهِ أَدْوَمُهَا وَإِنْ قَلَّ',
+    source: 'Sahih Al-Bukhari 6464',
+    meaning: 'The most beloved deeds to Allah are those done consistently, even if they are small. Allah does not want perfection — He wants consistency.',
+    realityCheck: 'You don\'t need to pray all night. You need to pray every night. You don\'t need to read 10 pages. You need to read one page — every day.',
+    action: 'Pick one small act of worship. Do it today. Then do it again tomorrow. That is how transformation happens.'
+  },
+  {
+    badge: '📖 Ayah of the Day',
+    arabic: 'أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ',
+    source: 'Surah Ar-Ra\'d 13:28',
+    meaning: 'Verily, in the remembrance of Allah do hearts find rest. The anxiety, the emptiness, the restlessness — it has one cure.',
+    realityCheck: 'You have tried everything else. Scrolling. Distracting. Achieving. But the heart only settles when it returns to its Creator.',
+    action: 'Say SubhanAllah 33 times, Alhamdulillah 33 times, Allahu Akbar 34 times — right now, before you do anything else.'
+  },
+  {
+    badge: '🕌 Hadith of the Day',
+    arabic: 'الْكَيِّسُ مَنْ دَانَ نَفْسَهُ وَعَمِلَ لِمَا بَعْدَ الْمَوْتِ',
+    source: 'Sunan At-Tirmidhi 2459',
+    meaning: 'The wise person is one who holds himself accountable and works for what comes after death. Wisdom is not intelligence — it is awareness of what truly matters.',
+    realityCheck: 'When did you last sit alone and ask: "Am I the person I want to meet Allah as?" That question is not meant to create fear — it is meant to create direction.',
+    action: 'Spend 5 minutes tonight before sleep doing muhasabah — reviewing your day. What was good? What needs to change?'
+  },
+  {
+    badge: '📖 Ayah of the Day',
+    arabic: 'فَمَن يَعْمَلْ مِثْقَالَ ذَرَّةٍ خَيْرًا يَرَهُ',
+    source: 'Surah Az-Zalzalah 99:7',
+    meaning: 'Whoever does an atom\'s weight of good will see it. Nothing is too small. No act of kindness is wasted. No moment of patience goes unrecorded.',
+    realityCheck: 'We often wait for the "big moment" to do good. But the akhirah is built from atoms — small consistent acts that we think don\'t matter.',
+    action: 'Do one small act of kindness today that no one will see or know about. That is the purest form of sincerity.'
+  },
+  {
+    badge: '🕌 Hadith of the Day',
+    arabic: 'تَبَسُّمُكَ فِي وَجْهِ أَخِيكَ صَدَقَةٌ',
+    source: 'Sunan At-Tirmidhi 1956',
+    meaning: 'Your smile in the face of your brother is charity. Sadaqah is not only money. It is presence, warmth, and making someone feel seen.',
+    realityCheck: 'When did you last make someone feel genuinely valued? Not with a gift — but with your full attention and a sincere smile?',
+    action: 'Today, give someone your full attention. Put your phone down. Look them in the eyes. Listen. That is sadaqah.'
+  },
+  {
+    badge: '📖 Ayah of the Day',
+    arabic: 'وَلَا تَقُولَنَّ لِشَيْءٍ إِنِّي فَاعِلٌ ذَٰلِكَ غَدًا',
+    source: 'Surah Al-Kahf 18:23',
+    meaning: 'Do not say about anything: I will do that tomorrow. Tomorrow is not guaranteed. The only moment you own is now.',
+    realityCheck: 'How many times have you said "I\'ll start after Ramadan", "I\'ll pray more when I\'m older"? That day may never come.',
+    action: 'Identify one thing you have been postponing for your deen. Start it today — even if it is just 5 minutes.'
+  },
+  {
+    badge: '🕌 Hadith of the Day',
+    arabic: 'مَنْ سَلَكَ طَرِيقًا يَلْتَمِسُ فِيهِ عِلْمًا سَهَّلَ اللَّهُ لَهُ طَرِيقًا إِلَى الْجَنَّةِ',
+    source: 'Sahih Muslim 2699',
+    meaning: 'Whoever takes a path in search of knowledge, Allah will ease for him a path to Paradise. Knowledge is the light that guides every decision.',
+    realityCheck: 'You spend hours consuming content every day. How much of it brings you closer to Allah? How much of it is just noise?',
+    action: 'Listen to or read one Islamic reminder today — a short lecture, a tafsir, or even one page of a book. Feed your soul.'
+  },
+  {
+    badge: '📖 Ayah of the Day',
+    arabic: 'وَبَشِّرِ الصَّابِرِينَ',
+    source: 'Surah Al-Baqarah 2:155',
+    meaning: 'And give good tidings to the patient. Whatever you are going through — the difficulty, the waiting, the uncertainty — Allah has already promised the patient a reward.',
+    realityCheck: 'Sabr is not passive. It is active trust in Allah while continuing to move forward. It is not giving up — it is giving it to Allah.',
+    action: 'Whatever is weighing on you today — say "Alhamdulillah \'ala kulli hal" three times and mean it.'
+  },
+  {
+    badge: '🕌 Hadith of the Day',
+    arabic: 'إِنَّ اللَّهَ يُحِبُّ إِذَا عَمِلَ أَحَدُكُمْ عَمَلًا أَنْ يُتْقِنَهُ',
+    source: 'Al-Tabarani — Sahih chain',
+    meaning: 'Allah loves that when one of you does a deed, he does it with excellence. Itqan — doing things properly — is itself an act of worship.',
+    realityCheck: 'Are you doing your work, your worship, your relationships with excellence? Or are you just going through the motions?',
+    action: 'Choose one thing you do today and do it with full excellence — your Salah, your work, a conversation. Do it as if Allah is watching. Because He is.'
+  },
+  {
+    badge: '📖 Ayah of the Day',
+    arabic: 'وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا وَيَرْزُقْهُ مِنْ حَيْثُ لَا يَحْتَسِبُ',
+    source: 'Surah At-Talaq 65:2-3',
+    meaning: 'Whoever fears Allah — He will make for him a way out, and provide for him from where he does not expect. Taqwa is the key that opens doors you cannot see.',
+    realityCheck: 'The rizq you are worried about, the problem you cannot solve — have you truly handed it to Allah? Or are you still trying to control everything yourself?',
+    action: 'Make du\'a today with full conviction that Allah will answer. Not "maybe" — with certainty. That is tawakkul.'
+  },
+  {
+    badge: '🕌 Hadith of the Day',
+    arabic: 'الرَّاحِمُونَ يَرْحَمُهُمُ الرَّحْمَنُ',
+    source: 'Sunan Abu Dawud 4941',
+    meaning: 'The merciful will be shown mercy by the Most Merciful. The mercy you show others is the mercy that returns to you — from Allah Himself.',
+    realityCheck: 'Who in your life needs your mercy right now? A parent you have been impatient with? A sibling you have not spoken to? A person you have judged?',
+    action: 'Reach out to one person today with kindness — not because they deserve it, but because you want Allah\'s mercy on yourself.'
+  }
+];
+
+function renderWakeUpSystem() {
+  var container = el('wakeup-card');
+  if (!container) return;
   var dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
-
-  var ayahIdx   = dayOfYear % DAILY_AYAHS.length;
-  var hadithIdx = dayOfYear % DAILY_HADITHS.length;
-
-  var ayah   = DAILY_AYAHS[ayahIdx];
-  var hadith = DAILY_HADITHS[hadithIdx];
-
-  var ayahAr  = el('ayah-arabic');
-  var ayahTr  = el('ayah-translation');
-  var ayahRef = el('ayah-reference');
-  if (ayahAr)  ayahAr.textContent  = ayah.arabic;
-  if (ayahTr)  ayahTr.textContent  = '\u201C' + ayah.translation + '\u201D';
-  if (ayahRef) ayahRef.textContent = '\u2014 ' + ayah.reference;
-
-  var hadithAr  = el('hadith-arabic');
-  var hadithTr  = el('hadith-translation');
-  var hadithRef = el('hadith-reference');
-  if (hadithAr)  hadithAr.textContent  = hadith.arabic;
-  if (hadithTr)  hadithTr.textContent  = '\u201C' + hadith.translation + '\u201D';
-  if (hadithRef) hadithRef.textContent = '\u2014 ' + hadith.reference;
+  var idx = dayOfYear % WAKEUP_MESSAGES.length;
+  renderWakeUpCard(container, idx);
 }
 
-renderHadithSection();
+function renderWakeUpCard(container, idx) {
+  var msg = WAKEUP_MESSAGES[idx];
+  var today = new Date();
+  var dateStr = today.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' });
+  container.innerHTML =
+    '<div class="wu-date">' + dateStr + '</div>' +
+    '<div class="wu-badge">' + msg.badge + '</div>' +
+    '<div class="wu-arabic">' + msg.arabic + '</div>' +
+    '<div class="wu-source">\u2014 ' + msg.source + '</div>' +
+    '<div class="wu-sections">' +
+      '<div class="wu-block wu-meaning">' +
+        '<div class="wu-block-label">💡 Meaning</div>' +
+        '<div class="wu-block-text">' + msg.meaning + '</div>' +
+      '</div>' +
+      '<div class="wu-block wu-reality">' +
+        '<div class="wu-block-label">💔 Reality Check</div>' +
+        '<div class="wu-block-text">' + msg.realityCheck + '</div>' +
+      '</div>' +
+      '<div class="wu-block wu-action">' +
+        '<div class="wu-block-label">⚡ One Action Today</div>' +
+        '<div class="wu-block-text">' + msg.action + '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="wu-nav">' +
+      '<button class="wu-nav-btn" id="wu-prev">\u2190 Previous</button>' +
+      '<button class="wu-nav-btn" id="wu-next">Next \u2192</button>' +
+    '</div>';
+
+  var prevBtn = el('wu-prev');
+  var nextBtn = el('wu-next');
+  if (prevBtn) prevBtn.addEventListener('click', function() {
+    renderWakeUpCard(container, (idx - 1 + WAKEUP_MESSAGES.length) % WAKEUP_MESSAGES.length);
+  });
+  if (nextBtn) nextBtn.addEventListener('click', function() {
+    renderWakeUpCard(container, (idx + 1) % WAKEUP_MESSAGES.length);
+  });
+}
+
+renderWakeUpSystem();
+
+/* ══════════════════════════════════════════════
+   LAYER 1 — REFLECTION PROMPT ENGINE
+   Injected under each stat after renderAll
+   ══════════════════════════════════════════════ */
+function renderReflections(t, sleepYears, heartBillions, secondsMillion) {
+  var rDays    = el('gr-days');
+  var rHours   = el('gr-hours');
+  var rSleep   = el('gr-sleep');
+  var rHearts  = el('gr-hearts');
+  var rSunsets = el('gr-sunsets');
+  var rSeconds = el('gr-seconds');
+
+  if (rDays)    rDays.innerHTML    = 'You have lived <strong>' + fmt(t.day) + ' days</strong>. How many of them brought you closer to Allah?';
+  if (rHours)   rHours.innerHTML   = 'That is <strong>' + fmt(t.hr) + ' hours</strong> of life. How many were spent in a way you\'d be proud of on the Day of Judgment?';
+  if (rSleep)   rSleep.innerHTML   = 'You have slept approximately <strong>' + sleepYears + ' years</strong>. Did your rest give you strength for ibadah — or only for dunya?';
+  if (rHearts)  rHearts.innerHTML  = 'Your heart has beaten <strong>' + heartBillions + ' billion times</strong> without stopping. How many of those beats remembered the One who keeps it beating?';
+  if (rSunsets) rSunsets.innerHTML = 'You have witnessed <strong>' + fmt(t.day) + ' sunsets</strong> — each one a sign of Allah. Did you ever stop to say Alhamdulillah for even one?';
+  if (rSeconds) rSeconds.innerHTML = '<strong>' + secondsMillion + ' million seconds</strong> of life. Each one recorded. Each one will be asked about.';
+}
+
+/* ══════════════════════════════════════════════
+   LAYER 3 — LIFE MIRROR MODE
+   Shows once per day on app open
+   ══════════════════════════════════════════════ */
+var MIRROR_QUESTIONS = [
+  'What did you do yesterday that will matter in your akhirah?',
+  'If your life ended today — are you ready to meet Allah?',
+  'You have time right now. But not unlimited time. What will you do with today?',
+  'When did you last cry out of fear or love of Allah?',
+  'Is the person you are today the person you want to be remembered as?',
+  'How many of your daily habits are building your akhirah — and how many are only building your dunya?',
+  'If Allah showed you a recording of your last 7 days — would you be at peace with what you see?',
+  'Who in your life needs your kindness right now — and are you giving it to them?',
+  'Are you closer to Allah today than you were one year ago?',
+  'What is the one thing you keep delaying for your deen — and why?',
+  'Your parents will not be here forever. Have you honored them today?',
+  'The Quran is the word of Allah. When did you last sit with it — not to finish it, but to feel it?',
+  'You will stand before Allah alone. No one will speak for you. Are you preparing for that moment?',
+  'What would you change about your life if you knew you had only 30 days left?',
+  'Is your heart at peace right now? If not — what is standing between you and Allah?'
+];
+
+(function () {
+  var mirror   = el('life-mirror');
+  var closeBtn = el('lm-close');
+  var skipBtn  = el('lm-skip');
+  var qEl      = el('lm-question');
+  if (!mirror) return;
+
+  var today = new Date().toISOString().split('T')[0];
+  var lastShown;
+  try { lastShown = localStorage.getItem('waqtx_mirror_date'); } catch(e) {}
+
+  if (lastShown !== today) {
+    var dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+    if (qEl) qEl.textContent = MIRROR_QUESTIONS[dayOfYear % MIRROR_QUESTIONS.length];
+    setTimeout(function () {
+      mirror.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }, 3000);
+  }
+
+  function closeMirror() {
+    mirror.classList.add('hidden');
+    document.body.style.overflow = '';
+    try { localStorage.setItem('waqtx_mirror_date', today); } catch(e) {}
+  }
+
+  if (closeBtn) closeBtn.addEventListener('click', closeMirror);
+  if (skipBtn)  skipBtn.addEventListener('click', closeMirror);
+  mirror.addEventListener('click', function(e) { if (e.target === mirror) closeMirror(); });
+})();
 
 /* ══════════════════════════════════════════════
    QIBLA DIRECTION

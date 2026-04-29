@@ -81,16 +81,35 @@ img { max-width: 100%; }
   align-items: center;
   gap: 10px;
   flex-shrink: 0;
+  text-decoration: none;
 }
 .nav-logo-icon { display: flex; align-items: center; }
 .nav-logo-text {
-  font-size: 1.25rem;
-  font-weight: 800;
-  color: var(--text);
-  letter-spacing: -0.02em;
+  font-family: 'Amiri', serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.04em;
+  line-height: 1;
+  direction: rtl;
+  unicode-bidi: embed;
+  /* Subtle text shadow for depth */
+  text-shadow: 0 0 20px rgba(201,168,76,0.25);
+  transition: text-shadow var(--transition);
+}
+.nav-logo:hover .nav-logo-text {
+  text-shadow: 0 0 28px rgba(201,168,76,0.45);
 }
 .nav-logo-x {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 900;
   color: var(--green2);
+  letter-spacing: -0.02em;
+  direction: ltr;
+  unicode-bidi: embed;
+  margin-right: 2px;
+  vertical-align: middle;
 }
 .nav-links {
   display: flex;
@@ -854,10 +873,11 @@ img { max-width: 100%; }
   box-shadow: 0 4px 24px rgba(0,0,0,0.4);
 }
 .sp-logo {
-  font-size: 0.78rem;
-  font-weight: 800;
+  font-family: 'Amiri', serif;
+  font-size: 0.95rem;
+  font-weight: 700;
   color: var(--gold);
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
   margin-bottom: 12px;
 }
 .sp-text {
@@ -987,10 +1007,11 @@ img { max-width: 100%; }
   margin-bottom: 20px;
 }
 .scdl-logo {
-  font-size: 0.82rem;
-  font-weight: 800;
+  font-family: 'Amiri', serif;
+  font-size: 1rem;
+  font-weight: 700;
   color: var(--gold);
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
   margin-bottom: 16px;
 }
 .scdl-pct {
@@ -1060,11 +1081,14 @@ img { max-width: 100%; }
   align-items: start;
 }
 .footer-logo {
-  font-size: 1.1rem;
-  font-weight: 800;
+  font-family: 'Amiri', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
   color: var(--gold);
   display: block;
   margin-bottom: 10px;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 16px rgba(201,168,76,0.2);
 }
 .footer-brand p {
   font-size: 0.82rem;
@@ -1203,6 +1227,10 @@ img { max-width: 100%; }
   .hamburger { display: flex; }
   .btn-share-nav svg { display: none; }
   .btn-share-nav { padding: 7px 14px; font-size: 0.75rem; }
+
+  /* Logo responsive */
+  .nav-logo-text { font-size: 1.25rem; }
+  .nav-logo-x { font-size: 0.95rem; }
 
   /* Hero */
   .hero-inner { padding: 32px 16px; }

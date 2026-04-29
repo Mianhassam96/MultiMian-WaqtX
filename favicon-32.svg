@@ -1,46 +1,27 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
   <defs>
-    <radialGradient id="bgG" cx="40%" cy="35%" r="70%">
+    <radialGradient id="bg32" cx="35%" cy="30%" r="75%">
       <stop offset="0%" stop-color="#0d2a12"/>
       <stop offset="100%" stop-color="#061008"/>
     </radialGradient>
-    <linearGradient id="goldG" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="gold32" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#e8c96a"/>
       <stop offset="100%" stop-color="#a07830"/>
-    </linearGradient>
-    <linearGradient id="greenG" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#22c55e"/>
-      <stop offset="100%" stop-color="#16a34a"/>
     </linearGradient>
   </defs>
 
   <!-- Background -->
-  <rect width="32" height="32" rx="7" ry="7" fill="url(#bgG)"/>
+  <rect width="32" height="32" rx="7" ry="7" fill="url(#bg32)"/>
 
-  <!-- Clock ring -->
-  <circle cx="14" cy="13" r="8" fill="none" stroke="url(#greenG)" stroke-width="1.4"/>
+  <!-- 8-pointed star -->
+  <path d="M16 6 L17 12 L21 9 L18 13 L24 14 L18 15 L21 19 L17 16 L16 22 L15 16 L11 19 L14 15 L8 14 L14 13 L11 9 L15 12 Z"
+        fill="url(#gold32)" opacity="0.8"/>
 
-  <!-- Clock hands -->
-  <line x1="14" y1="13" x2="14" y2="8.5" stroke="white" stroke-width="1" stroke-linecap="round"/>
-  <line x1="14" y1="13" x2="17.5" y2="11" stroke="white" stroke-width="0.8" stroke-linecap="round"/>
-  <circle cx="14" cy="13" r="0.9" fill="white"/>
+  <!-- Crescent -->
+  <path d="M14 9 Q19 11 19 16 Q19 21 14 23 Q17 21 17 16 Q17 11 14 9Z"
+        fill="url(#gold32)" opacity="0.95"/>
 
-  <!-- Gold crescent -->
-  <path d="M19 7 Q23 9 23 13 Q23 17 19 19 Q21.5 17 21.5 13 Q21.5 9 19 7Z" fill="url(#goldG)"/>
-
-  <!-- Mosque dome -->
-  <ellipse cx="18" cy="16.5" rx="2.5" ry="2" fill="url(#goldG)"/>
-  <line x1="18" y1="14.5" x2="18" y2="13.5" stroke="url(#goldG)" stroke-width="0.7" stroke-linecap="round"/>
-
-  <!-- Minaret -->
-  <rect x="20" y="14" width="1.5" height="4.5" rx="0.3" fill="url(#goldG)"/>
-  <path d="M19.8 14 Q20.75 12.5 21.7 14Z" fill="url(#goldG)"/>
-
-  <!-- Wave -->
-  <path d="M4 23 Q9 20 14 22 Q19 24 26 21" fill="none" stroke="url(#greenG)" stroke-width="1.2" stroke-linecap="round" opacity="0.85"/>
-
-  <!-- Text: Waqt -->
-  <text x="3" y="30.5" font-family="'Inter','Arial',sans-serif" font-weight="800" font-size="5" fill="white" letter-spacing="-0.2">Waqt</text>
-  <!-- X in green -->
-  <text x="19.5" y="30.5" font-family="'Inter','Arial',sans-serif" font-weight="900" font-size="5" fill="#22c55e" letter-spacing="-0.2">X</text>
+  <!-- Small star -->
+  <path d="M22 10 L22.4 11.6 L24 12 L22.4 12.4 L22 14 L21.6 12.4 L20 12 L21.6 11.6 Z"
+        fill="#e8c96a" opacity="0.7"/>
 </svg>

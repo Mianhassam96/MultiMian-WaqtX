@@ -1,14 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <defs>
-    <radialGradient id="bgGrad" cx="40%" cy="35%" r="70%">
+    <radialGradient id="bgGrad" cx="35%" cy="30%" r="75%">
       <stop offset="0%" stop-color="#0d2a12"/>
       <stop offset="100%" stop-color="#061008"/>
     </radialGradient>
     <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#e8c96a"/>
+      <stop offset="50%" stop-color="#c9a84c"/>
       <stop offset="100%" stop-color="#a07830"/>
     </linearGradient>
-    <linearGradient id="greenRing" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stop-color="#22c55e"/>
       <stop offset="100%" stop-color="#16a34a"/>
     </linearGradient>
@@ -17,44 +18,24 @@
   <!-- Background rounded square -->
   <rect width="64" height="64" rx="14" ry="14" fill="url(#bgGrad)"/>
 
-  <!-- Clock ring (green) -->
-  <circle cx="28" cy="26" r="16" fill="none" stroke="url(#greenRing)" stroke-width="2.5" opacity="0.95"/>
+  <!-- Subtle Islamic geometric pattern -->
+  <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(201,168,76,0.06)" stroke-width="0.5"/>
+  <circle cx="32" cy="32" r="20" fill="none" stroke="rgba(201,168,76,0.08)" stroke-width="0.5"/>
+  <circle cx="32" cy="32" r="14" fill="none" stroke="rgba(201,168,76,0.1)" stroke-width="0.5"/>
 
-  <!-- Clock tick marks -->
-  <line x1="28" y1="11.5" x2="28" y2="13.5" stroke="#22c55e" stroke-width="1.2" stroke-linecap="round"/>
-  <line x1="28" y1="38.5" x2="28" y2="40.5" stroke="#22c55e" stroke-width="1.2" stroke-linecap="round"/>
-  <line x1="13.5" y1="26" x2="15.5" y2="26" stroke="#22c55e" stroke-width="1.2" stroke-linecap="round"/>
-  <line x1="40.5" y1="26" x2="42.5" y2="26" stroke="#22c55e" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- 8-pointed star (Islamic symbol) -->
+  <path d="M32 12 L34 24 L42 18 L36 26 L48 28 L36 30 L42 38 L34 32 L32 44 L30 32 L22 38 L28 30 L16 28 L28 26 L22 18 L30 24 Z"
+        fill="url(#goldGrad)" opacity="0.85"/>
 
-  <!-- Clock hour hand -->
-  <line x1="28" y1="26" x2="28" y2="17" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
-  <!-- Clock minute hand -->
-  <line x1="28" y1="26" x2="35" y2="22" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
-  <!-- Clock center dot -->
-  <circle cx="28" cy="26" r="1.5" fill="white"/>
-
-  <!-- Gold crescent moon -->
-  <path d="M38 14 Q46 18 46 26 Q46 34 38 38 Q43 34 43 26 Q43 18 38 14Z"
+  <!-- Crescent moon -->
+  <path d="M28 18 Q38 22 38 32 Q38 42 28 46 Q34 42 34 32 Q34 22 28 18Z"
         fill="url(#goldGrad)" opacity="0.95"/>
 
-  <!-- Mosque dome -->
-  <ellipse cx="36" cy="33" rx="5" ry="4" fill="url(#goldGrad)"/>
-  <!-- Mosque dome top finial -->
-  <line x1="36" y1="29" x2="36" y2="27" stroke="url(#goldGrad)" stroke-width="1" stroke-linecap="round"/>
-  <path d="M34.5 29.5 Q36 27.5 37.5 29.5Z" fill="url(#goldGrad)"/>
+  <!-- Small star accent -->
+  <circle cx="44" cy="20" r="1.5" fill="#e8c96a" opacity="0.9"/>
+  <path d="M44 17 L44.5 19.5 L47 20 L44.5 20.5 L44 23 L43.5 20.5 L41 20 L43.5 19.5 Z"
+        fill="#e8c96a" opacity="0.7"/>
 
-  <!-- Minaret -->
-  <rect x="39.5" y="28" width="3" height="9" rx="0.5" fill="url(#goldGrad)"/>
-  <path d="M39 28 Q41 25.5 43 28Z" fill="url(#goldGrad)"/>
-  <!-- Minaret crescent -->
-  <path d="M40.5 25 Q42 24 43 25 Q42 26 40.5 25Z" fill="url(#goldGrad)" opacity="0.9"/>
-
-  <!-- Green wave / leaf -->
-  <path d="M8 46 Q18 40 28 44 Q38 48 52 42" fill="none" stroke="url(#greenRing)" stroke-width="2.2" stroke-linecap="round" opacity="0.85"/>
-  <path d="M8 49 Q20 43 32 47 Q44 51 56 45" fill="none" stroke="#16a34a" stroke-width="1.4" stroke-linecap="round" opacity="0.5"/>
-
-  <!-- "Waqt" text in white -->
-  <text x="8" y="60" font-family="'Inter', 'Arial', sans-serif" font-weight="800" font-size="9.5" fill="white" letter-spacing="-0.3">Waqt</text>
-  <!-- "X" in green -->
-  <text x="38.5" y="60" font-family="'Inter', 'Arial', sans-serif" font-weight="900" font-size="9.5" fill="#22c55e" letter-spacing="-0.3">X</text>
+  <!-- Bottom accent line -->
+  <rect x="12" y="54" width="40" height="1" rx="0.5" fill="url(#greenGrad)" opacity="0.4"/>
 </svg>

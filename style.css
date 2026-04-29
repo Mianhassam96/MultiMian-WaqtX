@@ -26,6 +26,7 @@
   --shadow-gold: 0 0 24px rgba(201,168,76,0.15);
   --font:      'Inter', system-ui, sans-serif;
   --font-ar:   'Amiri', serif;
+  --font-logo: 'Cinzel', 'Palatino Linotype', 'Book Antiqua', serif;
   --nav-h:     64px;
   --transition: 0.25s ease;
 }
@@ -84,32 +85,38 @@ img { max-width: 100%; }
   text-decoration: none;
 }
 .nav-logo-icon { display: flex; align-items: center; }
+
 .nav-logo-text {
-  font-family: 'Amiri', serif;
-  font-size: 1.45rem;
+  font-family: 'Cinzel', 'Palatino Linotype', 'Book Antiqua', serif;
+  font-size: 1.35rem;
   font-weight: 700;
   color: var(--gold);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.12em;
   line-height: 1;
-  direction: rtl;
-  unicode-bidi: embed;
-  /* Subtle text shadow for depth */
-  text-shadow: 0 0 20px rgba(201,168,76,0.25);
-  transition: text-shadow var(--transition);
+  /* Gold gradient text */
+  background: linear-gradient(135deg, #e8c96a 0%, #c9a84c 50%, #a07830 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  /* Subtle glow */
+  filter: drop-shadow(0 0 8px rgba(201,168,76,0.3));
+  transition: filter var(--transition);
 }
 .nav-logo:hover .nav-logo-text {
-  text-shadow: 0 0 28px rgba(201,168,76,0.45);
+  filter: drop-shadow(0 0 14px rgba(201,168,76,0.55));
 }
+
 .nav-logo-x {
-  font-family: 'Inter', system-ui, sans-serif;
-  font-size: 1.1rem;
+  font-family: 'Cinzel', serif;
   font-weight: 900;
-  color: var(--green2);
-  letter-spacing: -0.02em;
-  direction: ltr;
-  unicode-bidi: embed;
-  margin-right: 2px;
-  vertical-align: middle;
+  font-size: 1.35rem;
+  letter-spacing: 0.12em;
+  /* Green gradient for X */
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 6px rgba(34,197,94,0.3));
 }
 .nav-links {
   display: flex;
@@ -873,11 +880,11 @@ img { max-width: 100%; }
   box-shadow: 0 4px 24px rgba(0,0,0,0.4);
 }
 .sp-logo {
-  font-family: 'Amiri', serif;
-  font-size: 0.95rem;
+  font-family: 'Cinzel', 'Palatino Linotype', serif;
+  font-size: 0.9rem;
   font-weight: 700;
   color: var(--gold);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.14em;
   margin-bottom: 12px;
 }
 .sp-text {
@@ -1007,11 +1014,11 @@ img { max-width: 100%; }
   margin-bottom: 20px;
 }
 .scdl-logo {
-  font-family: 'Amiri', serif;
-  font-size: 1rem;
+  font-family: 'Cinzel', 'Palatino Linotype', serif;
+  font-size: 0.95rem;
   font-weight: 700;
   color: var(--gold);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.14em;
   margin-bottom: 16px;
 }
 .scdl-pct {
@@ -1081,14 +1088,18 @@ img { max-width: 100%; }
   align-items: start;
 }
 .footer-logo {
-  font-family: 'Amiri', serif;
-  font-size: 1.3rem;
+  font-family: 'Cinzel', 'Palatino Linotype', serif;
+  font-size: 1.2rem;
   font-weight: 700;
   color: var(--gold);
   display: block;
   margin-bottom: 10px;
-  letter-spacing: 0.04em;
-  text-shadow: 0 0 16px rgba(201,168,76,0.2);
+  letter-spacing: 0.14em;
+  background: linear-gradient(135deg, #e8c96a, #c9a84c, #a07830);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 6px rgba(201,168,76,0.2));
 }
 .footer-brand p {
   font-size: 0.82rem;
@@ -3025,10 +3036,11 @@ img { max-width: 100%; }
   margin-bottom: 16px;
 }
 .mc-logo {
-  font-size: 0.78rem;
-  font-weight: 800;
+  font-family: 'Cinzel', 'Palatino Linotype', serif;
+  font-size: 0.82rem;
+  font-weight: 700;
   color: var(--gold);
-  letter-spacing: 0.1em;
+  letter-spacing: 0.14em;
 }
 .mc-date {
   font-size: 0.68rem;

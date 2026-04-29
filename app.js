@@ -1954,7 +1954,7 @@ function buildMirrorCard() {
 
   container.innerHTML =
     '<div class="mc-header">' +
-      '<div class="mc-logo">◆ WaqtX</div>' +
+      '<div class="mc-logo">✦ WaqtX</div>' +
       '<div class="mc-date">' + today + '</div>' +
     '</div>' +
     '<div class="mc-crescent">☽</div>' +

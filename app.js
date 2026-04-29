@@ -2330,3 +2330,255 @@ function startPrayerCountdown(timings) {
   tryRender();
   setTimeout(tryRender, 300);
 })();
+
+/* ══════════════════════════════════════════════
+   VIRAL SHARING SYSTEM
+   ══════════════════════════════════════════════ */
+
+/* ── Emotional copy variants for Life Snapshot ── */
+var SNAPSHOT_HOOKS = [
+  'How many of them truly mattered?',
+  'What did I do with all that time?',
+  'Am I using what remains wisely?',
+  'Every second was a gift. Was I present?',
+  'The question is not how long — but how well.'
+];
+
+/* ── Update share preview with emotional copy ── */
+function updateSharePreview() {
+  if (!_birth) return;
+  var t2 = getTotals(_birth);
+  var days = fmt(t2.day);
+  var hijriBirth = toHijri(_birth);
+  var hijriNow   = toHijri(new Date());
+  var hijriStr   = hijriBirth.year + ' AH \u2013 ' + hijriNow.year + ' AH';
+
+  /* Emotional text */
+  var spEl = el('sp-emotional');
+  if (spEl) spEl.innerHTML = 'I\u2019ve lived <span id="sp-days">' + days + '</span> days.';
+  var spQ = el('sp-question');
+  var dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+  if (spQ) spQ.textContent = SNAPSHOT_HOOKS[dayOfYear % SNAPSHOT_HOOKS.length];
+  var spH = el('sp-hijri');
+  if (spH) spH.textContent = hijriStr;
+}
+
+/* ── Copy Caption button ── */
+(function() {
+  var btn = el('btn-copy-caption');
+  if (!btn) return;
+  btn.addEventListener('click', function() {
+    if (!_birth) { el('hero-dob').focus(); return; }
+    var t2 = getTotals(_birth);
+    var days = fmt(t2.day);
+    var url = 'https://mianhassam96.github.io/WaqtX/';
+    if (_birth) {
+      url += '?dob=' + _birth.toISOString().split('T')[0];
+      if (_name) url += '&name=' + encodeURIComponent(_name);
+    }
+    var dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+    var hook = SNAPSHOT_HOOKS[dayOfYear % SNAPSHOT_HOOKS.length];
+    var caption = (_name ? _name + ' has lived ' : 'I\u2019ve lived ') + days + ' days.\n' +
+      hook + '\n\n' +
+      '\u0648\u064E\u0645\u064E\u0627 \u062A\u064E\u062F\u0652\u0631\u0650\u064A \u0646\u064E\u0641\u0652\u0633\u064C \u0645\u064E\u0651\u0627\u0630\u064E\u0627 \u062A\u064E\u0643\u0652\u0633\u0650\u0628\u064F \u063A\u064E\u062F\u064B\u0627\n' +
+      '\u201CNo soul knows what it will earn tomorrow.\u201D \u2014 Quran 31:34\n\n' +
+      'See your own timeline: ' + url;
+
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(caption).then(function() {
+        btn.textContent = '\u2713 Copied!';
+        setTimeout(function() { btn.textContent = '\uD83D\uDCCB Copy Caption'; }, 2500);
+      });
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = caption; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); btn.textContent = '\u2713 Copied!'; } catch(e) {}
+      document.body.removeChild(ta);
+      setTimeout(function() { btn.textContent = '\uD83D\uDCCB Copy Caption'; }, 2500);
+    }
+  });
+})();
+
+/* ── Viral Share Modal — Story card ── */
+var _viralStory = null;
+
+function buildViralCard(story) {
+  var container = el('viral-card-dl');
+  if (!container || !story) return;
+
+  var catMap = {
+    prophet: '🌟 Prophet',
+    sahabi:  '🛡 Companion',
+    woman:   '💎 Woman of Islam',
+    moment:  '⚡ Hard Moment'
+  };
+
+  container.innerHTML =
+    '<div class="vc-header">' +
+      '<div class="vc-logo">✦ WaqtX</div>' +
+      '<div class="vc-cat">' + (catMap[story.category] || '') + '</div>' +
+    '</div>' +
+    '<div class="vc-name">' + story.name + '</div>' +
+    '<div class="vc-pain">\u201C' + story.pain + '\u201D</div>' +
+    '<div class="vc-divider"></div>' +
+    '<div class="vc-reflection">' + story.reflection + '</div>' +
+    '<div class="vc-ayah">' + story.ayah + '</div>' +
+    '<div class="vc-ayah-tr">' + story.ayahTr + '</div>' +
+    '<div class="vc-footer">mianhassam96.github.io/WaqtX/stories.html</div>';
+
+  /* WhatsApp caption */
+  var captionEl = el('viral-whatsapp-caption');
+  var url = 'https://mianhassam96.github.io/WaqtX/stories.html';
+  var caption = story.pain + '\n\n' +
+    story.reflection + '\n\n' +
+    '\u2014 ' + story.name + ' | WaqtX\n' +
+    'Read the full story: ' + url;
+  if (captionEl) captionEl.textContent = caption;
+}
+
+function openViralModal(story) {
+  _viralStory = story;
+  buildViralCard(story);
+  var modal = el('story-viral-modal');
+  if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+}
+
+/* Wire viral modal buttons */
+(function() {
+  var closeBtn = el('story-viral-close');
+  var modal    = el('story-viral-modal');
+  var dlBtn    = el('btn-viral-dl');
+  var capBtn   = el('btn-viral-caption');
+  var linkBtn  = el('btn-viral-link');
+
+  if (closeBtn) closeBtn.addEventListener('click', function() {
+    if (modal) { modal.classList.add('hidden'); document.body.style.overflow = ''; }
+  });
+  if (modal) modal.addEventListener('click', function(e) {
+    if (e.target === modal) { modal.classList.add('hidden'); document.body.style.overflow = ''; }
+  });
+
+  if (dlBtn) dlBtn.addEventListener('click', function() {
+    var card = el('viral-card-dl');
+    if (!card) return;
+    if (typeof html2canvas === 'undefined') { alert('Please take a screenshot to save.'); return; }
+    dlBtn.textContent = 'Generating\u2026';
+    dlBtn.disabled = true;
+    html2canvas(card, { backgroundColor: '#061008', scale: 2, useCORS: true }).then(function(canvas) {
+      var a = document.createElement('a');
+      var name = _viralStory ? _viralStory.name.replace(/[^a-z0-9]/gi, '-').toLowerCase() : 'story';
+      a.download = 'waqtx-' + name + '.png';
+      a.href = canvas.toDataURL('image/png');
+      a.click();
+      dlBtn.textContent = '\u2713 Downloaded!';
+      setTimeout(function() { dlBtn.textContent = '\u2B07 Download Image'; dlBtn.disabled = false; }, 2000);
+    }).catch(function() { dlBtn.textContent = '\u2B07 Download Image'; dlBtn.disabled = false; });
+  });
+
+  if (capBtn) capBtn.addEventListener('click', function() {
+    var captionEl = el('viral-whatsapp-caption');
+    var text = captionEl ? captionEl.textContent : '';
+    if (!text) return;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(function() {
+        capBtn.textContent = '\u2713 Copied!';
+        setTimeout(function() { capBtn.textContent = '\uD83D\uDCCB Copy Caption'; }, 2000);
+      });
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); capBtn.textContent = '\u2713 Copied!'; } catch(e) {}
+      document.body.removeChild(ta);
+      setTimeout(function() { capBtn.textContent = '\uD83D\uDCCB Copy Caption'; }, 2000);
+    }
+  });
+
+  if (linkBtn) linkBtn.addEventListener('click', function() {
+    var url = 'https://mianhassam96.github.io/WaqtX/stories.html' +
+      (_viralStory ? '#' + _viralStory.id : '');
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(url).then(function() {
+        linkBtn.textContent = '\u2713 Copied!';
+        setTimeout(function() { linkBtn.textContent = '\uD83D\uDD17 Copy Link'; }, 2000);
+      });
+    }
+  });
+})();
+
+/* ── Random Reflection Generator ── */
+(function() {
+  var btn       = el('btn-reflect-gen');
+  var shareBtn  = el('btn-share-reflection');
+  var container = el('reflect-gen-card');
+  var _lastStory = null;
+
+  if (!btn || !container) return;
+
+  btn.addEventListener('click', function() {
+    var stories = window.STORIES;
+    if (!stories || !stories.length) {
+      container.innerHTML = '<div class="rg-placeholder"><div class="rg-placeholder-text">Stories loading\u2026 try again in a moment.</div></div>';
+      return;
+    }
+
+    /* Pick a random story different from last */
+    var idx;
+    do { idx = Math.floor(Math.random() * stories.length); }
+    while (stories.length > 1 && _lastStory && stories[idx].id === _lastStory.id);
+    var story = stories[idx];
+    _lastStory = story;
+
+    var catMap = {
+      prophet: { cls: 'sc-cat-prophet', label: '🌟 Prophet' },
+      sahabi:  { cls: 'sc-cat-sahabi',  label: '🛡 Companion' },
+      woman:   { cls: 'sc-cat-woman',   label: '💎 Woman of Islam' },
+      moment:  { cls: 'sc-cat-moment',  label: '⚡ Hard Moment' }
+    };
+    var cat = catMap[story.category] || { cls: 'sc-cat-prophet', label: story.category };
+
+    container.innerHTML =
+      '<div class="rg-result">' +
+        '<div class="rg-top">' +
+          '<span class="sc-category ' + cat.cls + '">' + cat.label + '</span>' +
+          '<div class="rg-name">' + story.name + '</div>' +
+          '<div class="rg-title">' + story.title + '</div>' +
+        '</div>' +
+        '<div class="rg-pain">' + story.pain + '</div>' +
+        '<div class="rg-ayah">' + story.ayah + '</div>' +
+        '<div class="rg-ayah-tr">' + story.ayahTr + '</div>' +
+        '<div class="rg-reflection">' + story.reflection + '</div>' +
+        '<div class="rg-action-wrap">' +
+          '<div class="rg-action-label">\uD83C\uDFAF One Action Today</div>' +
+          '<div class="rg-action">' + story.action + '</div>' +
+        '</div>' +
+        '<a href="stories.html#' + story.id + '" class="rg-read-link">Read Full Story \u2192</a>' +
+      '</div>';
+
+    /* Animate in */
+    container.style.opacity = '0';
+    container.style.transform = 'translateY(12px)';
+    setTimeout(function() {
+      container.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+      container.style.opacity = '1';
+      container.style.transform = 'translateY(0)';
+    }, 20);
+
+    if (shareBtn) shareBtn.classList.remove('hidden');
+
+    /* Wire share button */
+    shareBtn.onclick = function() { openViralModal(story); };
+  });
+})();
+
+/* ── Hook updateSharePreview into renderAll ── */
+var _origRenderAllShare = renderAll;
+renderAll = function(birth) {
+  _origRenderAllShare(birth);
+  updateSharePreview();
+};
+
+/* ── Add "Share This Story" button to stories page Today's Story card ── */
+/* This is handled in stories.js — openViralModal is global */
+window.openViralModal = openViralModal;

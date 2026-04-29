@@ -281,6 +281,8 @@ function renderAllGrids() {
   /* Modal nav */
   var prevBtn = elS('smd-prev');
   var nextBtn = elS('smd-next');
+  var shareBtn = elS('smd-share');
+
   if (prevBtn) prevBtn.addEventListener('click', function() {
     if (_currentStoryIdx > 0) {
       _currentStoryIdx--;
@@ -294,6 +296,10 @@ function renderAllGrids() {
       renderStoryModal(window.STORIES[_currentStoryIdx], _currentStoryIdx, window.STORIES.length);
       var mi = elS('story-detail-modal'); if (mi) mi.scrollTop = 0;
     }
+  });
+  if (shareBtn) shareBtn.addEventListener('click', function() {
+    var story = window.STORIES[_currentStoryIdx];
+    if (story && window.openViralModal) window.openViralModal(story);
   });
 
   /* Keyboard close */

@@ -276,12 +276,13 @@ function applyLangToDOM() {
 
   /* Re-render dynamic sections with new language */
   renderWakeUpSystem();
-  if (_birth) renderReflections(
-    getTotals(_birth),
-    (_langData._ageYears * 0.333 || 0).toFixed(1),
-    (_langData._heartBillions || '—'),
-    (_langData._secondsMillion || '—')
-  );
+  if (_birth) {
+    var tots = getTotals(_birth);
+    var ageYrs = (tots.day / 365.25);
+    renderReflections(tots, (ageYrs * 0.333).toFixed(1), (tots.day * 24 * 60 * 70 / 1e9).toFixed(2), (tots.sec / 1e6).toFixed(1));
+    updateLiveAge();
+  }
+  renderInsight(_insightDaysLived);
 
   /* Update lang indicator */
   var langCurrent = el('lang-current');
@@ -666,13 +667,10 @@ function renderAll(birth) {
   /* Animate day counter */
   setTimeout(function () { animateCounter('g-days', t.day, 1200); }, 500);
 
-  /* Live tick every second */
-  clearInterval(window._ticker);
-  window._ticker = setInterval(function () {
-    const t2 = getTotals(_birth);
-    setText('g-hours',   fmt(t2.hr));
-    setText('g-seconds', (t2.sec / 1e6).toFixed(1));
-  }, 1000);
+  /* Live tick every second — unified ticker */
+  startUnifiedTicker();
+  /* Call once immediately */
+  updateLiveAge();
 
   /* Save DOB + name */
   try {
@@ -1390,21 +1388,23 @@ const DAILY_INSIGHTS = [
 ];
 
 let _insightIndex = 0;
+let _insightDaysLived = 0;
 
 function renderInsight(daysLived) {
   const container = el('insight-card');
   if (!container) return;
+  if (daysLived) _insightDaysLived = daysLived;
   const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
   _insightIndex = dayOfYear % DAILY_INSIGHTS.length;
   const today = new Date();
   const dateStr = today.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-  renderInsightCard(container, _insightIndex, dateStr, daysLived || 0);
+  renderInsightCard(container, _insightIndex, dateStr, _insightDaysLived);
 }
 
 function renderInsightCard(container, idx, dateStr, daysLived) {
   const insight = DAILY_INSIGHTS[idx];
   container.innerHTML =
-    '<div class="insight-date">' + dateStr + (daysLived ? ' &nbsp;·&nbsp; Day ' + fmt(daysLived) + ' of your life' : '') + '</div>' +
+    '<div class="insight-date">' + dateStr + (daysLived ? ' &nbsp;\u00b7&nbsp; Day ' + fmt(daysLived) + ' of your life' : '') + '</div>' +
     '<span class="insight-icon">' + insight.icon + '</span>' +
     '<div class="insight-headline">' + insight.headline + '</div>' +
     '<div class="insight-body">' + insight.body + '</div>' +
@@ -1418,15 +1418,16 @@ function renderInsightCard(container, idx, dateStr, daysLived) {
       '<button class="insight-nav-btn" id="insight-next">Next \u2192</button>' +
     '</div>';
 
+  /* Re-attach listeners every render — innerHTML wipes old ones */
   const prevBtn = el('insight-prev');
   const nextBtn = el('insight-next');
   if (prevBtn) prevBtn.addEventListener('click', function() {
     _insightIndex = (_insightIndex - 1 + DAILY_INSIGHTS.length) % DAILY_INSIGHTS.length;
-    renderInsightCard(container, _insightIndex, dateStr, daysLived);
+    renderInsightCard(container, _insightIndex, dateStr, _insightDaysLived);
   });
   if (nextBtn) nextBtn.addEventListener('click', function() {
     _insightIndex = (_insightIndex + 1) % DAILY_INSIGHTS.length;
-    renderInsightCard(container, _insightIndex, dateStr, daysLived);
+    renderInsightCard(container, _insightIndex, dateStr, _insightDaysLived);
   });
 }
 
@@ -1445,6 +1446,14 @@ function renderInsightCard(container, idx, dateStr, daysLived) {
     }
     try { localStorage.setItem('waqtx_theme', theme); } catch(e) {}
   }
+
+  /* Ensure initial state is correct */
+  var savedTheme;
+  try { savedTheme = localStorage.getItem('waqtx_theme'); } catch(e) {}
+  if (!savedTheme) {
+    savedTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  }
+  applyTheme(savedTheme);
 
   btn.addEventListener('click', function () {
     var current = document.documentElement.getAttribute('data-theme');
@@ -1952,9 +1961,13 @@ function bearingToCompass(deg) {
 function setQiblaCompass(bearing) {
   var needle = document.getElementById('qibla-needle-group');
   if (needle) needle.setAttribute('transform', 'rotate(' + bearing + ',110,110)');
-  setText('qibla-degree', Math.round(bearing) + '°');
-  setText('qibla-direction-label', bearingToCompass(bearing) + ' — Face this direction for Qibla');
-  setText('q-bearing', Math.round(bearing) + '° ' + bearingToCompass(bearing));
+  setText('qibla-degree', Math.round(bearing) + '\u00b0');
+  var compassDir = bearingToCompass(bearing);
+  var label = compassDir + ' \u2014 ' + (t('qibla_note_found') !== 'qibla_note_found'
+    ? t('qibla_note_found').replace('Face the direction shown. Allahu Akbar.', '').trim() || 'Face this direction for Qibla'
+    : 'Face this direction for Qibla');
+  setText('qibla-direction-label', compassDir + ' \u2014 Face this direction for Qibla');
+  setText('q-bearing', Math.round(bearing) + '\u00b0 ' + compassDir);
 }
 
 (function () {
@@ -1982,11 +1995,12 @@ function setQiblaCompass(bearing) {
         setText('q-location', lat.toFixed(3) + '°, ' + lng.toFixed(3) + '°');
         setText('q-distance', Math.round(dist).toLocaleString() + ' km from Kaaba');
 
-        btn.textContent = '✓ Qibla Found';
+        btn.textContent = t('qibla_found') !== 'qibla_found' ? t('qibla_found') : '✓ Qibla Found';
         btn.style.background = 'rgba(22,163,74,0.15)';
         btn.style.borderColor = 'rgba(22,163,74,0.4)';
         btn.style.color = '#86efac';
-        if (noteEl) noteEl.textContent = 'Face the direction shown. Allahu Akbar.';
+        if (noteEl) noteEl.textContent = t('qibla_note_found') !== 'qibla_note_found'
+          ? t('qibla_note_found') : 'Face the direction shown. Allahu Akbar.';
 
         /* Save for next visit */
         try {
@@ -2021,8 +2035,10 @@ function setQiblaCompass(bearing) {
       if (savedLat && savedLng) setText('q-location', parseFloat(savedLat).toFixed(3) + '°, ' + parseFloat(savedLng).toFixed(3) + '°');
       if (savedDist) setText('q-distance', parseInt(savedDist).toLocaleString() + ' km from Kaaba');
       var noteEl = el('qibla-note');
-      if (noteEl) noteEl.textContent = 'Showing your last saved Qibla direction.';
-      btn.textContent = '↺ Refresh Qibla';
+      if (noteEl) noteEl.textContent = t('qibla_note_saved') !== 'qibla_note_saved'
+        ? t('qibla_note_saved') : 'Showing your last saved Qibla direction.';
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg> ' +
+        (t('qibla_refresh') !== 'qibla_refresh' ? t('qibla_refresh') : '↺ Refresh Qibla');
       btn.disabled = false;
     }
   } catch(e) {}
@@ -2037,14 +2053,12 @@ function updateLiveAge() {
   var now = new Date();
   var ms  = now - _birth;
 
-  /* Total units */
-  var totalSec  = Math.floor(ms / 1000);
-  var totalMin  = Math.floor(ms / 60000);
-  var totalHr   = Math.floor(ms / 3600000);
-  var totalDays = Math.floor(ms / 86400000);
+  var totalSec   = Math.floor(ms / 1000);
+  var totalMin   = Math.floor(ms / 60000);
+  var totalHr    = Math.floor(ms / 3600000);
+  var totalDays  = Math.floor(ms / 86400000);
   var totalWeeks = Math.floor(totalDays / 7);
 
-  /* Years + months exact */
   var yy = now.getFullYear() - _birth.getFullYear();
   var mo = now.getMonth()    - _birth.getMonth();
   var dd = now.getDate()     - _birth.getDate();
@@ -2061,52 +2075,62 @@ function updateLiveAge() {
   setText('la-seconds', fmt(totalSec));
 
   var subEl = el('liveage-sub');
-  if (subEl) subEl.textContent = 'Every second counts. Your age, live.';
+  if (subEl) subEl.textContent = t('liveage_sub_active') !== 'liveage_sub_active'
+    ? t('liveage_sub_active') : 'Every second counts. Your age, live.';
 
-  /* Birthday countdown */
+  /* ── Birthday countdown ── */
   var bdayIcon  = el('bday-icon');
   var bdayTitle = el('bday-title');
   var bdayVal   = el('bday-val');
   var bdaySub   = el('bday-sub');
+  var bdayCard  = el('birthday-card');
 
   var nextBday = new Date(now.getFullYear(), _birth.getMonth(), _birth.getDate());
   if (nextBday <= now) nextBday.setFullYear(now.getFullYear() + 1);
 
   var daysUntil = Math.ceil((nextBday - now) / 86400000);
   var nextAge   = nextBday.getFullYear() - _birth.getFullYear();
+  var suffix    = nextAge === 1 ? 'st' : nextAge === 2 ? 'nd' : nextAge === 3 ? 'rd' : 'th';
 
-  if (daysUntil === 0 || (now.getMonth() === _birth.getMonth() && now.getDate() === _birth.getDate())) {
-    /* It's your birthday today! */
+  var isToday = (now.getMonth() === _birth.getMonth() && now.getDate() === _birth.getDate());
+
+  if (isToday) {
     if (bdayIcon)  bdayIcon.textContent  = '🎉';
-    if (bdayTitle) bdayTitle.textContent = 'Happy Birthday!';
-    if (bdayVal)   bdayVal.textContent   = 'Today is your ' + nextAge + (nextAge === 1 ? 'st' : nextAge === 2 ? 'nd' : nextAge === 3 ? 'rd' : 'th') + ' birthday!';
-    if (bdaySub)   bdaySub.textContent   = 'Alhamdulillah — may Allah bless your year ahead. 🤲';
-    var bdayCard = el('birthday-card');
-    if (bdayCard) bdayCard.classList.add('birthday-today');
+    if (bdayTitle) bdayTitle.textContent = t('bday_today_title') !== 'bday_today_title'
+      ? t('bday_today_title') : 'Happy Birthday!';
+    if (bdayVal)   bdayVal.textContent   = t('bday_today_val') !== 'bday_today_val'
+      ? tr('bday_today_val', { age: nextAge, suffix: suffix })
+      : 'Today is your ' + nextAge + suffix + ' birthday!';
+    if (bdaySub)   bdaySub.textContent   = t('bday_today_sub') !== 'bday_today_sub'
+      ? t('bday_today_sub') : 'Alhamdulillah — may Allah bless your year ahead. 🤲';
+    if (bdayCard)  bdayCard.classList.add('birthday-today');
   } else {
     if (bdayIcon)  bdayIcon.textContent  = '🎂';
-    if (bdayTitle) bdayTitle.textContent = 'Next Birthday';
-    if (bdayVal)   bdayVal.textContent   = daysUntil + (daysUntil === 1 ? ' day' : ' days') + ' away';
+    if (bdayTitle) bdayTitle.textContent = t('bday_title') !== 'bday_title'
+      ? t('bday_title') : 'Next Birthday';
+    if (bdayVal)   bdayVal.textContent   = daysUntil === 1
+      ? (t('bday_day_away') !== 'bday_day_away' ? t('bday_day_away') : '1 day away')
+      : (t('bday_days_away') !== 'bday_days_away' ? tr('bday_days_away', { n: daysUntil }) : daysUntil + ' days away');
     var bdayDateStr = nextBday.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
-    if (bdaySub)   bdaySub.textContent   = bdayDateStr + ' — you will turn ' + nextAge;
+    if (bdaySub)   bdaySub.textContent   = t('bday_date_age') !== 'bday_date_age'
+      ? tr('bday_date_age', { date: bdayDateStr, age: nextAge })
+      : bdayDateStr + ' — you will turn ' + nextAge;
+    if (bdayCard)  bdayCard.classList.remove('birthday-today');
   }
 }
 
-/* Hook into the existing 1-second ticker */
-var _origTicker = window._ticker;
-clearInterval(window._ticker);
-window._ticker = setInterval(function () {
-  if (_birth) {
+/* ── Single unified ticker — runs every second ── */
+function startUnifiedTicker() {
+  clearInterval(window._ticker);
+  window._ticker = setInterval(function () {
+    if (!_birth) return;
     var t2 = getTotals(_birth);
+    /* Glance live updates */
     setText('g-hours',   fmt(t2.hr));
     setText('g-seconds', (t2.sec / 1e6).toFixed(1));
+    /* Full live age breakdown */
     updateLiveAge();
-  }
-}, 1000);
+  }, 1000);
+}
 
-/* Also call once immediately when renderAll fires */
-var _origRenderAll = renderAll;
-renderAll = function(birth) {
-  _origRenderAll(birth);
-  updateLiveAge();
-};
+startUnifiedTicker();

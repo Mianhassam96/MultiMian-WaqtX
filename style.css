@@ -3450,3 +3450,176 @@ img { max-width: 100%; }
 }
 .le-icon { font-size: 2rem; margin-bottom: 10px; opacity: 0.5; }
 .le-text  { font-size: 0.88rem; line-height: 1.6; }
+
+/* ══════════════════════════════════════════════
+   TODAY'S STORY — Homepage section
+   ══════════════════════════════════════════════ */
+.todays-story-section { background: var(--bg); }
+
+.todays-story-card {
+  max-width: 900px;
+  margin: 0 auto 24px;
+  background: linear-gradient(135deg, rgba(13,32,16,0.8), rgba(6,16,8,0.9));
+  border: 1px solid rgba(201,168,76,0.28);
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.todays-story-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, transparent, var(--gold), var(--green2), var(--gold), transparent);
+}
+.todays-story-card:hover {
+  border-color: rgba(201,168,76,0.45);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.35);
+}
+
+.tsc-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+.tsc-left {
+  padding: 32px 32px 32px 36px;
+  border-right: 1px solid rgba(201,168,76,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tsc-right {
+  padding: 32px 36px 32px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tsc-name {
+  font-family: 'Cinzel', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.06em;
+  background: linear-gradient(135deg, #e8c96a, #c9a84c, #a07830);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.tsc-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+.tsc-pain {
+  font-size: 0.85rem;
+  color: var(--text2);
+  line-height: 1.7;
+}
+
+.tsc-reflection {
+  font-size: 0.82rem;
+  color: var(--gold);
+  font-style: italic;
+  border-top: 1px solid rgba(201,168,76,0.12);
+  padding-top: 10px;
+  margin-top: 4px;
+}
+
+.tsc-ayah {
+  font-family: 'Amiri', serif;
+  font-size: 1.15rem;
+  color: var(--gold);
+  direction: rtl;
+  line-height: 2;
+  opacity: 0.85;
+}
+
+.tsc-ayah-tr {
+  font-size: 0.72rem;
+  color: var(--text3);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.tsc-action-label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--green2);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.tsc-action {
+  font-size: 0.88rem;
+  color: var(--text);
+  font-weight: 600;
+  line-height: 1.6;
+  background: rgba(34,197,94,0.05);
+  border: 1px solid rgba(34,197,94,0.18);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
+
+.tsc-read-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 20px;
+  background: rgba(201,168,76,0.1);
+  border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 999px;
+  color: var(--gold);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all var(--transition);
+  align-self: flex-start;
+  margin-top: auto;
+}
+.tsc-read-btn:hover {
+  background: rgba(201,168,76,0.18);
+  box-shadow: 0 0 16px rgba(201,168,76,0.2);
+}
+
+.todays-story-cta {
+  text-align: center;
+}
+.btn-stories-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 28px;
+  background: rgba(201,168,76,0.08);
+  border: 1px solid rgba(201,168,76,0.25);
+  border-radius: 999px;
+  color: var(--gold);
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all var(--transition);
+}
+.btn-stories-all:hover {
+  background: rgba(201,168,76,0.15);
+  box-shadow: 0 0 20px rgba(201,168,76,0.2);
+}
+
+/* Light mode */
+[data-theme="light"] .todays-story-card {
+  background: linear-gradient(135deg, rgba(245,240,232,0.9), rgba(237,232,220,0.95));
+}
+[data-theme="light"] .todays-story-section { background: var(--bg); }
+
+@media (max-width: 768px) {
+  .tsc-inner { grid-template-columns: 1fr; }
+  .tsc-left { border-right: none; border-bottom: 1px solid rgba(201,168,76,0.1); padding: 24px 20px; }
+  .tsc-right { padding: 20px 20px 24px; }
+  .tsc-name { font-size: 1rem; }
+  .tsc-title { font-size: 0.95rem; }
+}

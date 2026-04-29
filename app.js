@@ -2282,3 +2282,51 @@ function startPrayerCountdown(timings) {
     });
   });
 })();
+
+/* ══════════════════════════════════════════════
+   TODAY'S STORY — Homepage card
+   Pulls from stories-data.js if loaded
+   ══════════════════════════════════════════════ */
+(function() {
+  var container = el('todays-story-card');
+  if (!container) return;
+
+  /* stories-data.js loads after app.js — wait for it */
+  function tryRender() {
+    var stories = window.STORIES;
+    if (!stories || !stories.length) return;
+
+    var dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+    var story = stories[dayOfYear % stories.length];
+
+    var catMap = {
+      prophet: { cls: 'sc-cat-prophet', label: '🌟 Prophet' },
+      sahabi:  { cls: 'sc-cat-sahabi',  label: '🛡 Companion' },
+      woman:   { cls: 'sc-cat-woman',   label: '💎 Woman of Islam' },
+      moment:  { cls: 'sc-cat-moment',  label: '⚡ Hard Moment' }
+    };
+    var cat = catMap[story.category] || { cls: 'sc-cat-prophet', label: story.category };
+
+    container.innerHTML =
+      '<div class="tsc-inner">' +
+        '<div class="tsc-left">' +
+          '<span class="sc-category ' + cat.cls + '">' + cat.label + '</span>' +
+          '<div class="tsc-name">' + story.name + '</div>' +
+          '<div class="tsc-title">' + story.title + '</div>' +
+          '<div class="tsc-pain">' + story.pain + '</div>' +
+          '<div class="tsc-reflection">' + story.reflection + '</div>' +
+        '</div>' +
+        '<div class="tsc-right">' +
+          '<div class="tsc-ayah">' + story.ayah + '</div>' +
+          '<div class="tsc-ayah-tr">' + story.ayahTr + '</div>' +
+          '<div class="tsc-action-label">🎯 One Action Today</div>' +
+          '<div class="tsc-action">' + story.action + '</div>' +
+          '<a href="stories.html#' + story.id + '" class="tsc-read-btn">Read Full Story →</a>' +
+        '</div>' +
+      '</div>';
+  }
+
+  /* Try immediately, then after a short delay for async script load */
+  tryRender();
+  setTimeout(tryRender, 300);
+})();

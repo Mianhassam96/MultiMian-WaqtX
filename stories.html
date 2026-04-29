@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Lives That Changed Time — WaqtX</title>
+  <meta name="description" content="They lived before you. They struggled like you. They chose differently. Stories of Prophets, Companions and great women of Islam."/>
+  <meta name="theme-color" content="#0d1a0f"/>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Amiri:wght@400;700&family=Cinzel:wght@400;600;700;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <script>
+    (function(){
+      var s='';try{s=localStorage.getItem('waqtx_theme')||'';}catch(e){}
+      if(!s){s=window.matchMedia('(prefers-color-scheme:light)').matches?'light':'dark';try{localStorage.setItem('waqtx_theme',s);}catch(e){}}
+      if(s==='light')document.documentElement.setAttribute('data-theme','light');
+    })();
+  </script>
+  <style>
+    /* ── Stories Page Layout ── */
+    .stories-page { max-width: 1100px; margin: 0 auto; padding: calc(var(--nav-h) + 48px) 24px 80px; }
+
+    /* Hero */
+    .stories-hero { text-align: center; margin-bottom: 56px; }
+    .stories-hero-eyebrow {
+      font-size: 0.7rem; font-weight: 800; color: var(--gold);
+      text-transform: uppercase; letter-spacing: 0.16em; margin-bottom: 16px;
+    }
+    .stories-hero-title {
+      font-family: 'Cinzel', serif; font-size: clamp(1.6rem, 4vw, 2.6rem);
+      font-weight: 700; color: var(--text); line-height: 1.3;
+      letter-spacing: 0.04em; margin-bottom: 16px;
+    }
+    .stories-hero-title span { color: var(--gold); }
+    .stories-hero-sub {
+      font-size: 1rem; color: var(--text2); line-height: 1.8;
+      max-width: 560px; margin: 0 auto 28px;
+    }
+    .stories-hero-arabic {
+      font-family: 'Amiri', serif; font-size: 1.2rem; color: var(--gold);
+      opacity: 0.75; letter-spacing: 0.04em; margin-bottom: 6px;
+    }
+    .stories-hero-arabic-tr {
+      font-size: 0.75rem; color: var(--text3); font-style: italic;
+    }
+
+    /* Search */
+    .stories-search-wrap {
+      max-width: 480px; margin: 0 auto 48px;
+      position: relative;
+    }
+    .stories-search {
+      width: 100%; padding: 13px 20px 13px 44px;
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 999px; color: var(--text); font-size: 0.9rem;
+      outline: none; transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .stories-search:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
+    }
+    .stories-search-icon {
+      position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+      color: var(--text3); pointer-events: none;
+    }
+
+    /* Category tabs */
+    .stories-tabs {
+      display: flex; gap: 8px; flex-wrap: wrap;
+      justify-content: center; margin-bottom: 40px;
+    }
+    .stories-tab {
+      padding: 8px 20px; border-radius: 999px; font-size: 0.82rem;
+      font-weight: 600; cursor: pointer; transition: all var(--transition);
+      border: 1px solid var(--card-border); background: var(--card-bg);
+      color: var(--text2);
+    }
+    .stories-tab:hover { border-color: var(--gold); color: var(--gold); }
+    .stories-tab.active {
+      background: rgba(201,168,76,0.12); border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    /* Featured today */
+    .featured-section { margin-bottom: 56px; }
+    .featured-label {
+      font-size: 0.68rem; font-weight: 800; color: var(--green2);
+      text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .featured-label::before { content: ''; display: block; width: 24px; height: 1px; background: var(--green2); }
+
+    .featured-card {
+      background: linear-gradient(135deg, rgba(13,32,16,0.9), rgba(6,16,8,0.95));
+      border: 1px solid rgba(201,168,76,0.3); border-radius: 20px;
+      padding: 40px 44px; position: relative; overflow: hidden;
+      cursor: pointer; transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .featured-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, transparent, var(--gold), var(--green2), var(--gold), transparent);
+    }
+    .featured-card:hover { border-color: rgba(201,168,76,0.5); box-shadow: 0 8px 40px rgba(0,0,0,0.4); }
+    .featured-card-bg-text {
+      position: absolute; right: 32px; top: 50%; transform: translateY(-50%);
+      font-family: 'Amiri', serif; font-size: 6rem; color: rgba(201,168,76,0.06);
+      pointer-events: none; line-height: 1; user-select: none;
+    }
+    .featured-hero-name {
+      font-size: 0.7rem; font-weight: 800; color: var(--gold);
+      text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 12px;
+    }
+    .featured-title {
+      font-size: clamp(1.3rem, 3vw, 1.9rem); font-weight: 800;
+      color: var(--text); line-height: 1.35; margin-bottom: 16px;
+      letter-spacing: -0.02em; max-width: 600px;
+    }
+    .featured-pain {
+      font-size: 0.95rem; color: var(--text2); line-height: 1.75;
+      margin-bottom: 20px; max-width: 560px;
+    }
+    .featured-read-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 11px 24px; background: rgba(201,168,76,0.12);
+      border: 1px solid rgba(201,168,76,0.35); border-radius: 999px;
+      color: var(--gold); font-size: 0.85rem; font-weight: 700;
+      cursor: pointer; transition: all var(--transition);
+    }
+    .featured-read-btn:hover { background: rgba(201,168,76,0.2); }
+
+    /* Story grid */
+    .stories-section-title {
+      font-size: 0.68rem; font-weight: 800; color: var(--text3);
+      text-transform: uppercase; letter-spacing: 0.14em;
+      margin-bottom: 20px; margin-top: 48px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .stories-section-title::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(90deg, rgba(201,168,76,0.2), transparent);
+    }
+
+    .stories-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 16px; margin-bottom: 16px;
+    }
+    .story-card {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: var(--radius); padding: 22px 20px;
+      cursor: pointer; transition: all var(--transition);
+      position: relative; overflow: hidden;
+    }
+    .story-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0; transition: opacity var(--transition);
+    }
+    .story-card:hover { border-color: var(--card-hover); transform: translateY(-3px); box-shadow: var(--shadow-gold); }
+    .story-card:hover::before { opacity: 1; }
+
+    .sc-category {
+      font-size: 0.6rem; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.12em; margin-bottom: 10px; padding: 3px 10px;
+      border-radius: 999px; display: inline-block;
+    }
+    .sc-cat-prophet { background: rgba(201,168,76,0.1); color: var(--gold); border: 1px solid rgba(201,168,76,0.2); }
+    .sc-cat-sahabi  { background: rgba(34,197,94,0.08); color: var(--green2); border: 1px solid rgba(34,197,94,0.2); }
+    .sc-cat-woman   { background: rgba(168,85,247,0.08); color: #c084fc; border: 1px solid rgba(168,85,247,0.2); }
+    .sc-cat-moment  { background: rgba(239,68,68,0.08); color: #fca5a5; border: 1px solid rgba(239,68,68,0.2); }
+
+    .sc-name { font-size: 1rem; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+    .sc-title { font-size: 0.82rem; color: var(--gold); font-weight: 600; margin-bottom: 10px; line-height: 1.4; }
+    .sc-pain { font-size: 0.78rem; color: var(--text2); line-height: 1.6; margin-bottom: 14px; }
+    .sc-reflection {
+      font-size: 0.75rem; color: var(--text3); font-style: italic;
+      border-top: 1px solid rgba(201,168,76,0.1); padding-top: 10px;
+    }
+
+    /* Pain point cards */
+    .pain-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+    }
+    .pain-card {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: var(--radius); padding: 18px 20px;
+      cursor: pointer; transition: all var(--transition);
+      display: flex; align-items: flex-start; gap: 14px;
+    }
+    .pain-card:hover { border-color: var(--card-hover); transform: translateY(-2px); }
+    .pain-card-emotion {
+      font-size: 1.4rem; flex-shrink: 0; margin-top: 2px;
+    }
+    .pain-card-text { flex: 1; }
+    .pain-card-feeling {
+      font-size: 0.78rem; font-weight: 700; color: var(--text); margin-bottom: 4px;
+    }
+    .pain-card-story {
+      font-size: 0.72rem; color: var(--gold); font-weight: 600;
+    }
+
+    /* Story detail modal */
+    .story-modal {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(0,0,0,0.85); backdrop-filter: blur(12px);
+      display: flex; align-items: flex-start; justify-content: center;
+      padding: 24px; overflow-y: auto;
+    }
+    .story-modal-inner {
+      background: var(--bg); border: 1px solid rgba(201,168,76,0.25);
+      border-radius: 20px; max-width: 680px; width: 100%;
+      margin: auto; position: relative;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    }
+    .story-modal-header {
+      padding: 32px 36px 0;
+      border-bottom: 1px solid rgba(201,168,76,0.1);
+      padding-bottom: 24px; margin-bottom: 0;
+    }
+    .story-modal-close {
+      position: absolute; top: 16px; right: 16px;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(255,255,255,0.06); color: var(--text2);
+      font-size: 0.85rem; display: flex; align-items: center;
+      justify-content: center; cursor: pointer; transition: all var(--transition);
+      border: none;
+    }
+    .story-modal-close:hover { background: rgba(255,255,255,0.12); color: var(--text); }
+
+    .smd-category { margin-bottom: 10px; }
+    .smd-name {
+      font-family: 'Cinzel', serif; font-size: 1.8rem; font-weight: 700;
+      color: var(--gold); letter-spacing: 0.06em; margin-bottom: 6px;
+      background: linear-gradient(135deg, #e8c96a, #c9a84c, #a07830);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .smd-title {
+      font-size: 1.1rem; font-weight: 700; color: var(--text);
+      line-height: 1.4; margin-bottom: 0;
+    }
+
+    .story-modal-body { padding: 28px 36px 36px; }
+
+    .smd-block { margin-bottom: 24px; }
+    .smd-block-label {
+      font-size: 0.65rem; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.14em; margin-bottom: 10px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .smd-block-label-pain    { color: #fca5a5; }
+    .smd-block-label-story   { color: var(--gold); }
+    .smd-block-label-decision{ color: var(--green2); }
+    .smd-block-label-reflect { color: #c084fc; }
+    .smd-block-label-action  { color: var(--green2); }
+
+    .smd-block-text {
+      font-size: 0.92rem; color: var(--text2); line-height: 1.85;
+    }
+    .smd-block-text strong { color: var(--text); }
+
+    .smd-pain-box {
+      background: rgba(239,68,68,0.05); border: 1px solid rgba(239,68,68,0.15);
+      border-radius: var(--radius); padding: 16px 20px;
+    }
+    .smd-story-box {
+      background: rgba(201,168,76,0.04); border: 1px solid rgba(201,168,76,0.15);
+      border-radius: var(--radius); padding: 16px 20px;
+    }
+    .smd-decision-box {
+      background: rgba(34,197,94,0.04); border: 1px solid rgba(34,197,94,0.15);
+      border-radius: var(--radius); padding: 16px 20px;
+    }
+    .smd-reflect-box {
+      background: rgba(168,85,247,0.04); border: 1px solid rgba(168,85,247,0.15);
+      border-radius: var(--radius); padding: 16px 20px;
+      font-style: italic;
+    }
+    .smd-action-box {
+      background: rgba(34,197,94,0.06); border: 1px solid rgba(34,197,94,0.25);
+      border-radius: var(--radius); padding: 16px 20px;
+    }
+    .smd-action-label {
+      font-size: 0.65rem; font-weight: 800; color: var(--green2);
+      text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 6px;
+    }
+    .smd-action-text {
+      font-size: 0.92rem; color: var(--text); font-weight: 600; line-height: 1.6;
+    }
+    .smd-ayah {
+      font-family: 'Amiri', serif; font-size: 1.1rem; color: var(--gold);
+      direction: rtl; text-align: center; margin: 20px 0 8px;
+      opacity: 0.85; line-height: 2;
+    }
+    .smd-ayah-tr {
+      font-size: 0.78rem; color: var(--text3); font-style: italic;
+      text-align: center; margin-bottom: 20px;
+    }
+
+    .smd-nav {
+      display: flex; gap: 10px; justify-content: center;
+      padding-top: 20px; border-top: 1px solid rgba(201,168,76,0.1);
+    }
+    .smd-nav-btn {
+      padding: 9px 22px; border: 1px solid rgba(201,168,76,0.25);
+      border-radius: 999px; font-size: 0.8rem; color: var(--text2);
+      cursor: pointer; transition: all var(--transition); background: none;
+    }
+    .smd-nav-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* No results */
+    .stories-no-results {
+      text-align: center; padding: 48px 24px; color: var(--text3);
+      font-size: 0.9rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) { .stories-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px) {
+      .stories-grid { grid-template-columns: 1fr; }
+      .pain-grid { grid-template-columns: 1fr; }
+      .featured-card { padding: 28px 22px; }
+      .story-modal-header, .story-modal-body { padding-left: 22px; padding-right: 22px; }
+      .smd-name { font-size: 1.4rem; }
+    }
+
+    /* Light mode */
+    [data-theme="light"] .featured-card { background: linear-gradient(135deg, rgba(245,240,232,0.95), rgba(237,232,220,0.98)); }
+    [data-theme="light"] .story-modal-inner { background: var(--bg); }
+    [data-theme="light"] .stories-search { background: rgba(255,255,255,0.8); color: var(--text); }
+  </style>
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="nav-logo-text">Waqt<span class="nav-logo-x">X</span></span>
+    </a>
+    <div class="nav-actions">
+      <button class="btn-theme-toggle" id="btn-theme-toggle" aria-label="Toggle theme">
+        <span class="theme-icon-dark">🌙</span>
+        <span class="theme-icon-light">☀️</span>
+      </button>
+      <a href="index.html" class="btn-share-nav" style="text-decoration:none">← Back to WaqtX</a>
+    </div>
+  </div>
+</nav>
+
+<div class="stories-page">
+
+  <!-- Hero -->
+  <div class="stories-hero">
+    <div class="stories-hero-eyebrow">🌙 Lives That Changed Time</div>
+    <h1 class="stories-hero-title">
+      They lived before you.<br>
+      They struggled <span>like you</span>.<br>
+      They chose differently.
+    </h1>
+    <p class="stories-hero-sub">These are not history lessons. These are mirrors. Every story here reflects a moment you have already lived — or will live.</p>
+    <div class="stories-hero-arabic">لَقَدْ كَانَ فِي قَصَصِهِمْ عِبْرَةٌ لِّأُولِي الْأَلْبَابِ</div>
+    <div class="stories-hero-arabic-tr">"In their stories is a lesson for people of understanding." — (Quran 12:111)</div>
+  </div>
+
+  <!-- Search -->
+  <div class="stories-search-wrap">
+    <span class="stories-search-icon">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </span>
+    <input type="text" class="stories-search" id="stories-search" placeholder="Search by name or feeling… e.g. betrayal, patience, fear"/>
+  </div>
+
+  <!-- Category tabs -->
+  <div class="stories-tabs" id="stories-tabs">
+    <button class="stories-tab active" data-cat="all">All Stories</button>
+    <button class="stories-tab" data-cat="prophet">🌟 Prophets</button>
+    <button class="stories-tab" data-cat="sahabi">🛡 Companions</button>
+    <button class="stories-tab" data-cat="woman">💎 Women of Islam</button>
+    <button class="stories-tab" data-cat="moment">⚡ Hard Moments</button>
+  </div>
+
+  <!-- Featured today -->
+  <div class="featured-section" id="featured-section">
+    <div class="featured-label">✦ Featured Today</div>
+    <div class="featured-card" id="featured-card" role="button" tabindex="0">
+      <div class="featured-card-bg-text" id="featured-bg-text"></div>
+      <div class="featured-hero-name" id="featured-hero-name"></div>
+      <div class="featured-title" id="featured-title"></div>
+      <div class="featured-pain" id="featured-pain"></div>
+      <button class="featured-read-btn" id="featured-read-btn">
+        Read This Story
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Pain points -->
+  <div id="pain-section">
+    <div class="stories-section-title">💔 When You Feel…</div>
+    <div class="pain-grid" id="pain-grid"></div>
+  </div>
+
+  <!-- Prophets -->
+  <div id="prophets-section">
+    <div class="stories-section-title">🌟 Prophets — Anbiya</div>
+    <div class="stories-grid" id="prophets-grid"></div>
+  </div>
+
+  <!-- Companions -->
+  <div id="sahaba-section">
+    <div class="stories-section-title">🛡 Companions — Sahaba</div>
+    <div class="stories-grid" id="sahaba-grid"></div>
+  </div>
+
+  <!-- Women -->
+  <div id="women-section">
+    <div class="stories-section-title">💎 Great Women of Islam</div>
+    <div class="stories-grid" id="women-grid"></div>
+  </div>
+
+  <!-- Search results -->
+  <div id="search-results" class="hidden">
+    <div class="stories-section-title">🔍 Search Results</div>
+    <div class="stories-grid" id="search-grid"></div>
+    <div class="stories-no-results hidden" id="no-results">No stories found. Try a different word.</div>
+  </div>
+
+</div><!-- /stories-page -->
+
+<!-- Story Detail Modal -->
+<div class="story-modal hidden" id="story-detail-modal" role="dialog" aria-modal="true">
+  <div class="story-modal-inner">
+    <button class="story-modal-close" id="story-modal-close" aria-label="Close">✕</button>
+    <div class="story-modal-header">
+      <div class="smd-category" id="smd-category"></div>
+      <div class="smd-name" id="smd-name"></div>
+      <div class="smd-title" id="smd-title"></div>
+    </div>
+    <div class="story-modal-body">
+      <div class="smd-block">
+        <div class="smd-block-label smd-block-label-pain">💔 The Moment</div>
+        <div class="smd-pain-box"><div class="smd-block-text" id="smd-pain"></div></div>
+      </div>
+      <div class="smd-block">
+        <div class="smd-block-label smd-block-label-story">📖 What Happened</div>
+        <div class="smd-story-box"><div class="smd-block-text" id="smd-story"></div></div>
+      </div>
+      <div class="smd-ayah" id="smd-ayah"></div>
+      <div class="smd-ayah-tr" id="smd-ayah-tr"></div>
+      <div class="smd-block">
+        <div class="smd-block-label smd-block-label-decision">⚡ The Decision</div>
+        <div class="smd-decision-box"><div class="smd-block-text" id="smd-decision"></div></div>
+      </div>
+      <div class="smd-block">
+        <div class="smd-block-label smd-block-label-reflect">🧠 Your Reflection</div>
+        <div class="smd-reflect-box"><div class="smd-block-text" id="smd-reflection"></div></div>
+      </div>
+      <div class="smd-action-box">
+        <div class="smd-action-label">🎯 One Action Today</div>
+        <div class="smd-action-text" id="smd-action"></div>
+      </div>
+      <div class="smd-nav">
+        <button class="smd-nav-btn" id="smd-prev">← Previous Story</button>
+        <button class="smd-nav-btn" id="smd-next">Next Story →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="footer-logo">✦ WaqtX</span>
+      <p>A mirror for your time.<br>A guide for your life.</p>
+    </div>
+    <div class="footer-center">Made with ♥ for a meaningful life</div>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="contact.html">Contact</a>
+      <div class="footer-copy">© 2026 MultiMian. All rights reserved.</div>
+    </div>
+  </div>
+</footer>
+
+<script src="stories-data.js"></script>
+<script src="stories.js"></script>
+<script>
+  /* Theme toggle */
+  (function(){
+    var btn = document.getElementById('btn-theme-toggle');
+    if (!btn) return;
+    btn.addEventListener('click', function(){
+      var isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      if (isLight) {
+        document.documentElement.removeAttribute('data-theme');
+        try { localStorage.setItem('waqtx_theme','dark'); } catch(e){}
+      } else {
+        document.documentElement.setAttribute('data-theme','light');
+        try { localStorage.setItem('waqtx_theme','light'); } catch(e){}
+      }
+    });
+  })();
+</script>
+</body>
+</html>

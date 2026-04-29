@@ -49,6 +49,7 @@
     </a>
     <div class="nav-links" id="nav-links">
       <a href="#" class="nav-link active">Home</a>
+      <a href="stories.html" class="nav-link">Stories</a>
       <a href="#islamic-section" class="nav-link">Islamic History</a>
       <a href="#features-section" class="nav-link">Features</a>
       <a href="about.html" class="nav-link">About</a>
@@ -617,6 +618,30 @@
 </section>
 
 <!-- ═══════════════════════════════════════════════
+     ALWAYS-VISIBLE: TODAY'S STORY
+     ═══════════════════════════════════════════════ -->
+<section class="section todays-story-section" id="todays-story-section">
+  <div class="section-inner">
+    <div class="section-heading">
+      <span class="sh-line"></span>
+      <span class="sh-icon">◆</span>
+      <span class="sh-text">TODAY'S STORY</span>
+      <span class="sh-icon">◆</span>
+      <span class="sh-line"></span>
+    </div>
+    <div class="todays-story-card" id="todays-story-card">
+      <!-- Rendered by JS -->
+    </div>
+    <div class="todays-story-cta">
+      <a href="stories.html" class="btn-stories-all">
+        🌙 Explore All Stories — Lives That Changed Time
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
      ALWAYS-VISIBLE: DAILY INSIGHT
      ═══════════════════════════════════════════════ -->
 <section class="section insight-section" id="insight-section">
@@ -1051,6 +1076,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+<script src="stories-data.js" defer></script>
 <script src="app.js"></script>
 <script>
   if ('serviceWorker' in navigator) {

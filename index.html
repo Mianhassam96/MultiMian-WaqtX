@@ -18,21 +18,6 @@
   <meta name="twitter:description" content="See your life in days, heartbeats &amp; Islamic history. Qibla, prayer times, daily reflection."/>
   <meta name="twitter:image" content="https://mianhassam96.github.io/WaqtX/og-image.svg"/>
   <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
-  <script>
-    /* Apply saved theme before paint — zero flash */
-    (function(){
-      var saved = '';
-      try { saved = localStorage.getItem('waqtx_theme') || ''; } catch(e) {}
-      if (!saved) {
-        saved = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-        try { localStorage.setItem('waqtx_theme', saved); } catch(e) {}
-      }
-      if (saved === 'light') {
-        document.documentElement.setAttribute('data-theme', 'light');
-      }
-      /* data-theme absent = dark (default) */
-    })();
-  </script>
   <link rel="manifest" href="manifest.json"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -55,11 +40,6 @@
       <a href="about.html" class="nav-link">About</a>
     </div>
     <div class="nav-actions">
-      <!-- Theme toggle -->
-      <button class="btn-theme-toggle" id="btn-theme-toggle" aria-label="Toggle theme" title="Toggle dark/light mode">
-        <span class="theme-icon-dark">🌙</span>
-        <span class="theme-icon-light">☀️</span>
-      </button>
       <!-- Language switcher -->
       <div class="lang-switcher" id="lang-switcher">
         <button class="lang-btn" id="lang-btn" aria-label="Change language" title="Change language">

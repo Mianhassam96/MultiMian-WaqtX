@@ -1437,32 +1437,6 @@ function renderInsightCard(container, idx, dateStr, daysLived) {
 }
 
 /* ══════════════════════════════════════════════
-   DARK / LIGHT MODE TOGGLE
-   ══════════════════════════════════════════════ */
-(function () {
-  var btn = el('btn-theme-toggle');
-  if (!btn) return;
-
-  function applyTheme(theme) {
-    if (theme === 'light') {
-      document.documentElement.setAttribute('data-theme', 'light');
-    } else {
-      document.documentElement.removeAttribute('data-theme');
-    }
-    try { localStorage.setItem('waqtx_theme', theme); } catch(e) {}
-  }
-
-  /* Read current state from the attribute already set by <head> script.
-     Do NOT call applyTheme() on load — the head script already did it.
-     Just wire the click handler. */
-  btn.addEventListener('click', function () {
-    /* Read live attribute — 'light' means currently light, anything else = dark */
-    var isLight = document.documentElement.getAttribute('data-theme') === 'light';
-    applyTheme(isLight ? 'dark' : 'light');
-  });
-})();
-
-/* ══════════════════════════════════════════════
    LAYER 2 — DAILY WAKE-UP SYSTEM
    Ayah/Hadith + Meaning + Reality Check + Action
    ══════════════════════════════════════════════ */

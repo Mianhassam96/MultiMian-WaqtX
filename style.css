@@ -1,29 +1,29 @@
 
 /* ═══════════════════════════════════════════════
    WaqtX — Complete Stylesheet
-   Theme: Dark Islamic Green + Gold
+   Theme: Deep Islamic Night — Spiritual Dark
    ═══════════════════════════════════════════════ */
 
 /* ── 1. Variables & Reset ── */
 :root {
-  --bg:        #0a1a0d;
-  --bg2:       #061008;
+  --bg:        #060e08;
+  --bg2:       #0a1a0d;
   --bg3:       #0d2010;
   --gold:      #c9a84c;
   --gold2:     #e8c96a;
   --gold3:     #a07830;
   --green:     #16a34a;
   --green2:    #22c55e;
-  --text:      #f5f0e8;
-  --text2:     rgba(245,240,232,0.65);
-  --text3:     rgba(245,240,232,0.38);
-  --card-bg:   rgba(255,255,255,0.04);
-  --card-border: rgba(201,168,76,0.18);
+  --text:      #f0ead8;
+  --text2:     rgba(240,234,216,0.68);
+  --text3:     rgba(240,234,216,0.38);
+  --card-bg:   rgba(255,255,255,0.035);
+  --card-border: rgba(201,168,76,0.16);
   --card-hover: rgba(201,168,76,0.28);
   --radius:    12px;
   --radius-sm: 8px;
-  --shadow:    0 4px 24px rgba(0,0,0,0.4);
-  --shadow-gold: 0 0 24px rgba(201,168,76,0.15);
+  --shadow:    0 4px 32px rgba(0,0,0,0.6);
+  --shadow-gold: 0 0 28px rgba(201,168,76,0.18);
   --font:      'Inter', system-ui, sans-serif;
   --font-ar:   'Amiri', serif;
   --font-logo: 'Cinzel', 'Palatino Linotype', 'Book Antiqua', serif;
@@ -42,6 +42,10 @@ body {
   line-height: 1.6;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  /* Subtle deep texture */
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(201,168,76,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(22,163,74,0.03) 0%, transparent 50%);
 }
 
 a { color: inherit; text-decoration: none; }
@@ -50,9 +54,13 @@ input, select, textarea { font-family: inherit; }
 img { max-width: 100%; }
 
 /* ── 2. Scrollbar ── */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--bg2); }
-::-webkit-scrollbar-thumb { background: var(--gold3); border-radius: 3px; }
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--gold3), rgba(160,120,48,0.4)); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold3); }
+
+/* ── Selection ── */
+::selection { background: rgba(201,168,76,0.25); color: var(--text); }
 
 /* ── 3. Utility ── */
 .hidden { display: none !important; }
@@ -63,10 +71,11 @@ img { max-width: 100%; }
   top: 0; left: 0; right: 0;
   z-index: 100;
   height: var(--nav-h);
-  background: rgba(6,16,8,0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(201,168,76,0.12);
+  background: rgba(4,10,5,0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(201,168,76,0.14);
+  box-shadow: 0 1px 0 rgba(201,168,76,0.06), 0 4px 24px rgba(0,0,0,0.4);
 }
 .nav-inner {
   max-width: 1200px;
@@ -116,23 +125,6 @@ img { max-width: 100%; }
 }
 
 /* Light mode — darken so text reads on parchment background */
-[data-theme="light"] .nav-logo-text {
-  background: linear-gradient(135deg, #8a6820 0%, #6b5018 50%, #4a3810 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(0 0 4px rgba(107,80,24,0.15));
-}
-[data-theme="light"] .nav-logo:hover .nav-logo-text {
-  filter: drop-shadow(0 0 8px rgba(107,80,24,0.3));
-}
-[data-theme="light"] .nav-logo-x {
-  background: linear-gradient(135deg, #15803d 0%, #166534 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(0 0 4px rgba(21,128,61,0.15));
-}
 .nav-links {
   display: flex;
   align-items: center;
@@ -220,9 +212,10 @@ img { max-width: 100%; }
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 60% 80% at 20% 60%, rgba(22,163,74,0.08) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 60% at 80% 40%, rgba(201,168,76,0.06) 0%, transparent 50%),
-    linear-gradient(160deg, #061008 0%, #0a1a0d 40%, #0d2010 70%, #061008 100%);
+    radial-gradient(ellipse 70% 90% at 15% 60%, rgba(22,163,74,0.07) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 70% at 85% 35%, rgba(201,168,76,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 50% at 50% 100%, rgba(201,168,76,0.04) 0%, transparent 60%),
+    linear-gradient(170deg, #040a05 0%, #060e08 30%, #0a1a0d 60%, #060e08 100%);
 }
 /* Mosque silhouette via CSS */
 .hero-bg-img::after {
@@ -332,13 +325,13 @@ img { max-width: 100%; }
 
 /* ── 6. Input Card ── */
 .input-card {
-  background: rgba(10,26,13,0.85);
-  border: 1px solid rgba(201,168,76,0.25);
+  background: rgba(6,14,8,0.92);
+  border: 1px solid rgba(201,168,76,0.22);
   border-radius: 16px;
   padding: 32px 28px;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(201,168,76,0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 8px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,168,76,0.06), inset 0 1px 0 rgba(201,168,76,0.08);
 }
 .input-card-title {
   font-size: 1.05rem;
@@ -501,6 +494,22 @@ img { max-width: 100%; }
   margin: 0 auto;
   padding: 0 24px;
 }
+/* Alternating section backgrounds — deeper and more atmospheric */
+.glance-section    { background: var(--bg2); }
+.islamic-section   { background: var(--bg); }
+.world-section     { background: var(--bg2); }
+.jr-section        { background: var(--bg); }
+.truth-section     { background: var(--bg2); }
+.story-section     { background: var(--bg); }
+.ms-section        { background: var(--bg2); }
+.tracker-section   { background: var(--bg); }
+.insight-section   { background: var(--bg2); }
+.hadith-section    { background: var(--bg); }
+.reflect-gen-section { background: var(--bg2); }
+.qibla-section     { background: var(--bg); }
+.prayer-section    { background: var(--bg2); }
+.liveage-section   { background: var(--bg); }
+.todays-story-section { background: var(--bg2); }
 .section-heading {
   display: flex;
   align-items: center;
@@ -512,19 +521,20 @@ img { max-width: 100%; }
   flex: 1;
   max-width: 120px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(201,168,76,0.4));
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,0.5));
 }
 .sh-line:last-of-type {
-  background: linear-gradient(90deg, rgba(201,168,76,0.4), transparent);
+  background: linear-gradient(90deg, rgba(201,168,76,0.5), transparent);
 }
-.sh-icon { color: var(--gold); font-size: 0.65rem; opacity: 0.8; }
+.sh-icon { color: var(--gold); font-size: 0.65rem; opacity: 0.9; }
 .sh-text {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 800;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   color: var(--gold);
   text-transform: uppercase;
   white-space: nowrap;
+  text-shadow: 0 0 20px rgba(201,168,76,0.3);
 }
 
 /* ── 9. Glance Grid ── */
@@ -541,12 +551,21 @@ img { max-width: 100%; }
   padding: 20px 16px;
   text-align: center;
   transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.glance-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,0.3), transparent);
+  opacity: 0; transition: opacity var(--transition);
 }
 .glance-card:hover {
   border-color: var(--card-hover);
   transform: translateY(-3px);
   box-shadow: var(--shadow-gold);
 }
+.glance-card:hover::before { opacity: 1; }
 .glance-icon { font-size: 1.4rem; margin-bottom: 8px; }
 .glance-label {
   font-size: 0.7rem;
@@ -1090,9 +1109,15 @@ img { max-width: 100%; }
 
 /* ── 17. Site Footer ── */
 .site-footer {
-  background: var(--bg2);
-  border-top: 1px solid rgba(201,168,76,0.1);
+  background: #040a05;
+  border-top: 1px solid rgba(201,168,76,0.12);
   padding: 48px 24px;
+  position: relative;
+}
+.site-footer::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,0.3), transparent);
 }
 .footer-inner {
   max-width: 1200px;
@@ -1115,13 +1140,6 @@ img { max-width: 100%; }
   -webkit-text-fill-color: transparent;
   background-clip: text;
   filter: drop-shadow(0 0 6px rgba(201,168,76,0.2));
-}
-[data-theme="light"] .footer-logo {
-  background: linear-gradient(135deg, #8a6820, #6b5018, #4a3810);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: none;
 }
 .footer-brand p {
   font-size: 0.82rem;
@@ -2079,163 +2097,8 @@ img { max-width: 100%; }
 /* ══════════════════════════════════════════════
    LIGHT MODE THEME — Rich Warm Islamic Parchment
    ══════════════════════════════════════════════ */
-[data-theme="light"] {
-  --bg:          #faf6ee;
-  --bg2:         #f0e8d8;
-  --bg3:         #e8dcc8;
-  --gold:        #8a6820;
-  --gold2:       #a07830;
-  --gold3:       #6b5018;
-  --green:       #15803d;
-  --green2:      #16a34a;
-  --text:        #1a1208;
-  --text2:       rgba(26,18,8,0.75);
-  --text3:       rgba(26,18,8,0.48);
-  --card-bg:     rgba(255,255,255,0.85);
-  --card-border: rgba(138,104,32,0.2);
-  --card-hover:  rgba(138,104,32,0.35);
-  --shadow:      0 4px 24px rgba(0,0,0,0.1);
-  --shadow-gold: 0 0 24px rgba(138,104,32,0.15);
-}
-
-[data-theme="light"] body {
-  background: var(--bg);
-}
-
-[data-theme="light"] .navbar {
-  background: rgba(250,246,238,0.96);
-  border-bottom-color: rgba(138,104,32,0.2);
-  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-}
-
-[data-theme="light"] .hero-bg-img {
-  background:
-    radial-gradient(ellipse 60% 80% at 20% 60%, rgba(138,104,32,0.08) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 60% at 80% 40%, rgba(21,128,61,0.06) 0%, transparent 50%),
-    linear-gradient(160deg, #f0e8d8 0%, #faf6ee 40%, #f5eed8 70%, #f0e8d8 100%);
-}
-
-[data-theme="light"] .hero-bg-overlay {
-  background: linear-gradient(90deg, rgba(250,246,238,0.3) 0%, transparent 50%, rgba(250,246,238,0.4) 100%);
-}
-
-[data-theme="light"] .loading-overlay {
-  background: rgba(245,240,232,0.97);
-}
-
-[data-theme="light"] .input-card {
-  background: rgba(255,255,255,0.9);
-  box-shadow: 0 8px 40px rgba(0,0,0,0.1), 0 0 0 1px rgba(138,104,32,0.1);
-}
-
-[data-theme="light"] .dob-input {
-  background: rgba(0,0,0,0.04);
-  color: var(--text);
-}
-
-[data-theme="light"] .dob-input::-webkit-calendar-picker-indicator {
-  filter: none;
-}
-
-[data-theme="light"] .share-modal {
-  background: rgba(0,0,0,0.5);
-}
-
-[data-theme="light"] .share-modal-inner {
-  background: #f5f0e8;
-}
-
-[data-theme="light"] .share-card-dl {
-  background: linear-gradient(145deg, #ede8dc, #e0d8c8);
-}
-
-[data-theme="light"] .pwa-prompt {
-  background: #f5f0e8;
-}
-
-[data-theme="light"] .celebration {
-  background: linear-gradient(135deg, #f5f0e8, #ede8dc);
-}
-
-[data-theme="light"] .story-card,
-[data-theme="light"] .insight-card,
-[data-theme="light"] .hadith-card,
-[data-theme="light"] .wakeup-card,
-[data-theme="light"] .prayer-card,
-[data-theme="light"] .prayer-countdown-banner,
-[data-theme="light"] .birthday-card,
-[data-theme="light"] .la-card,
-[data-theme="light"] .qibla-info-card,
-[data-theme="light"] .qibla-stats {
-  background: rgba(255,255,255,0.75);
-}
-
-[data-theme="light"] .mirror-card-dl {
-  background: linear-gradient(145deg, #ede8dc, #e0d8c8);
-}
-
-[data-theme="light"] .glance-section,
-[data-theme="light"] .world-section,
-[data-theme="light"] .ms-section,
-[data-theme="light"] .insight-section,
-[data-theme="light"] .truth-section,
-[data-theme="light"] .prayer-section,
-[data-theme="light"] .faq-section,
-[data-theme="light"] .liveage-section {
-  background: var(--bg2);
-}
-
-[data-theme="light"] .islamic-section,
-[data-theme="light"] .jr-section,
-[data-theme="light"] .tracker-section,
-[data-theme="light"] .story-section,
-[data-theme="light"] .hadith-section,
-[data-theme="light"] .qibla-section,
-[data-theme="light"] .step-continue,
-[data-theme="light"] .footer-ayah,
-[data-theme="light"] .start-again-wrap {
-  background: var(--bg);
-}
-[data-theme="light"] .site-footer {
-  background: var(--bg2);
-}
-
-[data-theme="light"] .nav-link { color: var(--text2); }
-[data-theme="light"] .nav-link:hover { color: var(--text); }
-[data-theme="light"] .nav-link.active { color: var(--gold); }
-
-[data-theme="light"] .hamburger span { background: var(--text); }
-
-[data-theme="light"] .week-day-dot {
-  border-color: rgba(0,0,0,0.12);
-  color: var(--text3);
-}
-
 /* ── Theme Toggle Button ── */
-.btn-theme-toggle {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1px solid var(--card-border);
-  background: var(--card-bg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all var(--transition);
-  flex-shrink: 0;
-}
-.btn-theme-toggle:hover {
-  border-color: var(--gold);
-  background: rgba(201,168,76,0.1);
-}
 /* Show correct icon per theme */
-.theme-icon-light { display: none; }
-.theme-icon-dark  { display: block; }
-[data-theme="light"] .theme-icon-light { display: block; }
-[data-theme="light"] .theme-icon-dark  { display: none; }
-
 /* ══════════════════════════════════════════════
    DAILY HADITH & AYAH SECTION
    ══════════════════════════════════════════════ */
@@ -2326,8 +2189,7 @@ img { max-width: 100%; }
 @media (max-width: 480px) {
   .hadith-arabic { font-size: 1.1rem; }
   .hadith-translation { font-size: 0.88rem; }
-  .btn-theme-toggle { width: 32px; height: 32px; font-size: 0.9rem; }
-}
+  }
 
 /* ══════════════════════════════════════════════
    QIBLA DIRECTION SECTION
@@ -2479,10 +2341,6 @@ img { max-width: 100%; }
 }
 
 /* Light mode compass */
-[data-theme="light"] .qibla-compass-wrap {
-  filter: drop-shadow(0 0 16px rgba(138,104,32,0.2));
-}
-
 @media (max-width: 768px) {
   .qibla-layout { grid-template-columns: 1fr; justify-items: center; gap: 24px; }
   .qibla-info-card { width: 100%; }
@@ -2885,8 +2743,6 @@ img { max-width: 100%; }
 }
 .lm-skip:hover { color: var(--text2); }
 
-[data-theme="light"] .life-mirror { background: rgba(0,0,0,0.7); }
-
 /* ══════════════════════════════════════════════
    LANGUAGE SWITCHER
    ══════════════════════════════════════════════ */
@@ -2920,10 +2776,10 @@ img { max-width: 100%; }
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  background: var(--bg2);
-  border: 1px solid var(--card-border);
+  background: #0a1a0d;
+  border: 1px solid rgba(201,168,76,0.2);
   border-radius: var(--radius);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,168,76,0.06);
   min-width: 160px;
   z-index: 200;
   overflow: hidden;
@@ -3410,35 +3266,6 @@ img { max-width: 100%; }
 }
 
 /* ── Light mode for new sections ── */
-[data-theme="light"] .lang-dropdown {
-  background: #f5f0e8;
-  border-color: rgba(138,104,32,0.2);
-}
-[data-theme="light"] .lang-option { color: var(--text2); }
-[data-theme="light"] .lang-option:hover { background: rgba(138,104,32,0.08); }
-[data-theme="light"] .lang-btn { color: var(--text2); }
-
-[data-theme="light"] .faq-q { color: var(--text); }
-[data-theme="light"] .faq-item { border-color: rgba(138,104,32,0.15); }
-
-[data-theme="light"] .wu-meaning { background: rgba(138,104,32,0.06); border-color: rgba(138,104,32,0.18); }
-[data-theme="light"] .wu-reality { background: rgba(200,50,50,0.04); border-color: rgba(200,50,50,0.15); }
-[data-theme="light"] .wu-action  { background: rgba(22,163,74,0.05); border-color: rgba(22,163,74,0.18); }
-
-[data-theme="light"] .prayer-placeholder { color: var(--text3); }
-[data-theme="light"] .prayer-note { color: var(--text3); }
-[data-theme="light"] .prayer-meta { color: var(--text3); }
-[data-theme="light"] .prayer-status { color: var(--text3); }
-
-[data-theme="light"] .liveage-sub { color: var(--text3); }
-[data-theme="light"] .la-card-live { background: rgba(22,163,74,0.06); }
-[data-theme="light"] .la-card-accent { background: rgba(138,104,32,0.06); }
-
-[data-theme="light"] .life-mirror { background: rgba(0,0,0,0.65); }
-[data-theme="light"] .life-mirror-inner .lm-question { color: #f5f0e8; }
-[data-theme="light"] .life-mirror-inner .lm-sub { color: rgba(245,240,232,0.6); }
-[data-theme="light"] .life-mirror-inner .lm-skip { color: rgba(245,240,232,0.45); }
-
 /* ── Live Age empty state ── */
 .liveage-empty {
   text-align: center;
@@ -3611,11 +3438,6 @@ img { max-width: 100%; }
 }
 
 /* Light mode */
-[data-theme="light"] .todays-story-card {
-  background: linear-gradient(135deg, rgba(245,240,232,0.9), rgba(237,232,220,0.95));
-}
-[data-theme="light"] .todays-story-section { background: var(--bg); }
-
 @media (max-width: 768px) {
   .tsc-inner { grid-template-columns: 1fr; }
   .tsc-left { border-right: none; border-bottom: 1px solid rgba(201,168,76,0.1); padding: 24px 20px; }
@@ -3981,11 +3803,6 @@ img { max-width: 100%; }
 }
 
 /* Light mode */
-[data-theme="light"] .reflect-gen-section { background: var(--bg2); }
-[data-theme="light"] .rg-result { background: rgba(255,255,255,0.75); }
-[data-theme="light"] .viral-card-dl { background: linear-gradient(160deg, #ede8dc, #e0d8c8); }
-[data-theme="light"] .viral-whatsapp-caption { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.08); }
-
 @media (max-width: 768px) {
   .rg-result { padding: 22px 18px; }
   .btn-reflect-gen { font-size: 0.82rem; padding: 12px 22px; }
@@ -4171,12 +3988,6 @@ img { max-width: 100%; }
 }
 
 /* Light mode */
-[data-theme="light"] .growth-level-card,
-[data-theme="light"] .growth-compare-card { background: rgba(255,255,255,0.75); }
-[data-theme="light"] .end-day-card { background: rgba(245,240,232,0.8); }
-[data-theme="light"] .return-hook-card { background: rgba(138,104,32,0.06); }
-[data-theme="light"] .smd-followup { background: rgba(138,104,32,0.04); }
-
 @media (max-width: 768px) {
   .growth-system { grid-template-columns: 1fr; }
   .growth-level-card { flex-direction: column; text-align: center; }
@@ -4288,17 +4099,6 @@ img { max-width: 100%; }
 }
 
 /* Light mode */
-[data-theme="light"] .current-state-card {
-  background: linear-gradient(135deg, rgba(245,240,232,0.9), rgba(237,232,220,0.95));
-}
-[data-theme="light"] .wf-goal {
-  background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.06);
-}
-[data-theme="light"] .wf-goal-done {
-  background: rgba(21,128,61,0.06); border-color: rgba(21,128,61,0.2);
-}
-[data-theme="light"] .wf-goal-bar-wrap { background: rgba(0,0,0,0.06); }
-
 @media (max-width: 768px) {
   .personal-path { grid-template-columns: 1fr; }
 }

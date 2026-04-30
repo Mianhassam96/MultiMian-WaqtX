@@ -537,6 +537,74 @@
 </div><!-- /results-section -->
 
 <!-- ═══════════════════════════════════════════════
+     DAILY ISLAM DASHBOARD — First thing users see
+     ═══════════════════════════════════════════════ -->
+<section class="section daily-dashboard-section" id="daily-dashboard-section">
+  <div class="section-inner">
+    <div class="section-heading">
+      <span class="sh-line"></span>
+      <span class="sh-icon">◆</span>
+      <span class="sh-text">YOUR DAILY ISLAM</span>
+      <span class="sh-icon">◆</span>
+      <span class="sh-line"></span>
+    </div>
+    <div class="daily-dashboard" id="daily-dashboard">
+
+      <!-- Today's Ayah -->
+      <div class="dd-card dd-ayah-card">
+        <div class="dd-badge">📖 Ayah of the Day</div>
+        <div class="dd-arabic" id="dd-ayah-arabic"></div>
+        <div class="dd-translation" id="dd-ayah-translation"></div>
+        <div class="dd-source" id="dd-ayah-source"></div>
+        <div class="dd-reflection" id="dd-ayah-reflection"></div>
+      </div>
+
+      <!-- Today's Dua -->
+      <div class="dd-card dd-dua-card">
+        <div class="dd-badge">🤲 Dua of the Day</div>
+        <div class="dd-dua-situation" id="dd-dua-situation"></div>
+        <div class="dd-arabic" id="dd-dua-arabic"></div>
+        <div class="dd-transliteration" id="dd-dua-transliteration"></div>
+        <div class="dd-translation" id="dd-dua-translation"></div>
+        <div class="dd-source" id="dd-dua-source"></div>
+      </div>
+
+      <!-- Today's Action -->
+      <div class="dd-card dd-action-card">
+        <div class="dd-badge">🎯 One Action Today</div>
+        <div class="dd-action-text" id="dd-action-text"></div>
+        <div class="dd-action-why" id="dd-action-why"></div>
+        <div class="dd-action-btns">
+          <button class="dd-done-btn" id="dd-done-btn">✓ Done for Today</button>
+          <button class="dd-share-action-btn" id="dd-share-action-btn">📤 Share</button>
+        </div>
+        <div class="dd-done-msg hidden" id="dd-done-msg">Alhamdulillah. See you tomorrow. ✦</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     IF YOU FEEL… — Situation-based Islam
+     ═══════════════════════════════════════════════ -->
+<section class="section situation-section" id="situation-section">
+  <div class="section-inner">
+    <div class="section-heading">
+      <span class="sh-line"></span>
+      <span class="sh-icon">◆</span>
+      <span class="sh-text">IF YOU FEEL…</span>
+      <span class="sh-icon">◆</span>
+      <span class="sh-line"></span>
+    </div>
+    <div class="situation-sub">Find what Islam says about exactly what you are going through right now.</div>
+    <div class="situation-grid" id="situation-grid">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
      ALWAYS-VISIBLE: DAILY IBADAH TRACKER
      (works without entering DOB — daily return hook)
      ═══════════════════════════════════════════════ -->
@@ -964,6 +1032,16 @@
   </div>
 </div>
 
+<!-- ═══ SITUATION DETAIL MODAL ═══ -->
+<div class="share-modal hidden" id="situation-modal" role="dialog" aria-modal="true" aria-label="Situation guidance">
+  <div class="share-modal-inner situation-modal-inner">
+    <button class="modal-close" id="situation-modal-close" aria-label="Close">✕</button>
+    <div class="sit-modal-body" id="sit-modal-body">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+</div>
+
 <div class="celebration hidden" id="celebration">
   <div class="celebration-inner">
     <div class="celebration-emoji">🎉</div>
@@ -1056,6 +1134,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
 <script src="stories-data.js" defer></script>
+<script src="daily-islam.js" defer></script>
 <script src="app.js"></script>
 <script>
   if ('serviceWorker' in navigator) {

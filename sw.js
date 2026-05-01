@@ -1,5 +1,5 @@
 'use strict';
-var CACHE = 'waqtx-v8';
+var CACHE = 'waqtx-v9';
 var ASSETS = [
   './',
   './index.html',
@@ -24,42 +24,50 @@ var ASSETS = [
 ];
 
 self.addEventListener('install', function(e) {
+  /* Force immediate activation — don't wait for old SW to die */
+  self.skipWaiting();
   e.waitUntil(
     caches.open(CACHE).then(function(cache) {
       return cache.addAll(ASSETS);
-    }).then(function() { return self.skipWaiting(); })
+    })
   );
 });
 
 self.addEventListener('activate', function(e) {
+  /* Delete ALL old caches immediately */
   e.waitUntil(
     caches.keys().then(function(keys) {
       return Promise.all(
         keys.filter(function(k) { return k !== CACHE; })
             .map(function(k) { return caches.delete(k); })
       );
-    }).then(function() { return self.clients.claim(); })
+    }).then(function() {
+      /* Take control of all open tabs immediately */
+      return self.clients.claim();
+    })
   );
 });
 
 self.addEventListener('fetch', function(e) {
-  if (e.request.mode === 'navigate') {
-    e.respondWith(
-      fetch(e.request).catch(function() {
-        return caches.match('./index.html');
-      })
-    );
-    return;
-  }
+  /* NETWORK-FIRST strategy — always try network, fall back to cache */
+  /* This ensures updates are always delivered */
   e.respondWith(
-    caches.match(e.request).then(function(cached) {
-      return cached || fetch(e.request).then(function(response) {
+    fetch(e.request)
+      .then(function(response) {
+        /* Cache a copy of fresh responses */
         if (response && response.status === 200 && response.type === 'basic') {
           var clone = response.clone();
-          caches.open(CACHE).then(function(cache) { cache.put(e.request, clone); });
+          caches.open(CACHE).then(function(cache) {
+            cache.put(e.request, clone);
+          });
         }
         return response;
-      });
-    })
+      })
+      .catch(function() {
+        /* Network failed — serve from cache */
+        return caches.match(e.request).then(function(cached) {
+          return cached || caches.match('./index.html');
+        });
+      })
   );
 });

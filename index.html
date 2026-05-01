@@ -1137,10 +1137,21 @@
 <script src="daily-islam.js"></script>
 <script src="app.js" defer></script>
 <script>
+  /* Force-clear old service worker caches, then register new one */
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function () {
-      navigator.serviceWorker.register('./sw.js').catch(function () {});
-    });
+    /* Unregister all old SWs first so stale cache is wiped */
+    navigator.serviceWorker.getRegistrations().then(function(regs) {
+      var unregPromises = regs.map(function(r) { return r.unregister(); });
+      return Promise.all(unregPromises);
+    }).then(function() {
+      /* Clear all caches */
+      return caches.keys().then(function(keys) {
+        return Promise.all(keys.map(function(k) { return caches.delete(k); }));
+      });
+    }).then(function() {
+      /* Register fresh SW */
+      return navigator.serviceWorker.register('./sw.js');
+    }).catch(function() {});
   }
 </script>
 </body>

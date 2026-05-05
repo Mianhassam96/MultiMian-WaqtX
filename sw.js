@@ -1,5 +1,5 @@
 'use strict';
-var CACHE = 'waqtx-v9';
+var CACHE = 'waqtx-v10';
 var ASSETS = [
   './',
   './index.html',

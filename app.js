@@ -376,28 +376,58 @@ function getBreakdown(birth) {
 }
 
 /* ── Gregorian → Hijri ── */
+/* Kuwaiti algorithm — accurate ±1 day for 1900–2100 */
 function toHijri(date) {
-  const jd = Math.floor((14 + date.getMonth() + 1) / 12);
-  const y  = date.getFullYear() + 4800 - jd;
-  const m  = date.getMonth() + 1 + 12 * jd - 3;
-  let jdn = date.getDate()
+  var D = date.getDate();
+  var M = date.getMonth() + 1;
+  var Y = date.getFullYear();
+
+  /* Gregorian → Julian Day Number */
+  var a = Math.floor((14 - M) / 12);
+  var y = Y + 4800 - a;
+  var m = M + 12 * a - 3;
+  var JDN = D
     + Math.floor((153 * m + 2) / 5)
     + 365 * y
     + Math.floor(y / 4)
     - Math.floor(y / 100)
     + Math.floor(y / 400)
     - 32045;
-  const l = jdn - 1948440 + 10632;
-  const n = Math.floor((l - 1) / 10631);
-  let l2 = l - 10631 * n + 354;
-  const j = (Math.floor((10985 - l2) / 5316)) * (Math.floor((50 * l2) / 17719))
-          + (Math.floor(l2 / 5670)) * (Math.floor((43 * l2) / 15238));
-  l2 = l2
-    - (Math.floor((30 - j) / 15)) * (Math.floor((17719 * j) / 50))
-    - (Math.floor(j / 16)) * (Math.floor((15238 * j) / 43))
-    + 29;
-  const hYear  = 19 * n + Math.floor(j / 4) + Math.floor(l2 / 29) - 30;
-  const hMonth = Math.floor((59 * (l2 - 1) + 1) / 1771);
+
+  /* JDN → Hijri. Islamic epoch = JDN 1948439 */
+  var daysSinceEpoch = JDN - 1948439;
+  var cycle30 = Math.floor(daysSinceEpoch / 10631);
+  var dayInCycle = daysSinceEpoch - 10631 * cycle30;
+
+  /* Leap years in 30-year cycle */
+  var LEAP = [2,5,7,10,13,15,18,21,24,26,29];
+  function isLeap(yi) { return LEAP.indexOf(yi) !== -1; }
+  function daysInHijriYear(yi) { return isLeap(yi) ? 355 : 354; }
+
+  var yearInCycle = Math.max(1, Math.ceil((dayInCycle + 1) / 354.367));
+  if (yearInCycle > 30) yearInCycle = 30;
+
+  var daysAtYearStart = 0;
+  for (var i = 1; i < yearInCycle; i++) daysAtYearStart += daysInHijriYear(i);
+  while (daysAtYearStart + daysInHijriYear(yearInCycle) <= dayInCycle && yearInCycle < 30) {
+    daysAtYearStart += daysInHijriYear(yearInCycle++);
+  }
+  while (daysAtYearStart > dayInCycle && yearInCycle > 1) {
+    daysAtYearStart -= daysInHijriYear(--yearInCycle);
+  }
+
+  var hYear = 30 * cycle30 + yearInCycle;
+  var dayInYear = dayInCycle - daysAtYearStart;
+
+  var hMonth = 1;
+  var daysAccum = 0;
+  for (var mo = 1; mo <= 12; mo++) {
+    var mLen = (mo % 2 === 1) ? 30 : 29;
+    if (mo === 12 && isLeap(yearInCycle)) mLen = 30;
+    if (dayInYear < daysAccum + mLen) { hMonth = mo; break; }
+    daysAccum += mLen;
+  }
+
   return { year: hYear, month: hMonth };
 }
 
@@ -503,21 +533,55 @@ function getWorldData(year) {
 
 /* ── Islamic Dates ── */
 function getNextRamadan() {
+  /* Find next 1 Ramadan by scanning forward from today's Hijri year.
+     We convert 1 Ramadan of the current and next two Hijri years to
+     Gregorian and return the first one still in the future. */
   const today = new Date();
-  // Approximate Ramadan start dates
-  const ramadans = [
-    new Date(2025, 2, 1),
-    new Date(2026, 1, 18),
-    new Date(2027, 1, 7),
-    new Date(2028, 0, 27),
-    new Date(2029, 0, 16)
-  ];
-  for (let i = 0; i < ramadans.length; i++) {
-    if (ramadans[i] > today) {
-      return ramadans[i].toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+  const hijriNow = toHijri(today);
+
+  /* Approximate Gregorian date of 1 Ramadan for a given Hijri year.
+     Uses the inverse: count days from Islamic epoch. */
+  function ramadanStart(hYear) {
+    /* Days from epoch to 1 Ramadan of hYear:
+       Each 30-year cycle = 10631 days.
+       Leap years in cycle: 2,5,7,10,13,15,18,21,24,26,29 */
+    const LEAP = [2,5,7,10,13,15,18,21,24,26,29];
+    function isLeap(y) { return LEAP.indexOf(((y - 1) % 30) + 1) !== -1; }
+    function daysInYear(y) { return isLeap(y) ? 355 : 354; }
+
+    /* Days from epoch to start of hYear */
+    let days = 0;
+    for (let y = 1; y < hYear; y++) days += daysInYear(y);
+
+    /* Add days for months 1–8 (Muharram through Sha'ban) */
+    /* Month lengths: odd=30, even=29 */
+    for (let mo = 1; mo <= 8; mo++) {
+      days += (mo % 2 === 1) ? 30 : 29;
+    }
+
+    /* Convert days-since-epoch to Gregorian */
+    const JDN = days + 1948439;
+    let l = JDN + 68569;
+    const n = Math.floor((4 * l) / 146097);
+    l = l - Math.floor((146097 * n + 3) / 4);
+    const i = Math.floor((4000 * (l + 1)) / 1461001);
+    l = l - Math.floor((1461 * i) / 4) + 31;
+    const j = Math.floor((80 * l) / 2447);
+    const gDay   = l - Math.floor((2447 * j) / 80);
+    const gMonth = j + 2 - 12 * Math.floor(j / 11);
+    const gYear  = 100 * (n - 49) + i + Math.floor(j / 11);
+    return new Date(gYear, gMonth - 1, gDay);
+  }
+
+  for (let offset = 0; offset <= 2; offset++) {
+    const candidate = ramadanStart(hijriNow.year + offset);
+    if (candidate > today) {
+      return candidate.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
     }
   }
-  return '2030';
+  /* Fallback */
+  return ramadanStart(hijriNow.year + 1)
+    .toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
 function getNextJumua() {
@@ -560,6 +624,116 @@ function animateCounter(elId, target, duration) {
     if (current >= target) clearInterval(timer);
   }, interval);
 }
+
+/* ── Hero Preview Stats (shown before DOB is submitted) ── */
+function updateHeroPreview(birth) {
+  if (!birth || birth > new Date() || birth.getFullYear() < 1900) return;
+  const t = getTotals(birth);
+  const b = getBreakdown(birth);
+  const ageYears = b.yy + b.mo / 12 + b.dd / 365;
+  const pct = Math.min(100, (ageYears / AVG_LIFESPAN_YEARS) * 100);
+  const ramadans = Math.floor(ageYears);
+  /* Estimated missed Fajrs: days lived × ~0.6 average miss rate */
+  const missedFajr = Math.round(t.day * 0.6);
+
+  const daysEl = el('hero-days-lived');
+  if (daysEl) daysEl.textContent = fmt(t.day) + ' days.';
+
+  const ramEl = el('hsp-ramadans');
+  if (ramEl) ramEl.textContent = ramadans;
+
+  const pctEl = el('hsp-pct');
+  if (pctEl) pctEl.textContent = Math.round(pct) + '%';
+
+  const fajrEl = el('hsp-fajr');
+  if (fajrEl) fajrEl.textContent = '~' + fmt(missedFajr);
+
+  const preview = el('hero-stats-preview');
+  if (preview) preview.classList.add('hsp-visible');
+}
+
+/* Update hero preview live as user types DOB */
+(function() {
+  const dobInput = el('hero-dob');
+  if (!dobInput) return;
+  dobInput.addEventListener('change', function() {
+    if (dobInput.value) {
+      try { updateHeroPreview(parseDOB(dobInput.value)); } catch(e) {}
+    }
+  });
+})();
+
+/* ── Daily Return Hook ── */
+/* Shows a personalised message to returning users based on their streak + last visit */
+(function() {
+  try {
+    var today = new Date().toISOString().split('T')[0];
+    var lastVisit = localStorage.getItem('waqtx_last_visit');
+    var streak = 0;
+    try {
+      var data = JSON.parse(localStorage.getItem('waqtx_tracker') || '{}');
+      var d = new Date();
+      var consecutive = 0;
+      for (var i = 0; i < 30; i++) {
+        var dk = new Date(d); dk.setDate(d.getDate() - i);
+        var k = dk.toISOString().split('T')[0];
+        var dd = data[k];
+        if (dd && (dd.salah || []).length >= 5) { consecutive++; }
+        else if (i > 0) { break; }
+      }
+      streak = consecutive;
+    } catch(e2) {}
+
+    /* Save today as last visit */
+    localStorage.setItem('waqtx_last_visit', today);
+
+    if (!lastVisit || lastVisit === today) return; /* First visit or already shown today */
+
+    var yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+    var yesterdayKey = yesterday.toISOString().split('T')[0];
+    var missedYesterday = lastVisit < yesterdayKey;
+
+    var savedDob = localStorage.getItem('waqtx_dob');
+    var savedName = localStorage.getItem('waqtx_name');
+    var greeting = savedName ? savedName : 'You';
+
+    var msg = '';
+    if (streak >= 7) {
+      msg = '🔥 ' + streak + '-day streak. ' + greeting + ', you\'re building something real. Don\'t stop now.';
+    } else if (streak >= 3) {
+      msg = '✦ ' + streak + ' days in a row. Keep going — consistency is what separates intention from change.';
+    } else if (missedYesterday) {
+      msg = '↩ You were away for a bit. Every day you return is a day that counts. Welcome back.';
+    } else if (savedDob) {
+      var birth = parseDOB(savedDob);
+      var tots = getTotals(birth);
+      msg = '⏳ Another day has passed — you\'ve now lived ' + fmt(tots.day) + ' days. Make today count.';
+    }
+
+    if (!msg) return;
+
+    /* Inject return hook banner */
+    var banner = document.createElement('div');
+    banner.className = 'return-hook-banner';
+    banner.setAttribute('role', 'status');
+    banner.innerHTML = '<span class="rhb-text">' + msg + '</span>' +
+      '<button class="rhb-close" aria-label="Dismiss">✕</button>';
+    document.body.insertBefore(banner, document.body.firstChild);
+
+    banner.querySelector('.rhb-close').addEventListener('click', function() {
+      banner.classList.add('rhb-hiding');
+      setTimeout(function() { banner.remove(); }, 300);
+    });
+
+    /* Auto-dismiss after 8 seconds */
+    setTimeout(function() {
+      if (banner.parentNode) {
+        banner.classList.add('rhb-hiding');
+        setTimeout(function() { banner.remove(); }, 300);
+      }
+    }, 8000);
+  } catch(e) {}
+})();
 
 /* ── Main Render ── */
 function renderAll(birth) {
@@ -994,7 +1168,11 @@ if (pwaDismiss) pwaDismiss.addEventListener('click', function () {
     } else {
       /* Restore from localStorage */
       const saved = localStorage.getItem('waqtx_dob');
-      if (saved) { const inp = el('hero-dob'); if (inp) inp.value = saved; }
+      if (saved) {
+        const inp = el('hero-dob'); if (inp) inp.value = saved;
+        /* Update hero preview stats from saved DOB */
+        try { updateHeroPreview(parseDOB(saved)); } catch(e2) {}
+      }
       const savedName = localStorage.getItem('waqtx_name');
       if (savedName) { const nameInp = el('hero-name'); if (nameInp) nameInp.value = savedName; }
     }

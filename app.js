@@ -985,83 +985,254 @@ el('btn-start-again').addEventListener('click', function () {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
+/* ══════════════════════════════════════════════
+   VIRAL SHARE MODAL 2.0
+   ══════════════════════════════════════════════ */
+
+/* ── Caption sets per mode ── */
+var SHARE_CAPTIONS = {
+  reality: [
+    { label: '💭 Deep', text: 'I just counted how many days I\'ve lived. I wasn\'t ready for the number. Try it yourself.' },
+    { label: '🌙 Islamic', text: 'وَمَا تَدْرِي نَفْسٌ مَّاذَا تَكْسِبُ غَدًا\n\nNo soul knows what it will earn tomorrow. This app made me think.' },
+    { label: '🔗 Curious', text: 'This tool shows your life in days, heartbeats and Islamic history. Genuinely hit different.' }
+  ],
+  ibadah: [
+    { label: '💪 Flex', text: 'Tracking my salah changed how I think about my day. Day {streak} streak.' },
+    { label: '🤲 Invite', text: 'Started tracking my ibadah daily. If you want accountability, try this.' },
+    { label: '🌱 Honest', text: 'Not perfect. But consistent. That\'s the goal.' }
+  ],
+  reflection: [
+    { label: '🖤 Quiet', text: 'One day my name will just be a memory. This made me think about what I\'m building.' },
+    { label: '📖 Quran', text: 'إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ\n\nWe belong to Allah and to Him we return. A reminder I needed today.' },
+    { label: '🤍 Gentle', text: 'Sometimes you just need a quiet moment to remember what actually matters.' }
+  ]
+};
+
+/* ── Open share modal and populate all 3 cards ── */
+function openShareModalV2() {
+  var modal = el('share-modal');
+  if (!modal) return;
+
+  /* Populate data if birth is known */
+  if (_birth) {
+    var t2 = getTotals(_birth);
+    var b2 = getBreakdown(_birth);
+    var ageYears = b2.yy + b2.mo / 12 + b2.dd / 365;
+    var pct = Math.min(100, (ageYears / AVG_LIFESPAN_YEARS) * 100);
+    var hijriBirth = toHijri(_birth);
+    var hijriNow   = toHijri(new Date());
+    var ramadans   = Math.floor(ageYears);
+    var islamicYrs = hijriNow.year - hijriBirth.year;
+    var nameStr    = _name || '';
+
+    /* Reality card */
+    setText('v2r-days',    fmt(t2.day));
+    setText('v2r-pct',     Math.round(pct) + '%');
+    setText('v2r-ramadans', ramadans);
+    setText('v2r-hijri',   islamicYrs);
+    var v2rName = el('v2r-name');
+    if (v2rName) v2rName.textContent = nameStr;
+
+    /* Ibadah card */
+    var streak = getStreakCount();
+    var trackerData = loadTrackerData();
+    var todayKey = getTodayKey();
+    var todayData = trackerData[todayKey] || { salah: [], dhikr: [] };
+    var salahDone = (todayData.salah || []).length;
+    var dhikrDone = (todayData.dhikr || []).length;
+
+    /* Full days this week */
+    var fullDays = 0;
+    for (var i = 0; i < 7; i++) {
+      var d = new Date(); d.setDate(d.getDate() - i);
+      var k = d.toISOString().split('T')[0];
+      var dd = trackerData[k] || { salah: [] };
+      if ((dd.salah || []).length >= 5) fullDays++;
+    }
+
+    setText('v2i-streak', streak);
+    setText('v2i-salah',  salahDone + '/5');
+    setText('v2i-week',   fullDays + '/7');
+    setText('v2i-dhikr',  dhikrDone + '/5');
+    var v2iName = el('v2i-name');
+    if (v2iName) v2iName.textContent = nameStr;
+
+    /* Reflection card */
+    var reflLines = [
+      'I have lived ' + fmt(t2.day) + ' days.',
+      'I have witnessed ' + ramadans + ' Ramadans.',
+      'Only Allah knows how many remain.'
+    ];
+    setText('v2ref-body', reflLines[0] + ' ' + reflLines[1]);
+    setText('v2ref-stat', reflLines[2]);
+    var v2refName = el('v2ref-name');
+    if (v2refName) v2refName.textContent = nameStr;
+
+    /* Streak unlock hint */
+    var hintEl = el('v2-unlock-hint');
+    if (hintEl) {
+      if (streak >= 7) {
+        hintEl.textContent = '🔥 ' + streak + '-day streak unlocked. Your Ibadah card is premium.';
+        hintEl.className = 'v2-unlock-hint has-hint';
+      } else if (streak > 0) {
+        hintEl.textContent = streak + ' day streak. Reach 7 days to unlock the premium Ibadah card style.';
+        hintEl.className = 'v2-unlock-hint';
+      } else {
+        hintEl.textContent = 'Start tracking your salah to unlock the Ibadah Flex card.';
+        hintEl.className = 'v2-unlock-hint';
+      }
+    }
+
+    /* Personalise captions with streak */
+    SHARE_CAPTIONS.ibadah[0].text = SHARE_CAPTIONS.ibadah[0].text.replace('{streak}', streak);
+  }
+
+  /* Render captions for active mode */
+  renderV2Captions('reality');
+
+  modal.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+/* ── Render caption buttons for a given mode ── */
+function renderV2Captions(mode) {
+  var container = el('v2-caption-btns');
+  if (!container) return;
+  var captions = SHARE_CAPTIONS[mode] || [];
+  container.innerHTML = captions.map(function(c, i) {
+    return '<button class="v2-caption-btn" data-idx="' + i + '" data-mode="' + mode + '">' +
+      '<span class="v2-caption-text">' + c.text.replace(/\n/g, '<br>') + '</span>' +
+      '<span class="v2-caption-copy">Copy ' + c.label + '</span>' +
+    '</button>';
+  }).join('');
+
+  container.querySelectorAll('.v2-caption-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var idx  = parseInt(btn.getAttribute('data-idx'));
+      var mode2 = btn.getAttribute('data-mode');
+      var text = SHARE_CAPTIONS[mode2][idx].text;
+      /* Append link */
+      var url = 'https://mianhassam96.github.io/WaqtX/';
+      if (_birth) {
+        url += '?dob=' + _birth.toISOString().split('T')[0];
+        if (_name) url += '&name=' + encodeURIComponent(_name);
+      }
+      var full = text + '\n\n' + url;
+      copyText(full, btn.querySelector('.v2-caption-copy'), 'Copied!', btn.querySelector('.v2-caption-copy').textContent);
+      btn.classList.add('copied');
+      setTimeout(function() { btn.classList.remove('copied'); }, 2500);
+    });
+  });
+}
+
+/* ── Utility: copy text ── */
+function copyText(text, el2, successMsg, originalMsg) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function() {
+      if (el2) { el2.textContent = successMsg; setTimeout(function() { el2.textContent = originalMsg; }, 2500); }
+    }).catch(function() {});
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); if (el2) { el2.textContent = successMsg; setTimeout(function() { el2.textContent = originalMsg; }, 2500); } } catch(e) {}
+    document.body.removeChild(ta);
+  }
+}
+
+/* ── Wire modal tabs ── */
+(function() {
+  var modal = el('share-modal');
+  if (!modal) return;
+
+  /* Tab switching */
+  modal.querySelectorAll('.v2-tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      var mode = tab.getAttribute('data-mode');
+      /* Update tabs */
+      modal.querySelectorAll('.v2-tab').forEach(function(t) {
+        t.classList.toggle('active', t === tab);
+        t.setAttribute('aria-selected', t === tab ? 'true' : 'false');
+      });
+      /* Show correct card */
+      modal.querySelectorAll('.v2-card').forEach(function(c) { c.classList.add('hidden'); });
+      var activeCard = el('v2-card-' + mode);
+      if (activeCard) activeCard.classList.remove('hidden');
+      /* Update captions */
+      renderV2Captions(mode);
+    });
+  });
+
+  /* Close */
+  var closeBtn = el('share-close');
+  if (closeBtn) closeBtn.addEventListener('click', function() {
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+  });
+  modal.addEventListener('click', function(e) {
+    if (e.target === modal) { modal.classList.add('hidden'); document.body.style.overflow = ''; }
+  });
+
+  /* Download — renders the currently visible card */
+  var dlBtn = el('v2-btn-dl');
+  if (dlBtn) dlBtn.addEventListener('click', function() {
+    if (typeof html2canvas === 'undefined') { alert('Please take a screenshot to save your card.'); return; }
+    /* Find active card */
+    var activeCard = modal.querySelector('.v2-card:not(.hidden)');
+    if (!activeCard) return;
+    var origText = dlBtn.textContent;
+    dlBtn.textContent = 'Generating…';
+    dlBtn.disabled = true;
+    /* Temporarily expand card for clean render */
+    var origOverflow = activeCard.style.overflow;
+    activeCard.style.overflow = 'visible';
+    html2canvas(activeCard, { backgroundColor: null, scale: 3, useCORS: true, logging: false }).then(function(canvas) {
+      activeCard.style.overflow = origOverflow;
+      var a = document.createElement('a');
+      a.download = 'waqtx-' + (activeCard.id || 'card') + '.png';
+      a.href = canvas.toDataURL('image/png');
+      a.click();
+      dlBtn.textContent = '✓ Downloaded!';
+      setTimeout(function() { dlBtn.textContent = origText; dlBtn.disabled = false; }, 2000);
+    }).catch(function() {
+      activeCard.style.overflow = origOverflow;
+      dlBtn.textContent = origText; dlBtn.disabled = false;
+    });
+  });
+
+  /* Copy link */
+  var linkBtn = el('v2-btn-link');
+  if (linkBtn) linkBtn.addEventListener('click', function() {
+    var url = 'https://mianhassam96.github.io/WaqtX/';
+    if (_birth) {
+      url += '?dob=' + _birth.toISOString().split('T')[0];
+      if (_name) url += '&name=' + encodeURIComponent(_name);
+    }
+    copyText(url, linkBtn, '✓ Copied!', '🔗 Copy Link');
+  });
+})();
+
 /* Share nav button */
 el('btn-share-nav').addEventListener('click', function () {
   if (!_birth) { el('hero-dob').focus(); return; }
-  el('share-modal').classList.remove('hidden');
-  document.body.style.overflow = 'hidden';
+  openShareModalV2();
 });
 
-/* Download image button */
+/* Download image button (in results section) */
 el('btn-download').addEventListener('click', function () {
   if (!_birth) return;
-  el('share-modal').classList.remove('hidden');
-  document.body.style.overflow = 'hidden';
+  openShareModalV2();
 });
 
-/* Copy link — now generates shareable URL with DOB + name */
+/* Copy link button (in results section) */
 el('btn-copy-link').addEventListener('click', function () {
-  const btn = this;
-  let url = 'https://mianhassam96.github.io/WaqtX/';
+  var btn = this;
+  var url = 'https://mianhassam96.github.io/WaqtX/';
   if (_birth) {
-    const dobStr = _birth.toISOString().split('T')[0];
-    url += '?dob=' + dobStr;
+    url += '?dob=' + _birth.toISOString().split('T')[0];
     if (_name) url += '&name=' + encodeURIComponent(_name);
   }
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(url).then(function () {
-      btn.textContent = '\u2713 Copied!';
-      setTimeout(function () { btn.textContent = '\uD83D\uDD17 Copy Link'; }, 2000);
-    }).catch(function () {
-      btn.textContent = 'Copy failed';
-      setTimeout(function () { btn.textContent = '\uD83D\uDD17 Copy Link'; }, 2000);
-    });
-  } else {
-    const ta = document.createElement('textarea');
-    ta.value = url;
-    ta.style.position = 'fixed';
-    ta.style.opacity = '0';
-    document.body.appendChild(ta);
-    ta.select();
-    try { document.execCommand('copy'); btn.textContent = '\u2713 Copied!'; } catch(e) { btn.textContent = 'Copy failed'; }
-    document.body.removeChild(ta);
-    setTimeout(function () { btn.textContent = '\uD83D\uDD17 Copy Link'; }, 2000);
-  }
-});
-
-/* Modal close */
-el('share-close').addEventListener('click', function () {
-  el('share-modal').classList.add('hidden');
-  document.body.style.overflow = '';
-});
-el('share-modal').addEventListener('click', function (e) {
-  if (e.target === this) {
-    el('share-modal').classList.add('hidden');
-    document.body.style.overflow = '';
-  }
-});
-
-/* Download card */
-el('btn-dl-card').addEventListener('click', function () {
-  const card = el('share-card-dl');
-  if (typeof html2canvas === 'undefined') {
-    alert('Please take a screenshot to save your card.');
-    return;
-  }
-  const btn = this;
-  btn.textContent = 'Generating\u2026';
-  btn.disabled = true;
-  html2canvas(card, { backgroundColor: '#061008', scale: 2 }).then(function (canvas) {
-    const a = document.createElement('a');
-    a.download = 'waqtx-timeline.png';
-    a.href = canvas.toDataURL('image/png');
-    a.click();
-    btn.textContent = 'Downloaded!';
-    setTimeout(function () { btn.textContent = '\u2B07 Download Card'; btn.disabled = false; }, 2000);
-  }).catch(function () {
-    btn.textContent = '\u2B07 Download Card';
-    btn.disabled = false;
-  });
+  copyText(url, btn, '✓ Copied!', '🔗 Copy Link');
 });
 
 /* Hamburger */
@@ -2521,34 +2692,8 @@ function updateSharePreview() {
   if (!btn) return;
   btn.addEventListener('click', function() {
     if (!_birth) { el('hero-dob').focus(); return; }
-    var t2 = getTotals(_birth);
-    var days = fmt(t2.day);
-    var url = 'https://mianhassam96.github.io/WaqtX/';
-    if (_birth) {
-      url += '?dob=' + _birth.toISOString().split('T')[0];
-      if (_name) url += '&name=' + encodeURIComponent(_name);
-    }
-    var dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
-    var hook = SNAPSHOT_HOOKS[dayOfYear % SNAPSHOT_HOOKS.length];
-    var caption = (_name ? _name + ' has lived ' : 'I\u2019ve lived ') + days + ' days.\n' +
-      hook + '\n\n' +
-      '\u0648\u064E\u0645\u064E\u0627 \u062A\u064E\u062F\u0652\u0631\u0650\u064A \u0646\u064E\u0641\u0652\u0633\u064C \u0645\u064E\u0651\u0627\u0630\u064E\u0627 \u062A\u064E\u0643\u0652\u0633\u0650\u0628\u064F \u063A\u064E\u062F\u064B\u0627\n' +
-      '\u201CNo soul knows what it will earn tomorrow.\u201D \u2014 Quran 31:34\n\n' +
-      'See your own timeline: ' + url;
-
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(caption).then(function() {
-        btn.textContent = '\u2713 Copied!';
-        setTimeout(function() { btn.textContent = '\uD83D\uDCCB Copy Caption'; }, 2500);
-      });
-    } else {
-      var ta = document.createElement('textarea');
-      ta.value = caption; ta.style.position = 'fixed'; ta.style.opacity = '0';
-      document.body.appendChild(ta); ta.select();
-      try { document.execCommand('copy'); btn.textContent = '\u2713 Copied!'; } catch(e) {}
-      document.body.removeChild(ta);
-      setTimeout(function() { btn.textContent = '\uD83D\uDCCB Copy Caption'; }, 2500);
-    }
+    /* Open the new share modal instead — it has better captions */
+    openShareModalV2();
   });
 })();
 

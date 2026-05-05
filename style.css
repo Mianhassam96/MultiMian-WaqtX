@@ -1202,6 +1202,392 @@ img { max-width: 100%; }
   box-shadow: 0 4px 16px rgba(201,168,76,0.3);
 }
 
+/* ══════════════════════════════════════════════
+   VIRAL SHARE MODAL 2.0
+   ══════════════════════════════════════════════ */
+.v2-modal-inner {
+  max-width: 480px;
+  padding: 0;
+  overflow: hidden;
+  background: #060e08;
+  border: 1px solid rgba(201,168,76,0.25);
+  border-radius: 20px;
+}
+
+/* Tabs */
+.v2-tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(201,168,76,0.12);
+  background: rgba(0,0,0,0.3);
+}
+.v2-tab {
+  flex: 1;
+  padding: 13px 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text3);
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: all var(--transition);
+  border-bottom: 2px solid transparent;
+  letter-spacing: 0.02em;
+}
+.v2-tab:hover { color: var(--text2); }
+.v2-tab.active {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+  background: rgba(201,168,76,0.04);
+}
+
+/* Card wrap */
+.v2-card-wrap {
+  padding: 20px 20px 0;
+}
+
+/* Base card styles */
+.v2-card {
+  border-radius: 14px;
+  padding: 24px 22px;
+  position: relative;
+  overflow: hidden;
+  min-height: 220px;
+}
+.v2-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+}
+
+/* Reality Check card */
+.v2-card-reality {
+  background: linear-gradient(145deg, #0a1a0d, #060e08);
+  border: 1px solid rgba(201,168,76,0.2);
+}
+.v2-card-reality::before {
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.v2c-main-num {
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: var(--text);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin: 12px 0 4px;
+}
+.v2c-main-label {
+  font-size: 0.82rem;
+  color: var(--text3);
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+.v2c-divider {
+  height: 1px;
+  background: rgba(201,168,76,0.12);
+  margin: 14px 0;
+}
+.v2c-stat-row {
+  display: flex;
+  gap: 0;
+  margin-bottom: 14px;
+}
+.v2c-stat {
+  flex: 1;
+  text-align: center;
+  padding: 0 4px;
+  border-right: 1px solid rgba(201,168,76,0.1);
+}
+.v2c-stat:last-child { border-right: none; }
+.v2c-stat-val {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--gold);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.v2c-stat-lbl {
+  font-size: 0.6rem;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+}
+.v2c-ayah {
+  font-family: var(--font-ar);
+  font-size: 0.95rem;
+  color: var(--gold);
+  opacity: 0.75;
+  text-align: center;
+  margin-bottom: 4px;
+  line-height: 1.8;
+}
+.v2c-ayah-tr {
+  font-size: 0.68rem;
+  color: var(--text3);
+  text-align: center;
+  font-style: italic;
+  margin-bottom: 14px;
+}
+
+/* Ibadah Flex card */
+.v2-card-ibadah {
+  background: linear-gradient(145deg, #061a0a, #040e06);
+  border: 1px solid rgba(34,197,94,0.2);
+}
+.v2-card-ibadah::before {
+  background: linear-gradient(90deg, transparent, var(--green2), transparent);
+}
+.v2c-streak-wrap {
+  text-align: center;
+  margin: 10px 0 16px;
+}
+.v2c-streak-num {
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: var(--green2);
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+.v2c-streak-label {
+  font-size: 0.82rem;
+  color: var(--text2);
+  font-weight: 600;
+  margin-top: 2px;
+}
+.v2c-ibadah-grid {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.v2c-ib-item {
+  flex: 1;
+  background: rgba(34,197,94,0.06);
+  border: 1px solid rgba(34,197,94,0.15);
+  border-radius: 8px;
+  padding: 10px 6px;
+  text-align: center;
+}
+.v2c-ib-val {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--green2);
+  line-height: 1.2;
+}
+.v2c-ib-lbl {
+  font-size: 0.6rem;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+.v2c-ibadah-quote {
+  font-size: 0.7rem;
+  color: var(--text3);
+  font-style: italic;
+  text-align: center;
+  line-height: 1.6;
+  margin-bottom: 14px;
+  padding: 0 4px;
+}
+
+/* Reflection card */
+.v2-card-reflection {
+  background: linear-gradient(145deg, #080808, #040404);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.v2-card-reflection::before {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+}
+.v2c-reflection-arabic {
+  font-family: var(--font-ar);
+  font-size: 1.1rem;
+  color: rgba(255,255,255,0.7);
+  text-align: center;
+  margin: 12px 0 6px;
+  line-height: 2;
+}
+.v2c-reflection-tr {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.35);
+  text-align: center;
+  font-style: italic;
+  margin-bottom: 16px;
+}
+.v2c-reflection-body {
+  font-size: 1rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.85);
+  text-align: center;
+  line-height: 1.5;
+  margin-bottom: 8px;
+  padding: 0 8px;
+}
+.v2c-reflection-stat {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.35);
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+/* Shared card footer */
+.v2c-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.v2c-logo {
+  font-family: var(--font-logo);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.12em;
+}
+.v2c-tag {
+  font-size: 0.6rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  background: rgba(201,168,76,0.1);
+  border: 1px solid rgba(201,168,76,0.2);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+.v2c-tag-green {
+  color: var(--green2);
+  background: rgba(34,197,94,0.08);
+  border-color: rgba(34,197,94,0.2);
+}
+.v2c-tag-dim {
+  color: rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.1);
+}
+.v2c-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.6rem;
+  color: var(--text3);
+  opacity: 0.6;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  margin-top: 4px;
+}
+
+/* Captions */
+.v2-captions {
+  padding: 16px 20px 0;
+}
+.v2-captions-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+}
+.v2-caption-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.v2-caption-btn {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition);
+  text-align: left;
+}
+.v2-caption-btn:hover {
+  border-color: rgba(201,168,76,0.3);
+  background: rgba(201,168,76,0.04);
+}
+.v2-caption-btn.copied {
+  border-color: var(--green2);
+  background: rgba(34,197,94,0.06);
+}
+.v2-caption-text {
+  flex: 1;
+  font-size: 0.78rem;
+  color: var(--text2);
+  line-height: 1.5;
+}
+.v2-caption-copy {
+  flex-shrink: 0;
+  font-size: 0.65rem;
+  color: var(--text3);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding-top: 2px;
+  transition: color var(--transition);
+}
+.v2-caption-btn:hover .v2-caption-copy { color: var(--gold); }
+.v2-caption-btn.copied .v2-caption-copy { color: var(--green2); }
+
+/* Actions */
+.v2-actions {
+  display: flex;
+  gap: 10px;
+  padding: 14px 20px;
+}
+.v2-btn-dl {
+  flex: 1;
+  padding: 11px;
+  background: linear-gradient(135deg, var(--gold3), var(--gold));
+  border-radius: var(--radius-sm);
+  color: #0a1a0d;
+  font-size: 0.85rem;
+  font-weight: 800;
+  transition: all var(--transition);
+  border: none;
+  cursor: pointer;
+}
+.v2-btn-dl:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(201,168,76,0.3);
+}
+.v2-btn-link {
+  padding: 11px 18px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: var(--radius-sm);
+  color: var(--text2);
+  font-size: 0.85rem;
+  font-weight: 700;
+  transition: all var(--transition);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.v2-btn-link:hover {
+  border-color: rgba(201,168,76,0.3);
+  color: var(--gold);
+}
+
+/* Streak unlock hint */
+.v2-unlock-hint {
+  padding: 0 20px 16px;
+  font-size: 0.72rem;
+  color: var(--text3);
+  text-align: center;
+  line-height: 1.5;
+  min-height: 0;
+}
+.v2-unlock-hint.has-hint {
+  color: var(--green2);
+  opacity: 0.8;
+}
+
 /* ── 17. Site Footer ── */
 .site-footer {
   background: #040a05;

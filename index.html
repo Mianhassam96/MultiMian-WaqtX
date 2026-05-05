@@ -1083,21 +1083,139 @@
   </div>
 </div>
 
-<!-- ═══ SHARE MODAL ═══ -->
+<!-- ═══ VIRAL SHARE MODAL 2.0 ═══ -->
 <div class="share-modal hidden" id="share-modal" role="dialog" aria-modal="true" aria-label="Share your timeline">
-  <div class="share-modal-inner">
+  <div class="share-modal-inner v2-modal-inner">
     <button class="modal-close" id="share-close" aria-label="Close">✕</button>
-    <div class="share-card-dl" id="share-card-dl">
-      <div class="scdl-logo">✦ WaqtX</div>
-      <div class="scdl-pct" id="scdl-pct">—%</div>
-      <div class="scdl-label">of my life has passed.</div>
-      <div class="scdl-days" id="scdl-days">— Days</div>
-      <div class="scdl-hijri" id="scdl-hijri">— AH</div>
-      <div class="scdl-quote">Only Allah knows what remains.<br>May I use my time better.</div>
-      <div class="scdl-footer">mianhassam96.github.io/WaqtX</div>
+
+    <!-- Mode tabs -->
+    <div class="v2-tabs" role="tablist">
+      <button class="v2-tab active" data-mode="reality" role="tab" aria-selected="true">
+        🔴 Reality Check
+      </button>
+      <button class="v2-tab" data-mode="ibadah" role="tab" aria-selected="false">
+        🟢 Ibadah Flex
+      </button>
+      <button class="v2-tab" data-mode="reflection" role="tab" aria-selected="false">
+        ⚫ Reflection
+      </button>
     </div>
-    <button class="btn-dl-card" id="btn-dl-card">⬇ Download Card</button>
+
+    <!-- Card preview area -->
+    <div class="v2-card-wrap">
+
+      <!-- MODE 1: Reality Check -->
+      <div class="v2-card v2-card-reality active" id="v2-card-reality">
+        <div class="v2c-top">
+          <span class="v2c-logo">✦ WaqtX</span>
+          <span class="v2c-tag">Reality Check</span>
+        </div>
+        <div class="v2c-main-num" id="v2r-days">—</div>
+        <div class="v2c-main-label">days of life have passed.</div>
+        <div class="v2c-divider"></div>
+        <div class="v2c-stat-row">
+          <div class="v2c-stat">
+            <span class="v2c-stat-val" id="v2r-pct">—</span>
+            <span class="v2c-stat-lbl">of avg life used</span>
+          </div>
+          <div class="v2c-stat">
+            <span class="v2c-stat-val" id="v2r-ramadans">—</span>
+            <span class="v2c-stat-lbl">Ramadans witnessed</span>
+          </div>
+          <div class="v2c-stat">
+            <span class="v2c-stat-val" id="v2r-hijri">—</span>
+            <span class="v2c-stat-lbl">Hijri years lived</span>
+          </div>
+        </div>
+        <div class="v2c-ayah">وَمَا تَدْرِي نَفْسٌ مَّاذَا تَكْسِبُ غَدًا</div>
+        <div class="v2c-ayah-tr">"No soul knows what it will earn tomorrow." — Quran 31:34</div>
+        <div class="v2c-footer">
+          <span id="v2r-name"></span>
+          <span>mianhassam96.github.io/WaqtX</span>
+        </div>
+      </div>
+
+      <!-- MODE 2: Ibadah Flex -->
+      <div class="v2-card v2-card-ibadah hidden" id="v2-card-ibadah">
+        <div class="v2c-top">
+          <span class="v2c-logo">✦ WaqtX</span>
+          <span class="v2c-tag v2c-tag-green">Ibadah Tracker</span>
+        </div>
+        <div class="v2c-streak-wrap">
+          <div class="v2c-streak-num" id="v2i-streak">0</div>
+          <div class="v2c-streak-label">day streak 🔥</div>
+        </div>
+        <div class="v2c-ibadah-grid">
+          <div class="v2c-ib-item">
+            <span class="v2c-ib-val" id="v2i-salah">0/5</span>
+            <span class="v2c-ib-lbl">Salah today</span>
+          </div>
+          <div class="v2c-ib-item">
+            <span class="v2c-ib-val" id="v2i-week">0/7</span>
+            <span class="v2c-ib-lbl">Full days this week</span>
+          </div>
+          <div class="v2c-ib-item">
+            <span class="v2c-ib-val" id="v2i-dhikr">0/5</span>
+            <span class="v2c-ib-lbl">Dhikr today</span>
+          </div>
+        </div>
+        <div class="v2c-ibadah-quote">"The most beloved deeds to Allah are those done consistently, even if small." — Bukhari</div>
+        <div class="v2c-footer">
+          <span id="v2i-name"></span>
+          <span>mianhassam96.github.io/WaqtX</span>
+        </div>
+      </div>
+
+      <!-- MODE 3: Deep Reflection -->
+      <div class="v2-card v2-card-reflection hidden" id="v2-card-reflection">
+        <div class="v2c-top">
+          <span class="v2c-logo">✦ WaqtX</span>
+          <span class="v2c-tag v2c-tag-dim">Reflection</span>
+        </div>
+        <div class="v2c-reflection-arabic">إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ</div>
+        <div class="v2c-reflection-tr">We belong to Allah, and to Him we return.</div>
+        <div class="v2c-reflection-body" id="v2ref-body">—</div>
+        <div class="v2c-reflection-stat" id="v2ref-stat">—</div>
+        <div class="v2c-footer">
+          <span id="v2ref-name"></span>
+          <span>mianhassam96.github.io/WaqtX</span>
+        </div>
+      </div>
+
+    </div><!-- /v2-card-wrap -->
+
+    <!-- Caption options -->
+    <div class="v2-captions">
+      <div class="v2-captions-label">Copy a caption to post with your card:</div>
+      <div class="v2-caption-btns" id="v2-caption-btns">
+        <!-- Rendered by JS per mode -->
+      </div>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="v2-actions">
+      <button class="v2-btn-dl" id="v2-btn-dl">⬇ Download Card</button>
+      <button class="v2-btn-link" id="v2-btn-link">🔗 Copy Link</button>
+    </div>
+
+    <!-- Streak unlock hint -->
+    <div class="v2-unlock-hint" id="v2-unlock-hint"></div>
+
   </div>
+</div>
+
+<!-- Keep legacy share-card-dl for html2canvas targeting -->
+<div style="position:absolute;left:-9999px;top:-9999px;pointer-events:none" aria-hidden="true">
+  <div class="share-card-dl" id="share-card-dl">
+    <div class="scdl-logo">✦ WaqtX</div>
+    <div class="scdl-pct" id="scdl-pct">—%</div>
+    <div class="scdl-label">of my life has passed.</div>
+    <div class="scdl-days" id="scdl-days">— Days</div>
+    <div class="scdl-hijri" id="scdl-hijri">— AH</div>
+    <div class="scdl-quote">Only Allah knows what remains.<br>May I use my time better.</div>
+    <div class="scdl-footer">mianhassam96.github.io/WaqtX</div>
+  </div>
+  <button class="btn-dl-card" id="btn-dl-card" style="display:none">⬇ Download Card</button>
 </div>
 
 <!-- ═══ SITE FOOTER ═══ -->
